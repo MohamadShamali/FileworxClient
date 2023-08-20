@@ -23,6 +23,7 @@ namespace FileworxObjectClassLibrary
         public override void Insert()
         {
             CreationDate = DateTime.Now;
+            Body.Replace(Environment.NewLine, "\\n");
             Description = Description.Replace("'", "''");
             Name = Name.Replace("'", "''");
             Body = Body.Replace("'", "''");
