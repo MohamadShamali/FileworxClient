@@ -1,0 +1,184 @@
+﻿@inject NewsServices newsServices
+@inject UsersServices usersServices
+
+<div class="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-10">
+    <div class=" w-[1000px] p-4 bg-white border-3 border-solid border-fw-blue rounded-md shadow-md min-h-[650px] relative">
+        <div>
+            <h2 class="text-3xl font-semibold mb-2.5">Edit Image</h2>
+        </div>
+        <div class="mb-2">
+            <button @onclick=ToggleBodySection class="@getClass(showBodySection)"><b>File Description</b></button>
+            <button @onclick=ToggleImageSection class="@getClass(showImageSection)"><b>Image</b></button>
+        </div>
+        @if (showImageSection)
+        {
+            <div>
+                <InputFile class="input-file" OnChange="loadFiles" accept=".jpg,.jpeg,.png,.gif,.bmp" />
+                @if (errors.Count > 0)
+                {
+                    <h2>Errors</h2>
+                    <ul class="text-danger">
+                        @foreach (var error in errors)
+                        {
+                            <li>@error</li>
+                        }
+                    </ul>
+                }
+            </div>
+        }
+        @if (showBodySection)
+        {
+            <div>
+                <label class="font-semibold" for="title">Title:</label>
+                <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=title type="text" id="title" maxlength="255" />
+            </div>
+            <div>
+                <label class="font-semibold" for="description">Description:</label>
+                <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=description type="text" id="description" maxlength="255" />
+            </div>
+            <div class="mb-10">
+                <label class="font-semibold" for="body">Body:</label>
+                <textarea @bind=body class="w-full border-solid border-gray-300 border-2 min-h-[400px]" maxlength="10000"></textarea>
+            </div>
+        }
+        <div class="flex justify-end gap-x-2 absolute right-2 bottom-4 inline-flex">
+            <button class="bg-fw-blue hover:bg-fw-blue-hover rounded-md text-white p-2 cursor-pointer" @onclick=saveRequest><b>Save</b></button>
+            <button class="bg-rid hover:bg-rid-hover rounded-md text-white p-2 cursor-pointer" @onclick=cancelRequest><b>Cancel</b></button>
+        </div>
+    </div>
+</div>
+
+@if (showInvalidInfo)
+{
+    <InvalidInfoWindow Title="Empty Fields" OnClose="hideInvalidInfo" />
+}
+
+@code {
+    [Parameter]
+    public EventCallback<clsPhoto> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    // Binded
+    private clsPhoto selectedPhoto;
+    private string title;
+    private string description;
+    private string body;
+    IBrowserFile Ifile = null;
+    private string newImagePath;
+
+    // Display
+    private bool showInvalidInfo = false;
+    private bool showBodySection = true;
+    private bool showImageSection = false;
+
+    // Other
+    private long maxFileSize = 1024 * 1024 * 5;
+    private List<string> errors = new();
+
+    protected override void OnInitialized()
+    {
+        selectedPhoto = (clsPhoto) newsServices.SelectedFile;
+
+        title = selectedPhoto.Name;
+        description = selectedPhoto.Description;
+        body = selectedPhoto.Body;
+
+        base.OnInitialized();
+    }
+
+    private void ToggleBodySection()
+    {
+        showBodySection = true;
+        showImageSection = false;
+    }
+
+    private void ToggleImageSection()
+    {
+        showImageSection = true;
+        showBodySection = false;
+    }
+
+    private void loadFiles(InputFileChangeEventArgs e)
+    {
+        errors.Clear();
+        Ifile = e.File;
+    }
+
+    private async Task saveNewImage(Guid guid)
+    {
+        try
+        {
+            if (Ifile != null)
+            {
+                newImagePath = Path.Combine(EditBeforeRun.ImagesFiles, guid.ToString() + Path.GetExtension(Ifile.Name));
+
+                await using FileStream fs = new(newImagePath, FileMode.Create);
+                await Ifile.OpenReadStream(maxFileSize).CopyToAsync(fs);
+            }
+        }
+
+        catch (Exception ex)
+        {
+            errors.Add($"File: {Ifile.Name} Error: {ex.Message}");
+        }
+    }
+
+    private string getClass(bool enable)
+    {
+        if (enable)
+        {
+            return "bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer";
+        }
+
+        else
+        {
+            return "bg-disable hover:bg-disable-hover rounded-md mr-2 text-white p-1 cursor-pointer";
+        }
+    }
+
+    private async Task cancelRequest()
+    {
+        title = String.Empty; description = String.Empty; body = String.Empty;
+        await OnCancel.InvokeAsync();
+    }
+
+    private async Task saveRequest()
+    {
+        if ((title == String.Empty) || (title == null) || (description == String.Empty) || (description == null) || (body == String.Empty) || (body == null))
+        {
+            showInvalidInfo = true;
+        }
+
+        else
+        {
+
+            clsPhoto editedPhoto = new clsPhoto()
+                {
+                    Id = newsServices.SelectedFile.Id
+                };
+
+            editedPhoto.Read();
+
+            Guid oldguid = newsServices.SelectedFile.Id;
+            Guid newGuid = Guid.NewGuid();
+
+            if (Ifile != null)
+            {
+                File.Delete(editedPhoto.Location); // Delete old Image
+                await saveNewImage(oldguid); //Save New Image with the same name and path
+            }
+
+            editedPhoto.Name = title;
+            editedPhoto.Description = description;
+            editedPhoto.Body = body;
+            editedPhoto.LastModifierId = usersServices.LoggedInUser.Id;
+            editedPhoto.LastModifierName = usersServices.LoggedInUser.Name;
+
+            await OnSave.InvokeAsync(editedPhoto);
+        }
+    }
+
+    private void hideInvalidInfo() { showInvalidInfo = false; }
+}

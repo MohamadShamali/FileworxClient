@@ -1,0 +1,35 @@
+﻿@inject UsersServices usersServicies
+
+<div class="table-container">
+<table class="w-full mt-2">
+        <thead class="cursor-default">
+        <tr>
+            <th class="p-2 border border-gray-300 bg-fw-blue text-white">Name</th>
+                <th class="p-2 border border-gray-300 bg-fw-blue text-white" >Username</th>
+                <th class="p-2 border border-gray-300 bg-fw-blue text-white max-w-xs">Is Admin</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in usersServicies.AllUsers)
+        {
+                <UserItem RowClick="OnRowClick" IsSelected="@IsUserSelected(user)" user="user" />
+        }
+    </tbody>
+</table>
+</div>
+
+@code {
+    private bool IsUserSelected(clsUser user)
+    {
+        return usersServicies.SelectedUser == user;
+    }
+
+    [Parameter]
+    public EventCallback<clsUser> OnRowClick { get; set; }
+
+    protected override void OnInitialized()
+    {
+        usersServicies.RefreshUsersList();
+        base.OnInitialized();
+    }
+}

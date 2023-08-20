@@ -1,0 +1,106 @@
+﻿@inject NewsServices newsServicies
+@inject UsersServices usersServices
+
+
+<div class="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-10">
+    <div class=" w-[1000px] p-4 bg-white border-3 border-solid border-fw-blue rounded-md shadow-md">
+        <div>
+            <h2 class="text-3xl font-semibold">Edit News</h2>
+        </div>
+        <div>
+            <label class="font-semibold" for="title">Title:</label>
+            <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=title type="text" id="title" maxlength="255" />
+        </div>
+        <div>
+            <label class="font-semibold" for="description">Description:</label>
+            <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=description type="text" id="description" maxlength="255" />
+        </div>
+        <div>
+            <label class="font-semibold" for="catagory">Catagory:</label>
+            <select @bind=catagory class="p-2.5 border-solid border-gray-300 w-full border-2">
+                <option value=""></option>
+                <option value="General">General</option>
+                <option value="Sports">Sports</option>
+                <option value="Health">Health</option>
+                <option value="Politics">Politics</option>
+            </select>
+        </div>
+        <div>
+            <label class="font-semibold" for="body">Body:</label>
+            <textarea @bind=body class="w-full border-solid border-gray-300 border-2 min-h-[400px]" maxlength="10000"></textarea>
+        </div>
+        <div class="flex justify-end gap-x-2">
+            <button class="bg-fw-blue hover:bg-fw-blue-hover rounded-md text-white p-2 cursor-pointer" @onclick=saveRequest><b>Save</b></button>
+            <button class="bg-rid hover:bg-rid-hover rounded-md text-white p-2 cursor-pointer" @onclick=cancelRequest><b>Cancel</b></button>
+        </div>
+    </div>
+</div>
+
+@if (showInvalidInfo)
+{
+    <InvalidInfoWindow Title="Empty Fields" OnClose="hideInvalidInfo" />
+}
+
+@code {
+
+    [Parameter]
+    public EventCallback<clsNews> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    // Binded
+    private string title;
+    private string description;
+    private string catagory;
+    private string body;
+
+    // Display
+    private bool showInvalidInfo = false;
+
+    protected override void OnInitialized()
+    {
+        clsNews newsToEdit = (clsNews)newsServicies.SelectedFile;
+        title = newsToEdit.Name;
+        description = newsToEdit.Description;
+        catagory = newsToEdit.Category;
+        body = newsToEdit.Body;
+
+        base.OnInitialized();
+    }
+
+    private async Task cancelRequest()
+    {
+        await OnCancel.InvokeAsync();
+    }
+
+    private async Task saveRequest()
+    {
+        if ((title == String.Empty) || (title == null) || (description == String.Empty) || (description == null) || (catagory == String.Empty) || (catagory == null) || (body == String.Empty) || (body == null))
+        {
+            showInvalidInfo = true;
+        }
+
+        else
+        {
+            clsNews editedNews = new clsNews()
+            {
+                Id = newsServicies.SelectedFile.Id
+            };
+
+            editedNews.Read();
+
+            editedNews.Name = title;
+            editedNews.Description = description;
+            editedNews.Category = catagory;
+            editedNews.Body = body;
+            editedNews.LastModifierId = usersServices.LoggedInUser.Id;
+            editedNews.LastModifierName = usersServices.LoggedInUser.Name;
+
+            await OnSave.InvokeAsync(editedNews);
+        }
+    }
+
+    private void hideInvalidInfo() { showInvalidInfo = false; }
+
+}

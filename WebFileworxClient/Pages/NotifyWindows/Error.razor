@@ -1,0 +1,24 @@
+﻿
+<div class="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-10">
+    <div class="p-4 bg-white border-3 border-solid border-fw-blue rounded-md shadow-md">
+        <p class="text-[30px]"> <b>@Title</b></p>
+        <p>@Message</p>
+        <button class="mt-2.5 bg-fw-blue hover:bg-fw-blue-hover rounded-md text-white p-2 cursor-pointer min-w-[50px]" @onclick="CloseInvalidInfo">OK</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Message { get; set; }
+
+    private async Task CloseInvalidInfo()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

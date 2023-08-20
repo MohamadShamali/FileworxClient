@@ -1,0 +1,32 @@
+﻿@inject NewsServices newsServices
+
+<tr @onclick="() => RowClick.InvokeAsync(File)" class="@GetRowClass()">
+    <td class="p-2 border border-gray-300">@File.Name</td>
+    <td class="p-2 border border-gray-300">@File.Description</td>
+    <td class="p-2 border border-gray-300">@File.CreationDate.ToString()</td>
+</tr>
+
+@code {
+    [Parameter]
+    public clsFile File { get; set; }
+
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<clsFile> RowClick { get; set; }
+
+
+    private string GetRowClass()
+    {
+        if (IsSelected)
+        {
+            return "bg-fw-blue-hover text-white cursor-pointer";
+        }
+
+        else
+        {
+            return "hover:bg-blue-300 cursor-pointer";
+        }
+    }
+}

@@ -1,0 +1,43 @@
+﻿@inject NewsServices newsServices
+
+<div class="table-container">
+    <table class="w-full mt-2">
+        <thead class="cursor-default">
+        <tr>
+            <th class="p-2 border border-gray-300 bg-fw-blue text-white">Title</th>
+                <th class="p-2 border border-gray-300 bg-fw-blue text-white">Description</th>
+                <th class="p-2 border border-gray-300 bg-fw-blue text-white w-25">Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var file in newsServices.AllFiles)
+        {
+                <NewsItem File="file" IsSelected="@isFileSelected(file)" RowClick="OnRowClick" />
+        }
+    </tbody>
+</table>
+</div>
+
+@code {
+
+    private bool isFileSelected(clsFile file)
+    {
+        return newsServices.SelectedFile == file;
+    }
+
+    [Parameter]
+    public EventCallback<clsFile> OnRowClick { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        newsServices.AddDBFilesToFilesList();
+        base.OnInitialized();
+    }
+
+
+
+
+}
+
+

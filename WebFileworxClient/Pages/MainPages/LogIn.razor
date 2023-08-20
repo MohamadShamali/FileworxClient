@@ -1,0 +1,83 @@
+﻿@inject NavigationManager navManager
+@inject UsersServices usersServices
+
+@page "/"
+
+<PageTitle>Fileworx Client: Log In</PageTitle>
+<div class="flex items-center justify-center">
+        <div class="bg-white p-4 rounded-lg shadow-lg mt-56">
+
+        <img class="w-64 mb-3 ml-5" src="images/download.png" alt="download" />
+
+            <div class="mb-2">
+                <label class="font-semibold" for="username">Username:</label>
+            <input @bind=username type="text" id="username" maxlength="255" class="border rounded p-2 w-full">
+            </div>
+
+            <div class="mb-4">
+            <label class="font-semibold" for="password">Password:</label>
+            <input @bind=password type="password" id="password" maxlength="255" class="border rounded p-2 w-full">
+            </div>
+
+            <div>
+            <button @onclick="checkLogInRequest" class="w-full bg-fw-blue hover:bg-fw-blue-hover text-white font-bold py-2 px-4 rounded">Log In</button>
+            </div>
+
+        </div>
+    </div>
+
+@if (showInvalidInfo && (validateResult == LogInValidationResult.WrongPassword))
+{
+    <InvalidInfoWindow OnClose="clearPasswordBox" Title="Invalid Password" Message="@dynamicText" />
+}
+
+@if (showInvalidInfo && (validateResult == LogInValidationResult.WrongUser))
+{
+    <InvalidInfoWindow OnClose="clearPasswordBox" Title="Invalid Username" Message="@dynamicText" />
+}
+
+@code{
+
+    //Binded
+    private string? username;
+    private string? password;
+
+    // For display
+    private bool showInvalidInfo = false;
+    private LogInValidationResult validateResult;
+    private string? dynamicText;
+
+    private void checkLogInRequest()
+    {
+        clsUser tryingToLogIn = new clsUser(){Username = username, Password = password};
+
+        validateResult = tryingToLogIn.ValidateLogin();
+
+        if (validateResult == LogInValidationResult.Valid)
+        {
+            tryingToLogIn.Read();
+            usersServices.LoggedInUser = tryingToLogIn;
+            navManager.NavigateTo("./f");
+        }
+
+        if (validateResult == LogInValidationResult.WrongUser)
+        {
+            dynamicText = $"There is no username called \"{username}\"";
+            clearPasswordBox();
+            showInvalidInfo = true;
+        }
+
+        if (validateResult == LogInValidationResult.WrongPassword)
+        {
+            dynamicText = $"Invalid password for the username \"{username}\"";
+            clearPasswordBox();
+            showInvalidInfo = true;
+        }
+    }
+
+    private void clearPasswordBox()
+    {
+        password = string.Empty;
+        showInvalidInfo = false;
+    }
+}

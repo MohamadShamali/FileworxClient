@@ -1,0 +1,268 @@
+﻿@inject NavigationManager navnManager
+@inject UsersServices usersServices
+@inject NewsServices newsServices
+@inject IJSRuntime JSRuntime
+
+
+@page "/f"
+
+<img class="mb-2.5 w-72" src="images/download.png" alt="download" />
+
+<div class="flex mt-1">
+    <button @onclick=addNewsRequest class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer"><b>Add News</b></button>
+    <button @onclick=addImageRequest class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer"><b>Add Image</b></button>
+    <button @onclick="editRequest" class="@editButtonClass()" disabled="@removeAndEditDisable()"><b>Edit Image/News</b></button>
+    <button @onclick="removeRequest" class="@removeButtonClass()" disabled="@removeAndEditDisable()"><b>Remove </b></button>
+    @if (usersServices.LoggedInUser.IsAdmin)
+    {
+        <button @onclick=openAdminTab class="mr-1 bg-prpl hover:bg-prpl-hover rounded-md text-white p-1 cursor-pointer ml-auto"><b>Admin Window</b></button>
+    }
+</div>
+
+<div class="flex justify-between">
+
+    <div class="flex-grow w-1/2 mr-10">
+        <NewsTable OnRowClick="OnRowClick"/>
+    </div>
+
+
+    <div class="flex-grow w-1/2 ">
+        @if(showdetails){
+            <NewsDetails selectedFile="newsServices.SelectedFile"/>
+        }
+    </div>
+</div>
+
+@if (showAddNewsWindow)
+{
+    <NewNewsWindow OnSave="onAddNews" OnCancel="onCancel"> </NewNewsWindow>
+}
+@if (showAddImageWindow)
+{
+    <NewImageWindow OnSave="onAddImage" OnCancel="onCancel"> </NewImageWindow>
+}
+@if (showDeleteConfirmationWindow)
+{
+    <DeleteConfirmationWindow OnDelete="onConfirmDelete" OnCancel="onCancel"></DeleteConfirmationWindow>
+}
+@if (showEditNewsWindow)
+{
+    <EditNewsWindow OnSave="onEditNews" OnCancel="onCancel"></EditNewsWindow>
+}
+@if (showEditImageWindow)
+{
+    <EditImageWindow OnSave="onEditImage" OnCancel="onCancel"> </EditImageWindow>
+}
+@if (showFileErrorWindow)
+{
+    <Error Title="Error" Message="an Error Ocured during process, make sure not to use sprcial characters" OnClose="onCloseError"></Error>
+}
+@code {
+
+    // Windows Appearance
+    private bool showAddNewsWindow = false;
+    private bool showAddImageWindow = false;
+    private bool showDeleteConfirmationWindow = false;
+    private bool showEditNewsWindow = false;
+    private bool showEditImageWindow = false;
+    private bool showFileErrorWindow = false;
+
+    // Details Appearance
+    private bool showdetails = true;
+
+    //Delete Confirmation
+    private bool confirmDelete = false;
+
+    private void OnRowClick(clsFile selectedFile)
+    {
+        if (newsServices.SelectedFile == selectedFile)
+        {
+            newsServices.SelectedFile = null; // Deselect the row if it's already selected
+        }
+
+        else
+        {
+            newsServices.SelectedFile = selectedFile; // Select the clicked row
+        }
+    }
+
+    private void openAdminTab()
+    {
+        string url = navnManager.BaseUri + "admin"; 
+        JSRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
+
+    private void removeRequest()
+    {
+        showDeleteConfirmationWindow = true;
+    }
+
+    private void addNewsRequest()
+    {
+        showAddNewsWindow = true;
+    }
+
+    private void addImageRequest()
+    {
+        showAddImageWindow = true;
+    }
+
+    private void editRequest()
+    {
+        if (newsServices.SelectedFile is clsPhoto)
+        {
+            showEditImageWindow = true;
+        }
+
+        else
+        {
+            showEditNewsWindow = true;
+        }
+    }
+
+    private void onCancel()
+    {
+        showAddNewsWindow = false;
+        showAddImageWindow = false;
+
+        showDeleteConfirmationWindow = false;
+        confirmDelete = false;
+
+        showEditNewsWindow = false;
+        showEditImageWindow = false;
+    }
+
+    private void onCloseError()
+    {
+        showFileErrorWindow = false;
+    }
+
+    private void onConfirmDelete()
+    {
+        confirmDelete = true;
+
+        if (newsServices.SelectedFile != null)
+        {
+            if (newsServices.SelectedFile is clsPhoto)
+            {
+                clsPhoto selectedPhoto = (clsPhoto)newsServices.SelectedFile;
+
+                selectedPhoto.Delete();
+            }
+
+            else
+            {
+                clsNews selectedNews = (clsNews)newsServices.SelectedFile;
+
+                selectedNews.Delete();
+            }
+            newsServices.SelectedFile = null;
+            newsServices.RefreshFilesList();
+        }
+
+        confirmDelete = false;
+        showDeleteConfirmationWindow = false;
+    }
+
+    private void onAddNews(clsNews addedNews)
+    {
+        try
+        {
+            addedNews.Insert();
+            newsServices.RefreshFilesList();
+
+            showAddNewsWindow = false;
+        }
+        catch
+        {
+            showFileErrorWindow = true;
+        }
+
+    }
+
+    private void onEditNews(clsNews editedNews)
+    {
+        try
+        {
+            editedNews.Update();
+            newsServices.RefreshFilesList();
+
+            showEditNewsWindow = false;
+        }
+        catch
+        {
+            showFileErrorWindow = true;
+        }
+    }
+
+    private void onAddImage(clsPhoto addedPhoto)
+    {
+        try
+        {
+            addedPhoto.Insert();
+            newsServices.RefreshFilesList();
+
+            showAddImageWindow = false;
+        }
+
+        catch
+        {
+            showFileErrorWindow = true;
+        }
+
+    }
+
+    private void onEditImage(clsPhoto editedPhoto)
+    {
+        try
+        {
+            editedPhoto.Update();
+            newsServices.RefreshFilesList();
+
+            showEditImageWindow = false;
+        }
+
+        catch
+        {
+            showFileErrorWindow = true;
+        }
+    }
+
+    private string removeButtonClass()
+    {
+        if (newsServices.SelectedFile != null)
+        {
+            return "bg-rid hover:bg-rid-hover rounded-md mr-2 text-white p-1 cursor-pointer";
+        }
+        else
+        {
+            return "bg-disable rounded-md mr-2 text-white p-1 cursor-default";
+        }
+    }
+
+    private string editButtonClass()
+    {
+        if (newsServices.SelectedFile != null)
+        {
+            return "bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer";
+        }
+        else
+        {
+            return "bg-disable rounded-md mr-2 text-white p-1 cursor-default";
+        }
+    }
+
+    private bool removeAndEditDisable()
+    {
+        if (newsServices.SelectedFile != null)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+}
+

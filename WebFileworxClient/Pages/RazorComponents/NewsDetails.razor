@@ -1,0 +1,88 @@
+﻿@inject NewsServices newsServices
+
+<div class="w-44 inline">
+    @if (selectedFile != null)
+    {
+        <div class="bg-gray-50 p-2 mt-2 rounded-2xl">
+            <p><strong class="mb-2">Title:</strong> <span>@selectedFile.Name</span></p>
+            <p><strong class="mb-2">Creation Date:</strong> <span>@selectedFile.CreatorName</span></p>
+
+            @if (selectedFile is not clsPhoto)
+            {
+                clsNews selectedNews = (clsNews) selectedFile;
+                <p style="margin-bottom:0px;"><strong class="details-label">Category:</strong> <span>@selectedNews.Category</span></p>
+            }
+        </div>
+    }
+    else
+    {
+        <p><em>No item selected.</em></p>
+    }
+</div>
+
+<div class="mt-2.5">
+    @if (selectedFile != null)
+    {
+        <button @onclick="ToggleBodySection" class="@getClass(showBodySection)"><b>Show Body</b></button>
+        <button @onclick="ToggleImageSection" class="@getClass(showImageSection)"><b>Show Image</b></button>
+    }
+</div>
+
+<div class="bg-gray-50 p-2 mt-2 rounded-2xl">
+    @if ((selectedFile != null) && showBodySection)
+    {
+        <div class="blue-box">
+            <p><strong class="details-label">Body:</strong> <span>@selectedFile.Body</span></p>
+        </div>
+    }
+
+    @if ((selectedFile != null) && showImageSection)
+    {
+        <div class="max-w-2xl">
+            @if (selectedFile is clsPhoto)
+            {
+                clsPhoto selectedPhoto = (clsPhoto) selectedFile;
+                string imageName = Path.GetFileName(selectedPhoto.Location);
+                <img class="w-full" src="\Images\StoredImages\@imageName?cacheBuster=@DateTime.Now.Ticks" alt="Image" />
+            }
+            else
+            {
+                <p> <span>No Image</span></p>
+            }
+        </div>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public clsFile selectedFile { get; set; }
+
+    // Display
+    private bool showBodySection = true;
+    private bool showImageSection = false;
+
+    private void ToggleBodySection()
+    {
+        showBodySection = true;
+        showImageSection = false;
+    }
+
+    private void ToggleImageSection()
+    {
+        showImageSection = true;
+        showBodySection = false;
+    }
+
+    private string getClass(bool enable)
+    {
+        if (enable)
+        {
+            return "bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer";
+        }
+        else
+        {
+            return "bg-disable hover:bg-disable-hover rounded-md mr-2 text-white p-1 cursor-pointer";
+        }
+    }
+}
