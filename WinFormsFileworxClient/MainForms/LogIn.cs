@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FileworxObjectClassLibrary;
@@ -38,18 +39,14 @@ namespace Fileworx_Client
                 tryingToLogIn.Read();
 
                 Global.LoggedInUser = tryingToLogIn;
-                this.Hide();
 
-                FileWorx fileWorx = new FileWorx();
-                DialogResult result = fileWorx.ShowDialog();
+                // Open Fileworx form in a new thread
+                FileWorx fileworx = new FileWorx();
+                var fileworxThread = new Thread(()=> Application.Run(fileworx));
+                fileworxThread.Start();
 
-                if (result == DialogResult.Cancel)
-                {
-                    this.Show();
-                    Global.LoggedInUser = null;
-                }
-
-                logInClearTextboxes();
+                // close this form
+                this.Close();
             }
 
             else if (validateResult == LogInValidationResult.WrongPassword)
@@ -66,7 +63,10 @@ namespace Fileworx_Client
                 MessageBox.Show($"There is no username with the name {tryingToLogIn.Username}, please try again", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-       
-        
+
+        public void closeThis()
+        {
+            Close();
+        }
     }
 }

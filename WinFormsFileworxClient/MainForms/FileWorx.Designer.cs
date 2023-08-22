@@ -274,7 +274,7 @@
             this.oldestToolStripMenuItem,
             this.alphabeticallyToolStripMenuItem});
             this.sortByToolStripMenuItem.Name = "sortByToolStripMenuItem";
-            this.sortByToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sortByToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.sortByToolStripMenuItem.Text = "Sort By..";
             // 
             // showToolStripMenuItem
@@ -289,7 +289,7 @@
             // usersListToolStripMenuItem
             // 
             this.usersListToolStripMenuItem.Name = "usersListToolStripMenuItem";
-            this.usersListToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.usersListToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.usersListToolStripMenuItem.Text = "Users List";
             this.usersListToolStripMenuItem.Click += new System.EventHandler(this.usersListToolStripMenuItem_Click);
             // 
@@ -410,6 +410,7 @@
             this.MinimumSize = new System.Drawing.Size(1183, 713);
             this.Name = "FileWorx";
             this.Text = "FileWorx";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FileWorx_FormClosed);
             this.Resize += new System.EventHandler(this.FileWorx_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.previewImagePictureBox)).EndInit();
             this.tabPage1.ResumeLayout(false);

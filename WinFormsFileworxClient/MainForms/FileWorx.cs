@@ -337,5 +337,12 @@ namespace Fileworx_Client
             usersList.Show();
         }
 
+        private void FileWorx_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // Open LogIn form in a new thread
+            LogIn logIn = new LogIn();
+            var logInThread = new Thread(() => Application.Run(logIn));
+            logInThread.Start();
+        }
     }
 }
