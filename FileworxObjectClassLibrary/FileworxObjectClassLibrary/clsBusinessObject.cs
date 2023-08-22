@@ -18,7 +18,7 @@ namespace FileworxObjectClassLibrary
         public Guid Id { get; set; }
         public string Description { get; set; }
         public DateTime CreationDate { get; set; }
-        public DateTime? ModificationDate { get; set; } = null;
+        public DateTime ModificationDate { get; set; }
         public Guid CreatorId { get; set; }
         public string CreatorName { get; set; }
         public Guid? LastModifierId { get; set; } = null;
@@ -43,7 +43,7 @@ namespace FileworxObjectClassLibrary
             {
                 connection.Open();
                 string query = $"INSERT INTO {tableName}(ID, C_DESCRIPTION, C_CREATIONDATE, C_CREATORID, C_NAME, C_CLASSID)" +
-                                $"VALUES('{Id}', '{Description}', '{CreationDate}', '{CreatorId}', '{Name}', {(int) Class});";
+                               $"VALUES('{Id}', '{Description}', '{CreationDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{CreatorId}', '{Name}', {(int) Class});";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.ExecuteNonQuery();
@@ -76,8 +76,8 @@ namespace FileworxObjectClassLibrary
             {
                 connection.Open();
 
-                string query = $"UPDATE {tableName} SET C_DESCRIPTION = '{Description}', C_CREATIONDATE = '{CreationDate}'," +
-                               $"C_MODIFICATIONDATE = '{ModificationDate}', C_CREATORID= '{CreatorId}', C_LASTMODIFIERID= '{LastModifierId}', " +
+                string query = $"UPDATE {tableName} SET C_DESCRIPTION = '{Description}', C_CREATIONDATE = '{CreationDate.ToString("yyyy-MM-dd HH:mm:ss")}'," +
+                               $"C_MODIFICATIONDATE = '{ModificationDate.ToString("yyyy-MM-dd HH:mm:ss")}', C_CREATORID= '{CreatorId}', C_LASTMODIFIERID= '{LastModifierId}', " +
                                $"C_NAME= '{Name}'  WHERE Id = '{Id}'";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
