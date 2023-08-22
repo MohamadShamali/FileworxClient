@@ -107,9 +107,9 @@ namespace FileworxObjectTester
             //Console.WriteLine(toupdate.Name);
 
             // Delete News
-            //var toDelete = new clsUser();
-            //toDelete.Id = new Guid("77a7b071-45f4-48f5-b494-b860da0b5c2f");
-            //toDelete.Delete();
+            var toDelete = new clsUser();
+            toDelete.Id = new Guid("77a7b071-45f4-48f5-b494-b860da0b5c2f");
+            toDelete.Delete();
 
             //____________________________________________________________________________________________________
 

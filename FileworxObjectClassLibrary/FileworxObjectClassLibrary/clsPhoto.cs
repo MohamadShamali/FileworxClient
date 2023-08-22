@@ -15,6 +15,8 @@ namespace FileworxObjectClassLibrary
 
         // Properties
         private string location;
+
+        private bool photoUpdated;
         public string Location 
         { 
             get { return location; }
@@ -25,7 +27,7 @@ namespace FileworxObjectClassLibrary
                     if(File.Exists(location))
                     {
                         File.Delete(location);
-                        photoUpdate = true;
+                        photoUpdated = true;
                     }
 
                     location = value;
@@ -38,29 +40,22 @@ namespace FileworxObjectClassLibrary
             } 
         }
 
-        private bool photoUpdate;
-
         public clsPhoto()
         {
             Class=Type.Photo;
-            photoUpdate = false;
+            photoUpdated = false;
         }
 
         public override void Insert()
         {
-            Description = Description.Replace("'", "''");
-            Name = Name.Replace("'", "''");
-            Body = Body.Replace("'", "''");
-            CreationDate = DateTime.Now;
+            base.Insert();
             copyImage();
 
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 connection.Open();
-                string query = $"INSERT INTO T_BUSINESSOBJECT (ID, C_DESCRIPTION, C_CREATIONDATE, C_CREATORID, C_NAME, C_CLASSID)" +
-                               $"VALUES('{Id}', '{Description}', '{CreationDate}', '{CreatorId}', '{Name}', {(int)Class});" +
-                               $"INSERT INTO T_FILE (ID, C_BODY) VALUES('{Id}', '{Body}');" +
-                               $"INSERT INTO T_PHOTO (ID, C_LOCATION) VALUES('{Id}', '{Location}')";
+                string query = $"INSERT INTO T_PHOTO (ID, C_LOCATION) " +
+                               $"VALUES('{Id}', '{Location}')";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.ExecuteNonQuery();
@@ -80,24 +75,18 @@ namespace FileworxObjectClassLibrary
 
         public override void Update()
         {
-            Description = Description.Replace("'", "''");
-            Name = Name.Replace("'", "''");
-            Body = Body.Replace("'", "''");
-            if (photoUpdate)
+            base.Update();
+            if (photoUpdated)
             {
                 copyImage();
-                photoUpdate = false;
+                photoUpdated = false;
             }
 
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 connection.Open();
 
-                string query = $"UPDATE T_BUSINESSOBJECT SET C_DESCRIPTION = '{Description}', C_CREATIONDATE = '{CreationDate}'," +
-                               $"C_MODIFICATIONDATE = '{ModificationDate}', C_CREATORID= '{CreatorId}', C_LASTMODIFIERID= '{LastModifierId}', " +
-                               $"C_NAME= '{Name}'  WHERE Id = '{Id}';" +
-                               $"UPDATE T_FILE SET C_BODY = '{Body}' WHERE Id = '{Id}';" +
-                               $"UPDATE {tableName} " +
+                string query = $"UPDATE {tableName} " +
                                $"SET C_LOCATION = '{Location}' " +
                                $"WHERE Id = '{Id}'";
 

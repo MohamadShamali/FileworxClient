@@ -17,16 +17,16 @@ namespace FileworxObjectClassLibrary
 
         public override void Insert()
         {
-            CreationDate = DateTime.Now;
-            string escapedDescription = Description.Replace("'", "''");
-            string escapedName = Name.Replace("'", "''");
-            string escapedBody = Body.Replace("'", "''");
+            base.Insert();
+
+            Body.Replace(Environment.NewLine, "\\n");
+            Body = Body.Replace("'", "''");
+            
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 connection.Open();
-                string query = $"INSERT INTO T_BUSINESSOBJECT (ID, C_DESCRIPTION, C_CREATIONDATE, C_CREATORID, C_NAME, C_CLASSID)" +
-                               $"VALUES('{Id}', '{Description}', '{CreationDate}', '{CreatorId}', '{Name}', {(int) Class});"+
-                               $"INSERT INTO T_FILE (ID, C_BODY) VALUES('{Id}', '{Body}');";
+                string query = $"INSERT INTO T_FILE (ID, C_BODY) " +
+                               $"VALUES('{Id}', '{Body}');";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.ExecuteNonQuery();
@@ -36,14 +36,17 @@ namespace FileworxObjectClassLibrary
 
         public override void Update()
         {
+            base.Update();
+
+            Body.Replace(Environment.NewLine, "\\n");
+            Body = Body.Replace("'", "''");
+
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 connection.Open();
 
-                string query = $"UPDATE T_BUSINESSOBJECT SET C_DESCRIPTION = '{Description}', C_CREATIONDATE = '{CreationDate}'," +
-                               $"C_MODIFICATIONDATE = '{ModificationDate}', C_CREATORID= '{CreatorId}', C_LASTMODIFIERID= '{LastModifierId}', " +
-                               $"C_NAME= '{Name}'  WHERE Id = '{Id}';"+
-                               $"UPDATE T_FILE SET C_BODY = '{Body}' WHERE Id = '{Id}';";
+                string query = $"UPDATE T_FILE SET C_BODY = '{Body}' " +
+                               $"WHERE Id = '{Id}';";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {

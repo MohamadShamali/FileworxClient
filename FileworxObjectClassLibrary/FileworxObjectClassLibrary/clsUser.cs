@@ -32,21 +32,17 @@ namespace FileworxObjectClassLibrary
 
         public override void Insert()
         {
-            if(Description != null)
-            Description = Description.Replace("'", "''");
+            base.Insert();
 
-            Name = Name.Replace("'", "''");
             Username = Username.Replace("'", "''");
             Password = Password.Replace("'", "''");
-            CreationDate = DateTime.Now;
             try
             {
                 using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
                 {
                     connection.Open();
-                    string query = $"INSERT INTO T_BUSINESSOBJECT (ID, C_DESCRIPTION, C_CREATIONDATE, C_CREATORID, C_NAME, C_CLASSID)" +
-                                   $"VALUES('{Id}', '{Description}', '{CreationDate}', '{CreatorId}', '{Name}', {(int)Class});"+
-                                   $"INSERT INTO T_USER(ID, C_USERNAME, C_PASSWORD, ISADMIN) VALUES('{Id}', '{Username}', '{Password}', '{IsAdmin}');";
+                    string query = $"INSERT INTO T_USER(ID, C_USERNAME, C_PASSWORD, ISADMIN) " +
+                                   $"VALUES('{Id}', '{Username}', '{Password}', '{IsAdmin}');";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.ExecuteNonQuery();
@@ -71,8 +67,8 @@ namespace FileworxObjectClassLibrary
 
         public override void Update()
         {
-            Description = Description.Replace("'", "''");
-            Name = Name.Replace("'", "''");
+            base.Update();
+
             Username = Username.Replace("'", "''");
             Password = Password.Replace("'", "''");
             try
@@ -81,10 +77,8 @@ namespace FileworxObjectClassLibrary
                 {
                     connection.Open();
 
-                    string query = $"UPDATE T_BUSINESSOBJECT SET C_DESCRIPTION = '{Description}', C_CREATIONDATE = '{CreationDate}'," +
-                                   $"C_MODIFICATIONDATE = '{ModificationDate}', C_CREATORID= '{CreatorId}', C_LASTMODIFIERID= '{LastModifierId}', " +
-                                   $"C_NAME= '{Name}'  WHERE Id = '{Id}';" +
-                                   $"UPDATE T_USER SET C_USERNAME= '{Username}', C_PASSWORD= '{Password}', ISADMIN= '{IsAdmin}' WHERE Id = '{Id}'";
+                    string query = $"UPDATE T_USER " +
+                                   $"SET C_USERNAME= '{Username}', C_PASSWORD= '{Password}', ISADMIN= '{IsAdmin}' WHERE Id = '{Id}'";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {

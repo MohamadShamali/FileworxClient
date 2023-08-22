@@ -34,7 +34,11 @@ namespace FileworxObjectClassLibrary
 
         public virtual void Insert()
         {
+            if (Description != null) 
+            Description = Description.Replace("'", "''");
+            Name = Name.Replace("'", "''");
             CreationDate = DateTime.Now;
+
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 connection.Open();
@@ -63,14 +67,18 @@ namespace FileworxObjectClassLibrary
 
         public virtual void Update()
         {
+            if (Description != null)
+            Description = Description.Replace("'", "''");
+            Name = Name.Replace("'", "''");
             ModificationDate = DateTime.Now;
+
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 connection.Open();
 
                 string query = $"UPDATE {tableName} SET C_DESCRIPTION = '{Description}', C_CREATIONDATE = '{CreationDate}'," +
-                    $"C_MODIFICATIONDATE = '{ModificationDate}', C_CREATORID= '{CreatorId}', C_LASTMODIFIERID= '{LastModifierId}', " +
-                    $"C_NAME= '{Name}'  WHERE Id = '{Id}'";
+                               $"C_MODIFICATIONDATE = '{ModificationDate}', C_CREATORID= '{CreatorId}', C_LASTMODIFIERID= '{LastModifierId}', " +
+                               $"C_NAME= '{Name}'  WHERE Id = '{Id}'";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
