@@ -31,6 +31,7 @@ namespace Fileworx_Client
             splitContainer1.FixedPanel = FixedPanel.Panel1;
             splitContainer2.FixedPanel = FixedPanel.Panel2;
             label7.Text = Global.LoggedInUser.Name;
+            this.WindowState = FormWindowState.Maximized;
 
             // Hide and save hidden Tab
             hiddenTabPage = tabControl1.TabPages[1];
