@@ -64,12 +64,6 @@
     <Compile Include="AddWindows\AddNewsWindow.Designer.cs">
       <DependentUpon>AddNewsWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="EditWindows\EditUserWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="EditWindows\EditUserWindow.Designer.cs">
-      <DependentUpon>EditUserWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="MainForms\FileWorx.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,9 +98,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddWindows\AddNewsWindow.resx">
       <DependentUpon>AddNewsWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EditWindows\EditUserWindow.resx">
-      <DependentUpon>EditUserWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForms\FileWorx.resx">
       <DependentUpon>FileWorx.cs</DependentUpon>

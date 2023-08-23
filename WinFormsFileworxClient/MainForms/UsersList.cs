@@ -19,9 +19,6 @@ namespace Fileworx_Client
         {
             InitializeComponent();
 
-            splitContainer1.FixedPanel = FixedPanel.Panel2;
-            splitContainer2.FixedPanel = FixedPanel.Panel1;
-
             label7.Text = Global.LoggedInUser.Name;
 
             addDBUsersToUsersList();
@@ -81,42 +78,29 @@ namespace Fileworx_Client
 
         private void usersListView_MouseClick(object sender, MouseEventArgs e)
         {
-            clsUser selectedUser = findSelectedUser();
-
-            if (e.Button == MouseButtons.Left)
-            {
-                userNameLabel.Text = selectedUser.Username;
-                nameLabel.Text = selectedUser.Name;
-                isAdminLabel.Text = selectedUser.IsAdmin ? "Yes" : "No";
-            }
+            clsUser selectedUser = findSelectedUser();            
 
             if (e.Button == MouseButtons.Right)
             {
-                if(selectedUser.Username != "admin")
+                if (selectedUser != null)
                 {
-                    DialogResult result = MessageBox.Show($"Are you sure you want to delete{selectedUser.Username}?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    contextMenuStrip1.Show(usersListView, new Point(e.X, e.Y));
 
-                    if (result == DialogResult.Yes)
-                    {
-                        clearAllLabels();
-                        selectedUser.Delete();
-                        addDBUsersToUsersList();
-                        addUsersListItemsToListView();
-                    }
-                }
-
-                else
-                {
-                    MessageBox.Show("You can not delete the admin user", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    if (selectedUser.Username == "admin") contextMenuStrip1.Items[1].Enabled = false;
+                    else contextMenuStrip1.Items[1].Enabled = true;
                 }
             }
+
+            userNameLabel.Text = selectedUser.Username;
+            nameLabel.Text = selectedUser.Name;
+            isAdminLabel.Text = selectedUser.IsAdmin ? "Yes" : "No";
         }
 
-        private void usersListView_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void editUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             clsUser selectedUser = findSelectedUser();
 
-            if((selectedUser.Username == "admin") && (Global.LoggedInUser.Username != "admin")) 
+            if ((selectedUser.Username == "admin") && (Global.LoggedInUser.Username != "admin"))
             {
                 MessageBox.Show("You don't have the access to edit the admin", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -132,7 +116,28 @@ namespace Fileworx_Client
                     addUsersListItemsToListView();
                 }
             }
+        }
 
+        private void removeUserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            clsUser selectedUser = findSelectedUser();
+            if (selectedUser.Username != "admin")
+            {
+                DialogResult result = MessageBox.Show($"Are you sure you want to delete{selectedUser.Username}?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    clearAllLabels();
+                    selectedUser.Delete();
+                    addDBUsersToUsersList();
+                    addUsersListItemsToListView();
+                }
+            }
+
+            else
+            {
+                MessageBox.Show("You can not delete the admin user", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
     }
 }
