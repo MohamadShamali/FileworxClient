@@ -28,8 +28,8 @@ namespace Fileworx_Client
             InitializeComponent();
 
             // UI 
-            splitContainer1.FixedPanel = FixedPanel.Panel1;
-            splitContainer2.FixedPanel = FixedPanel.Panel2;
+            int desiredHeight = (int)((this.Height * 2 / 3) - 90);
+            splitContainer1.SplitterDistance = desiredHeight;
             label7.Text = Global.LoggedInUser.Name;
             this.WindowState = FormWindowState.Maximized;
 
@@ -250,8 +250,8 @@ namespace Fileworx_Client
 
         private void FileWorx_Resize(object sender, EventArgs e)
         {
-            tabControl1.Height = this.Height / 3;
-            newsListView.Height = splitContainer2.Panel1.Height - 10;
+            int desiredHeight = (int)((this.Height * 2 / 3) - 90);
+            splitContainer1.SplitterDistance = desiredHeight;
         }
 
         private void addImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -345,5 +345,6 @@ namespace Fileworx_Client
             var logInThread = new Thread(() => Application.Run(logIn));
             logInThread.Start();
         }
+
     }
 }
