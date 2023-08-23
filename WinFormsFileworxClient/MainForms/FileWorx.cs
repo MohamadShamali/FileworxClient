@@ -29,7 +29,10 @@ namespace Fileworx_Client
 
             // UI 
             int desiredHeight = (int)((this.Height * 2 / 3) );
-            splitContainer1.SplitterDistance = desiredHeight;
+            if (splitContainer1.Panel1MinSize <= desiredHeight && desiredHeight <= splitContainer1.Height - splitContainer1.Panel2MinSize)
+            {
+                splitContainer1.SplitterDistance = desiredHeight;
+            }
             label7.Text = Global.LoggedInUser.Name;
             this.WindowState = FormWindowState.Maximized;
 
@@ -220,38 +223,22 @@ namespace Fileworx_Client
 
             if (e.Button == MouseButtons.Right)
             {
-                DialogResult result = MessageBox.Show($"Are you sure you want to delete {selectedFile.Name}?",
-                                                        "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
+                if(selectedFile != null)
                 {
-                  newsListView.SelectedItems.Clear();
-                  clearAllDisplayLabels();
-
-                  deleteFile(selectedFile);
-
-                  refreshFilesList();
-                  addFilesListItemsToListView();
-
-                  if (tabControl1.TabPages.Count == 2)
-                  {
-                    hiddenTabPage = tabControl1.TabPages[1];
-                    tabControl1.TabPages.RemoveAt(1);
-                  }
+                    contextMenuStrip1.Show(newsListView,new Point(e.X,e.Y));
                 }
             }
 
-            if (e.Button == MouseButtons.Left)
-            {
-                displaySelectedFile(selectedFile);
-            }
-
+          displaySelectedFile(selectedFile);  
         }
 
         private void FileWorx_Resize(object sender, EventArgs e)
         {
             int desiredHeight = (int)((this.Height * 2 / 3));
-            splitContainer1.SplitterDistance = desiredHeight;
+            if (splitContainer1.Panel1MinSize <= desiredHeight && desiredHeight <= splitContainer1.Height - splitContainer1.Panel2MinSize)
+            {
+                splitContainer1.SplitterDistance = desiredHeight;
+            }
         }
 
         private void addImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -302,36 +289,6 @@ namespace Fileworx_Client
             alphabeticallyToolStripMenuItem.Checked = true;
         }
 
-        private void newsListView_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            clsFile fileToEdit = findSelectedFile();
-            if (fileToEdit is clsPhoto)
-            {
-
-                clsPhoto photoToEdit = (clsPhoto) fileToEdit;
-                EditImageWindow editImage = new EditImageWindow(photoToEdit);
-
-                DialogResult result = editImage.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    refreshFilesList();
-                    addFilesListItemsToListView();
-                }
-            }
-            else
-            {
-                clsNews photoToEdit = (clsNews) fileToEdit;
-                EditNewsWindow editNews = new EditNewsWindow(photoToEdit);
-
-                DialogResult result = editNews.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    refreshFilesList();
-                    addFilesListItemsToListView();
-                }
-            }
-        }
-
         private void usersListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UsersList usersList = new UsersList();
@@ -346,5 +303,66 @@ namespace Fileworx_Client
             logInThread.Start();
         }
 
+        private void editFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            clsFile fileToEdit = findSelectedFile();
+            if (fileToEdit is clsPhoto)
+            {
+
+                clsPhoto photoToEdit = (clsPhoto)fileToEdit;
+                EditImageWindow editImage = new EditImageWindow(photoToEdit);
+
+                DialogResult result = editImage.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    refreshFilesList();
+                    sortFilesList(SortBy.RecentDate);
+                    addFilesListItemsToListView();
+                }
+            }
+            else
+            {
+                clsNews photoToEdit = (clsNews)fileToEdit;
+                EditNewsWindow editNews = new EditNewsWindow(photoToEdit);
+
+                DialogResult result = editNews.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    refreshFilesList();
+                    sortFilesList(SortBy.RecentDate);
+                    addFilesListItemsToListView();
+                }
+            }
+
+            // Select the updated Item
+            ListViewItem selectedItem = (from ListViewItem item in newsListView.Items
+                                         where ((item.Text == (fileToEdit.Name)) && (DateTime.Parse(item.SubItems[1].Text)) == fileToEdit.CreationDate)
+                                         select item).FirstOrDefault();
+            selectedItem.Selected = true;
+        }
+
+        private void removeFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            clsFile selectedFile = findSelectedFile();
+            DialogResult result = MessageBox.Show($"Are you sure you want to delete {selectedFile.Name}?",
+                                        "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                newsListView.SelectedItems.Clear();
+                clearAllDisplayLabels();
+
+                deleteFile(selectedFile);
+
+                refreshFilesList();
+                addFilesListItemsToListView();
+
+                if (tabControl1.TabPages.Count == 2)
+                {
+                    hiddenTabPage = tabControl1.TabPages[1];
+                    tabControl1.TabPages.RemoveAt(1);
+                }
+            }
+        }
     }
 }

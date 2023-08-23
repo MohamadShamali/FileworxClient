@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileWorx));
             this.previewImagePictureBox = new System.Windows.Forms.PictureBox();
             this.bodyRichTextBox = new System.Windows.Forms.RichTextBox();
@@ -59,10 +60,13 @@
             this.addImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.newsListView = new System.Windows.Forms.ListView();
             this.userToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.newsListView = new System.Windows.Forms.ListView();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.editFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.previewImagePictureBox)).BeginInit();
             this.tabPage1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -75,6 +79,7 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // previewImagePictureBox
@@ -254,7 +259,7 @@
             // signOutButton
             // 
             this.signOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.signOutButton.Location = new System.Drawing.Point(2234, 24);
+            this.signOutButton.Location = new System.Drawing.Point(3401, 24);
             this.signOutButton.Name = "signOutButton";
             this.signOutButton.Size = new System.Drawing.Size(75, 23);
             this.signOutButton.TabIndex = 84;
@@ -282,21 +287,21 @@
             // usersListToolStripMenuItem
             // 
             this.usersListToolStripMenuItem.Name = "usersListToolStripMenuItem";
-            this.usersListToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.usersListToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.usersListToolStripMenuItem.Text = "Users List";
             this.usersListToolStripMenuItem.Click += new System.EventHandler(this.usersListToolStripMenuItem_Click);
             // 
             // alphabeticallyToolStripMenuItem
             // 
             this.alphabeticallyToolStripMenuItem.Name = "alphabeticallyToolStripMenuItem";
-            this.alphabeticallyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.alphabeticallyToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.alphabeticallyToolStripMenuItem.Text = "Alphabetically";
             this.alphabeticallyToolStripMenuItem.Click += new System.EventHandler(this.alphabeticallyToolStripMenuItem_Click);
             // 
             // oldestToolStripMenuItem
             // 
             this.oldestToolStripMenuItem.Name = "oldestToolStripMenuItem";
-            this.oldestToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.oldestToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.oldestToolStripMenuItem.Text = "Oldest";
             this.oldestToolStripMenuItem.Click += new System.EventHandler(this.oldestToolStripMenuItem_Click);
             // 
@@ -305,7 +310,7 @@
             this.recentToolStripMenuItem.Checked = true;
             this.recentToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.Click += new System.EventHandler(this.recentToolStripMenuItem_Click);
             // 
@@ -316,7 +321,7 @@
             this.oldestToolStripMenuItem,
             this.alphabeticallyToolStripMenuItem});
             this.sortByToolStripMenuItem.Name = "sortByToolStripMenuItem";
-            this.sortByToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sortByToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.sortByToolStripMenuItem.Text = "Sort By..";
             // 
             // showToolStripMenuItem
@@ -331,14 +336,14 @@
             // addNewsToolStripMenuItem
             // 
             this.addNewsToolStripMenuItem.Name = "addNewsToolStripMenuItem";
-            this.addNewsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addNewsToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.addNewsToolStripMenuItem.Text = "Add News";
             this.addNewsToolStripMenuItem.Click += new System.EventHandler(this.addNewsToolStripMenuItem_Click);
             // 
             // addImageToolStripMenuItem
             // 
             this.addImageToolStripMenuItem.Name = "addImageToolStripMenuItem";
-            this.addImageToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addImageToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.addImageToolStripMenuItem.Text = "Add Image";
             this.addImageToolStripMenuItem.Click += new System.EventHandler(this.addImageToolStripMenuItem_Click);
             // 
@@ -362,6 +367,21 @@
             this.menuStrip1.Size = new System.Drawing.Size(1167, 24);
             this.menuStrip1.TabIndex = 83;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // userToolStripMenuItem
+            // 
+            this.userToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.signOutToolStripMenuItem});
+            this.userToolStripMenuItem.Name = "userToolStripMenuItem";
+            this.userToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
+            this.userToolStripMenuItem.Text = "User";
+            // 
+            // signOutToolStripMenuItem
+            // 
+            this.signOutToolStripMenuItem.Name = "signOutToolStripMenuItem";
+            this.signOutToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            this.signOutToolStripMenuItem.Text = "Sign Out";
+            this.signOutToolStripMenuItem.Click += new System.EventHandler(this.signOutToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -405,22 +425,28 @@
             this.newsListView.UseCompatibleStateImageBehavior = false;
             this.newsListView.View = System.Windows.Forms.View.Details;
             this.newsListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.newsListView_MouseClick);
-            this.newsListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.newsListView_MouseDoubleClick);
             // 
-            // userToolStripMenuItem
+            // contextMenuStrip1
             // 
-            this.userToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.signOutToolStripMenuItem});
-            this.userToolStripMenuItem.Name = "userToolStripMenuItem";
-            this.userToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
-            this.userToolStripMenuItem.Text = "User";
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editFileToolStripMenuItem,
+            this.removeFileToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(139, 48);
             // 
-            // signOutToolStripMenuItem
+            // editFileToolStripMenuItem
             // 
-            this.signOutToolStripMenuItem.Name = "signOutToolStripMenuItem";
-            this.signOutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.signOutToolStripMenuItem.Text = "Sign Out";
-            this.signOutToolStripMenuItem.Click += new System.EventHandler(this.signOutToolStripMenuItem_Click);
+            this.editFileToolStripMenuItem.Name = "editFileToolStripMenuItem";
+            this.editFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.editFileToolStripMenuItem.Text = "Edit File";
+            this.editFileToolStripMenuItem.Click += new System.EventHandler(this.editFileToolStripMenuItem_Click);
+            // 
+            // removeFileToolStripMenuItem
+            // 
+            this.removeFileToolStripMenuItem.Name = "removeFileToolStripMenuItem";
+            this.removeFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeFileToolStripMenuItem.Text = "Remove File";
+            this.removeFileToolStripMenuItem.Click += new System.EventHandler(this.removeFileToolStripMenuItem_Click);
             // 
             // FileWorx
             // 
@@ -450,6 +476,7 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -490,5 +517,8 @@
         private System.Windows.Forms.ListView newsListView;
         private System.Windows.Forms.ToolStripMenuItem userToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem signOutToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem editFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeFileToolStripMenuItem;
     }
 }

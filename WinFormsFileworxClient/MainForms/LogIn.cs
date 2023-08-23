@@ -43,6 +43,7 @@ namespace Fileworx_Client
                 // Open Fileworx form in a new thread
                 FileWorx fileworx = new FileWorx();
                 var fileworxThread = new Thread(()=> Application.Run(fileworx));
+                fileworxThread.SetApartmentState(ApartmentState.STA); // Set the thread to STA mode
                 fileworxThread.Start();
 
                 // close this form
