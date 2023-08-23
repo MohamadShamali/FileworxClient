@@ -64,18 +64,6 @@
     <Compile Include="AddWindows\AddNewsWindow.Designer.cs">
       <DependentUpon>AddNewsWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="EditWindows\EditImageWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="EditWindows\EditImageWindow.Designer.cs">
-      <DependentUpon>EditImageWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="EditWindows\EditNewsWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="EditWindows\EditNewsWindow.Designer.cs">
-      <DependentUpon>EditNewsWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="EditWindows\EditUserWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -116,12 +104,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddWindows\AddNewsWindow.resx">
       <DependentUpon>AddNewsWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EditWindows\EditImageWindow.resx">
-      <DependentUpon>EditImageWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EditWindows\EditNewsWindow.resx">
-      <DependentUpon>EditNewsWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EditWindows\EditUserWindow.resx">
       <DependentUpon>EditUserWindow.cs</DependentUpon>

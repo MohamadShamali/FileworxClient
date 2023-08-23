@@ -123,7 +123,7 @@ namespace Fileworx_Client
 
             else
             {
-                EditUserWindow editUser = new EditUserWindow(selectedUser);
+                AddUserWindow editUser = new AddUserWindow(selectedUser);
                 DialogResult result = editUser.ShowDialog();
 
                 if (result == DialogResult.OK)

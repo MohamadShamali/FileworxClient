@@ -310,7 +310,7 @@ namespace Fileworx_Client
             {
 
                 clsPhoto photoToEdit = (clsPhoto)fileToEdit;
-                EditImageWindow editImage = new EditImageWindow(photoToEdit);
+                AddImageWindow editImage = new AddImageWindow(photoToEdit);
 
                 DialogResult result = editImage.ShowDialog();
                 if (result == DialogResult.OK)
@@ -323,7 +323,7 @@ namespace Fileworx_Client
             else
             {
                 clsNews photoToEdit = (clsNews)fileToEdit;
-                EditNewsWindow editNews = new EditNewsWindow(photoToEdit);
+                AddNewsWindow editNews = new AddNewsWindow(photoToEdit);
 
                 DialogResult result = editNews.ShowDialog();
                 if (result == DialogResult.OK)
