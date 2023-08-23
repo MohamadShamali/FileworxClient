@@ -28,7 +28,7 @@ namespace Fileworx_Client
             InitializeComponent();
 
             // UI 
-            int desiredHeight = (int)((this.Height * 2 / 3) - 90);
+            int desiredHeight = (int)((this.Height * 2 / 3) );
             splitContainer1.SplitterDistance = desiredHeight;
             label7.Text = Global.LoggedInUser.Name;
             this.WindowState = FormWindowState.Maximized;
@@ -250,7 +250,7 @@ namespace Fileworx_Client
 
         private void FileWorx_Resize(object sender, EventArgs e)
         {
-            int desiredHeight = (int)((this.Height * 2 / 3) - 90);
+            int desiredHeight = (int)((this.Height * 2 / 3));
             splitContainer1.SplitterDistance = desiredHeight;
         }
 
