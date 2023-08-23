@@ -46,7 +46,7 @@
             this.saveAddNewsButton.Location = new System.Drawing.Point(313, 466);
             this.saveAddNewsButton.Name = "saveAddNewsButton";
             this.saveAddNewsButton.Size = new System.Drawing.Size(75, 23);
-            this.saveAddNewsButton.TabIndex = 33;
+            this.saveAddNewsButton.TabIndex = 8;
             this.saveAddNewsButton.Text = "Save";
             this.saveAddNewsButton.UseVisualStyleBackColor = true;
             this.saveAddNewsButton.Click += new System.EventHandler(this.saveAddNewsButton_Click);
@@ -57,7 +57,7 @@
             this.cancelAddNewsbutton.Location = new System.Drawing.Point(394, 466);
             this.cancelAddNewsbutton.Name = "cancelAddNewsbutton";
             this.cancelAddNewsbutton.Size = new System.Drawing.Size(75, 23);
-            this.cancelAddNewsbutton.TabIndex = 32;
+            this.cancelAddNewsbutton.TabIndex = 9;
             this.cancelAddNewsbutton.Text = "Cancel";
             this.cancelAddNewsbutton.UseVisualStyleBackColor = true;
             this.cancelAddNewsbutton.Click += new System.EventHandler(this.cancelAddNewsbutton_Click);
@@ -69,7 +69,7 @@
             this.label4.Location = new System.Drawing.Point(16, 102);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(39, 13);
-            this.label4.TabIndex = 31;
+            this.label4.TabIndex = 6;
             this.label4.Text = "Body:";
             // 
             // categoryComboBox
@@ -85,7 +85,7 @@
             this.categoryComboBox.Location = new System.Drawing.Point(97, 73);
             this.categoryComboBox.Name = "categoryComboBox";
             this.categoryComboBox.Size = new System.Drawing.Size(372, 21);
-            this.categoryComboBox.TabIndex = 30;
+            this.categoryComboBox.TabIndex = 5;
             // 
             // bodyTextBox
             // 
@@ -94,7 +94,7 @@
             this.bodyTextBox.Multiline = true;
             this.bodyTextBox.Name = "bodyTextBox";
             this.bodyTextBox.Size = new System.Drawing.Size(372, 347);
-            this.bodyTextBox.TabIndex = 29;
+            this.bodyTextBox.TabIndex = 7;
             // 
             // descriptionTextBox
             // 
@@ -102,7 +102,7 @@
             this.descriptionTextBox.MaxLength = 255;
             this.descriptionTextBox.Name = "descriptionTextBox";
             this.descriptionTextBox.Size = new System.Drawing.Size(372, 20);
-            this.descriptionTextBox.TabIndex = 28;
+            this.descriptionTextBox.TabIndex = 3;
             // 
             // tiltleTextBox
             // 
@@ -110,7 +110,7 @@
             this.tiltleTextBox.MaxLength = 255;
             this.tiltleTextBox.Name = "tiltleTextBox";
             this.tiltleTextBox.Size = new System.Drawing.Size(372, 20);
-            this.tiltleTextBox.TabIndex = 27;
+            this.tiltleTextBox.TabIndex = 1;
             // 
             // label3
             // 
@@ -119,7 +119,7 @@
             this.label3.Location = new System.Drawing.Point(16, 73);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(61, 13);
-            this.label3.TabIndex = 26;
+            this.label3.TabIndex = 4;
             this.label3.Text = "Category:";
             // 
             // label2
@@ -129,7 +129,7 @@
             this.label2.Location = new System.Drawing.Point(16, 49);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(75, 13);
-            this.label2.TabIndex = 25;
+            this.label2.TabIndex = 2;
             this.label2.Text = "Description:";
             // 
             // label1
@@ -139,10 +139,10 @@
             this.label1.Location = new System.Drawing.Point(16, 19);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(36, 13);
-            this.label1.TabIndex = 24;
+            this.label1.TabIndex = 0;
             this.label1.Text = "Title:";
             // 
-            // Add_News
+            // AddNewsWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -159,7 +159,7 @@
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "Add_News";
+            this.Name = "AddNewsWindow";
             this.Text = "Add News";
             this.ResumeLayout(false);
             this.PerformLayout();
