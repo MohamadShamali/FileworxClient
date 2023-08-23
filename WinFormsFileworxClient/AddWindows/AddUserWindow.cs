@@ -42,6 +42,16 @@ namespace Fileworx_Client
             this.Text = "Edit User";
         }
 
+        private bool validateData()
+        {
+            if ((!String.IsNullOrEmpty(signUpNameTextBox.Text)) && (!String.IsNullOrEmpty(signUpLoginNameTextBox.Text))
+                              && (!String.IsNullOrEmpty(signUpPasswordTextBox.Text)))
+            {
+                return true;
+            }
+            else { return false; }
+        }
+
         protected virtual void createButton_Click(object sender, EventArgs e)
         {
 
@@ -96,8 +106,7 @@ namespace Fileworx_Client
             // Edit Case
             else 
             {
-                if ((!String.IsNullOrEmpty(signUpNameTextBox.Text)) && (!String.IsNullOrEmpty(signUpLoginNameTextBox.Text))
-                              && (!String.IsNullOrEmpty(signUpPasswordTextBox.Text)))
+                if (validateData())
                 {
                     try
                     {

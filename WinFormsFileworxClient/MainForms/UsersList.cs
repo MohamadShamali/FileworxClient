@@ -121,22 +121,15 @@ namespace Fileworx_Client
         private void removeUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             clsUser selectedUser = findSelectedUser();
-            if (selectedUser.Username != "admin")
-            {
-                DialogResult result = MessageBox.Show($"Are you sure you want to delete{selectedUser.Username}?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                if (result == DialogResult.Yes)
-                {
-                    clearAllLabels();
-                    selectedUser.Delete();
-                    addDBUsersToUsersList();
-                    addUsersListItemsToListView();
-                }
-            }
+            DialogResult result = MessageBox.Show($"Are you sure you want to delete{selectedUser.Username}?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            else
+            if (result == DialogResult.Yes)
             {
-                MessageBox.Show("You can not delete the admin user", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                clearAllLabels();
+                selectedUser.Delete();
+                addDBUsersToUsersList();
+                addUsersListItemsToListView();
             }
         }
     }

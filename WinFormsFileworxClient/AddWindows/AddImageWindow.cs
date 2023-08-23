@@ -15,6 +15,7 @@ namespace Fileworx_Client
     public partial class AddImageWindow : Form
     {
         clsPhoto photoToEdit = new clsPhoto();
+        private event OnFormCloseHandler OnFormClose;
         public AddImageWindow()
         {
             InitializeComponent();
@@ -106,6 +107,13 @@ namespace Fileworx_Client
                     MessageBox.Show("Empty fields", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     DialogResult = DialogResult.None;
                 }
+
+                if (OnFormClose != null)
+                {
+                    OnFormClose();
+                }
+
+                this.Close();
             }
         }
 

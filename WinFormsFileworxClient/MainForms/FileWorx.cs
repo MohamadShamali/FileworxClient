@@ -126,7 +126,7 @@ namespace Fileworx_Client
         {
             clsFile selectedFile =
                 (from file in allFiles
-                 where ((file.Name == (newsListView.SelectedItems[0].Text)) && (file.CreationDate == DateTime.Parse(newsListView.SelectedItems[0].SubItems[1].Text)))
+                 where ((file.CreationDate == DateTime.Parse(newsListView.SelectedItems[0].SubItems[1].Text)))
                  select file).FirstOrDefault();
 
             return selectedFile;
@@ -253,16 +253,32 @@ namespace Fileworx_Client
             }
         }
 
+        private void onAddNewsFormClose()
+        {
+            refreshFilesList();
+            sortFilesList(SortBy.RecentDate);
+            addFilesListItemsToListView();
+        }
+
+        private void onEditNewsFormClose()
+        {
+            clsFile fileToEdit = findSelectedFile();
+            refreshFilesList();
+            sortFilesList(SortBy.RecentDate);
+            addFilesListItemsToListView();
+
+            // Select the updated Item
+            ListViewItem selectedItem = (from ListViewItem item in newsListView.Items
+                                         where ((item.Text == (fileToEdit.Name)) && (DateTime.Parse(item.SubItems[1].Text)) == fileToEdit.CreationDate)
+                                         select item).FirstOrDefault();
+            selectedItem.Selected = true;
+        }
+
         private void addNewsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddNewsWindow add_News = new AddNewsWindow();
-            DialogResult result = add_News.ShowDialog();
-
-            if (result == DialogResult.OK)
-            {
-                refreshFilesList();
-                addFilesListItemsToListView();
-            }
+            add_News.OnFormClose += onAddNewsFormClose;
+            add_News.Show();
         }
 
         private void recentToolStripMenuItem_Click(object sender, EventArgs e)
@@ -324,21 +340,9 @@ namespace Fileworx_Client
             {
                 clsNews photoToEdit = (clsNews)fileToEdit;
                 AddNewsWindow editNews = new AddNewsWindow(photoToEdit);
-
-                DialogResult result = editNews.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    refreshFilesList();
-                    sortFilesList(SortBy.RecentDate);
-                    addFilesListItemsToListView();
-                }
+                editNews.OnFormClose += onEditNewsFormClose;
+                editNews.Show();
             }
-
-            // Select the updated Item
-            ListViewItem selectedItem = (from ListViewItem item in newsListView.Items
-                                         where ((item.Text == (fileToEdit.Name)) && (DateTime.Parse(item.SubItems[1].Text)) == fileToEdit.CreationDate)
-                                         select item).FirstOrDefault();
-            selectedItem.Selected = true;
         }
 
         private void removeFileToolStripMenuItem_Click(object sender, EventArgs e)

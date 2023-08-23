@@ -11,9 +11,13 @@ using System.Windows.Forms;
 
 namespace Fileworx_Client
 {
+    public enum FormResult { Save , Cancel };
+
+    public delegate void OnFormCloseHandler();
     public partial class AddNewsWindow : Form
     {
         clsNews newsToEdit = new clsNews();
+        public event OnFormCloseHandler OnFormClose;
         public AddNewsWindow()
         {
             InitializeComponent();
@@ -52,7 +56,7 @@ namespace Fileworx_Client
         private void saveAddNewsButton_Click(object sender, EventArgs e)
         {
             // ADD Case
-            if (!String.IsNullOrEmpty(newsToEdit.Name))
+            if (String.IsNullOrEmpty(newsToEdit.Name))
             {
                 if (validateData())
                 {
@@ -98,6 +102,11 @@ namespace Fileworx_Client
                 }
             }
 
+            if (OnFormClose != null)
+            {
+                OnFormClose();
+            }
+            this.Close();
         }
     }
 }
