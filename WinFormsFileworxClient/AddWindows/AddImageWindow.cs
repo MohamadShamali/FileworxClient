@@ -37,12 +37,25 @@ namespace Fileworx_Client
             this.photoToEdit = photoToEdit;
         }
 
-        protected void cancelAddNewsbutton_Click(object sender, EventArgs e)
+        private bool validateData()
+        {
+            if (!String.IsNullOrEmpty(tiltleTextBox.Text) && (!String.IsNullOrEmpty(descriptionTextBox.Text)) && !String.IsNullOrEmpty(bodyTextBox.Text) && File.Exists(imagePathTextBox.Text))
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
+        }
+
+        private void cancelAddNewsbutton_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        protected virtual void saveAddNewsButton_Click(object sender, EventArgs e)
+        private void saveAddNewsButton_Click(object sender, EventArgs e)
         {
             // Add Case
             if (!String.IsNullOrEmpty(photoToEdit.Name))
@@ -75,8 +88,7 @@ namespace Fileworx_Client
             //Edit Case
             else
             {
-                if ((tiltleTextBox.Text != String.Empty) && (descriptionTextBox.Text != String.Empty)
-                    && (bodyTextBox.Text != String.Empty) && (File.Exists(imagePathTextBox.Text)))
+                if (validateData())
                 {
 
                     photoToEdit.Description = descriptionTextBox.Text;
@@ -97,7 +109,7 @@ namespace Fileworx_Client
             }
         }
 
-        protected void browseImageButton_Click(object sender, EventArgs e)
+        private void browseImageButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog browseImageDialog = new OpenFileDialog();
             browseImageDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";

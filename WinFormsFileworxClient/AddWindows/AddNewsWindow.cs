@@ -26,22 +26,35 @@ namespace Fileworx_Client
             tiltleTextBox.Text = newsToEdit.Name;
             descriptionTextBox.Text = newsToEdit.Description;
             bodyTextBox.Text = newsToEdit.Body;
-            categoryComboBox.SelectedText = newsToEdit.Category;
+            categoryComboBox.SelectedItem = newsToEdit.Category;
 
             this.Text = "Edit News";
             this.newsToEdit = newsToEdit;
         }
 
-        protected void cancelAddNewsbutton_Click(object sender, EventArgs e)
+        private bool validateData()
+        {
+            if (!String.IsNullOrEmpty(tiltleTextBox.Text) && (!String.IsNullOrEmpty(descriptionTextBox.Text)) && !String.IsNullOrEmpty(bodyTextBox.Text))
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
+        }
+
+        private void cancelAddNewsbutton_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-        protected virtual void saveAddNewsButton_Click(object sender, EventArgs e)
+        private void saveAddNewsButton_Click(object sender, EventArgs e)
         {
             // ADD Case
             if (!String.IsNullOrEmpty(newsToEdit.Name))
             {
-                if ((tiltleTextBox.Text != String.Empty) && (descriptionTextBox.Text != String.Empty) && (bodyTextBox.Text != String.Empty))
+                if (validateData())
                 {
                     clsNews newNews = new clsNews()
                     {
