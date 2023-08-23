@@ -189,8 +189,9 @@
             this.saveAddNewsButton.UseVisualStyleBackColor = true;
             this.saveAddNewsButton.Click += new System.EventHandler(this.saveAddNewsButton_Click);
             // 
-            // Add_Images
+            // AddImageWindow
             // 
+            this.AcceptButton = this.saveAddNewsButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(485, 506);
@@ -199,7 +200,7 @@
             this.Controls.Add(this.saveAddNewsButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "Add_Images";
+            this.Name = "AddImageWindow";
             this.Text = "Add Image";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);

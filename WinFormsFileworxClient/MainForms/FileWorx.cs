@@ -211,7 +211,7 @@ namespace Fileworx_Client
             alphabeticallyToolStripMenuItem.Checked = false;
         }
 
-        //------------------------ Event Handlers ------------------------
+        //------------------------ Event Handlers ------------------------//
         private void signOutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
