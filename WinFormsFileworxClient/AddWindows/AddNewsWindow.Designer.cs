@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.saveAddNewsButton = new System.Windows.Forms.Button();
-            this.cancelAddNewsbutton = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.categoryComboBox = new System.Windows.Forms.ComboBox();
             this.bodyTextBox = new System.Windows.Forms.TextBox();
@@ -38,29 +36,11 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.cancelAddNewsbutton = new System.Windows.Forms.Button();
+            this.saveAddNewsButton = new System.Windows.Forms.Button();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // saveAddNewsButton
-            // 
-            this.saveAddNewsButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.saveAddNewsButton.Location = new System.Drawing.Point(313, 466);
-            this.saveAddNewsButton.Name = "saveAddNewsButton";
-            this.saveAddNewsButton.Size = new System.Drawing.Size(75, 23);
-            this.saveAddNewsButton.TabIndex = 8;
-            this.saveAddNewsButton.Text = "Save";
-            this.saveAddNewsButton.UseVisualStyleBackColor = true;
-            this.saveAddNewsButton.Click += new System.EventHandler(this.saveAddNewsButton_Click);
-            // 
-            // cancelAddNewsbutton
-            // 
-            this.cancelAddNewsbutton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelAddNewsbutton.Location = new System.Drawing.Point(394, 466);
-            this.cancelAddNewsbutton.Name = "cancelAddNewsbutton";
-            this.cancelAddNewsbutton.Size = new System.Drawing.Size(75, 23);
-            this.cancelAddNewsbutton.TabIndex = 9;
-            this.cancelAddNewsbutton.Text = "Cancel";
-            this.cancelAddNewsbutton.UseVisualStyleBackColor = true;
-            this.cancelAddNewsbutton.Click += new System.EventHandler(this.cancelAddNewsbutton_Click);
             // 
             // label4
             // 
@@ -75,6 +55,8 @@
             // categoryComboBox
             // 
             this.categoryComboBox.AllowDrop = true;
+            this.categoryComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.categoryComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.categoryComboBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.categoryComboBox.Items.AddRange(new object[] {
@@ -89,6 +71,9 @@
             // 
             // bodyTextBox
             // 
+            this.bodyTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.bodyTextBox.Location = new System.Drawing.Point(97, 102);
             this.bodyTextBox.MaxLength = 10000;
             this.bodyTextBox.Multiline = true;
@@ -98,6 +83,8 @@
             // 
             // descriptionTextBox
             // 
+            this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.descriptionTextBox.Location = new System.Drawing.Point(97, 46);
             this.descriptionTextBox.MaxLength = 255;
             this.descriptionTextBox.Name = "descriptionTextBox";
@@ -106,6 +93,8 @@
             // 
             // tiltleTextBox
             // 
+            this.tiltleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tiltleTextBox.Location = new System.Drawing.Point(97, 17);
             this.tiltleTextBox.MaxLength = 255;
             this.tiltleTextBox.Name = "tiltleTextBox";
@@ -142,14 +131,47 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Title:";
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.cancelAddNewsbutton);
+            this.panel1.Controls.Add(this.saveAddNewsButton);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 473);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(485, 33);
+            this.panel1.TabIndex = 13;
+            // 
+            // cancelAddNewsbutton
+            // 
+            this.cancelAddNewsbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cancelAddNewsbutton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cancelAddNewsbutton.Location = new System.Drawing.Point(402, 5);
+            this.cancelAddNewsbutton.Name = "cancelAddNewsbutton";
+            this.cancelAddNewsbutton.Size = new System.Drawing.Size(75, 23);
+            this.cancelAddNewsbutton.TabIndex = 13;
+            this.cancelAddNewsbutton.Text = "Cancel";
+            this.cancelAddNewsbutton.UseVisualStyleBackColor = true;
+            this.cancelAddNewsbutton.Click += new System.EventHandler(this.cancelAddNewsbutton_Click);
+            // 
+            // saveAddNewsButton
+            // 
+            this.saveAddNewsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveAddNewsButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.saveAddNewsButton.Location = new System.Drawing.Point(321, 5);
+            this.saveAddNewsButton.Name = "saveAddNewsButton";
+            this.saveAddNewsButton.Size = new System.Drawing.Size(75, 23);
+            this.saveAddNewsButton.TabIndex = 14;
+            this.saveAddNewsButton.Text = "Save";
+            this.saveAddNewsButton.UseVisualStyleBackColor = true;
+            this.saveAddNewsButton.Click += new System.EventHandler(this.saveAddNewsButton_Click);
+            // 
             // AddNewsWindow
             // 
             this.AcceptButton = this.saveAddNewsButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(485, 506);
-            this.Controls.Add(this.saveAddNewsButton);
-            this.Controls.Add(this.cancelAddNewsbutton);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.categoryComboBox);
             this.Controls.Add(this.bodyTextBox);
@@ -158,19 +180,16 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(501, 545);
             this.Name = "AddNewsWindow";
             this.Text = "Add News";
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        public System.Windows.Forms.Button saveAddNewsButton;
-        public System.Windows.Forms.Button cancelAddNewsbutton;
         protected System.Windows.Forms.Label label4;
         protected System.Windows.Forms.ComboBox categoryComboBox;
         protected System.Windows.Forms.TextBox bodyTextBox;
@@ -179,5 +198,8 @@
         protected System.Windows.Forms.Label label3;
         protected System.Windows.Forms.Label label2;
         protected System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Panel panel1;
+        public System.Windows.Forms.Button cancelAddNewsbutton;
+        public System.Windows.Forms.Button saveAddNewsButton;
     }
 }

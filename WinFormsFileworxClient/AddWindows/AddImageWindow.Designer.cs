@@ -40,22 +40,25 @@
             this.previewBrowsedPictureBox = new System.Windows.Forms.PictureBox();
             this.browseImageButton = new System.Windows.Forms.Button();
             this.imagePathTextBox = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.cancelAddNewsbutton = new System.Windows.Forms.Button();
             this.saveAddNewsButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewBrowsedPictureBox)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(1, 12);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(482, 454);
+            this.tabControl1.Size = new System.Drawing.Size(485, 506);
             this.tabControl1.TabIndex = 11;
             // 
             // tabPage1
@@ -69,7 +72,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(474, 428);
+            this.tabPage1.Size = new System.Drawing.Size(477, 480);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "File Description";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -86,6 +89,9 @@
             // 
             // bodyTextBox
             // 
+            this.bodyTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.bodyTextBox.Location = new System.Drawing.Point(92, 69);
             this.bodyTextBox.MaxLength = 10000;
             this.bodyTextBox.Multiline = true;
@@ -95,6 +101,8 @@
             // 
             // descriptionTextBox
             // 
+            this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.descriptionTextBox.Location = new System.Drawing.Point(92, 40);
             this.descriptionTextBox.MaxLength = 255;
             this.descriptionTextBox.Name = "descriptionTextBox";
@@ -103,6 +111,8 @@
             // 
             // tiltleTextBox
             // 
+            this.tiltleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tiltleTextBox.Location = new System.Drawing.Point(92, 11);
             this.tiltleTextBox.MaxLength = 255;
             this.tiltleTextBox.Name = "tiltleTextBox";
@@ -137,13 +147,16 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(474, 428);
+            this.tabPage2.Size = new System.Drawing.Size(477, 480);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Image";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // previewBrowsedPictureBox
             // 
+            this.previewBrowsedPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.previewBrowsedPictureBox.Location = new System.Drawing.Point(17, 59);
             this.previewBrowsedPictureBox.Name = "previewBrowsedPictureBox";
             this.previewBrowsedPictureBox.Size = new System.Drawing.Size(442, 350);
@@ -152,6 +165,7 @@
             // 
             // browseImageButton
             // 
+            this.browseImageButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.browseImageButton.Location = new System.Drawing.Point(384, 24);
             this.browseImageButton.Name = "browseImageButton";
             this.browseImageButton.Size = new System.Drawing.Size(75, 23);
@@ -162,44 +176,53 @@
             // 
             // imagePathTextBox
             // 
+            this.imagePathTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.imagePathTextBox.Location = new System.Drawing.Point(17, 24);
             this.imagePathTextBox.Name = "imagePathTextBox";
             this.imagePathTextBox.Size = new System.Drawing.Size(362, 20);
             this.imagePathTextBox.TabIndex = 0;
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.cancelAddNewsbutton);
+            this.panel1.Controls.Add(this.saveAddNewsButton);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 473);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(485, 33);
+            this.panel1.TabIndex = 12;
+            // 
             // cancelAddNewsbutton
             // 
+            this.cancelAddNewsbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelAddNewsbutton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelAddNewsbutton.Location = new System.Drawing.Point(399, 472);
+            this.cancelAddNewsbutton.Location = new System.Drawing.Point(402, 5);
             this.cancelAddNewsbutton.Name = "cancelAddNewsbutton";
             this.cancelAddNewsbutton.Size = new System.Drawing.Size(75, 23);
-            this.cancelAddNewsbutton.TabIndex = 10;
+            this.cancelAddNewsbutton.TabIndex = 13;
             this.cancelAddNewsbutton.Text = "Cancel";
             this.cancelAddNewsbutton.UseVisualStyleBackColor = true;
-            this.cancelAddNewsbutton.Click += new System.EventHandler(this.cancelAddNewsbutton_Click);
             // 
             // saveAddNewsButton
             // 
+            this.saveAddNewsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.saveAddNewsButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.saveAddNewsButton.Location = new System.Drawing.Point(318, 472);
+            this.saveAddNewsButton.Location = new System.Drawing.Point(321, 5);
             this.saveAddNewsButton.Name = "saveAddNewsButton";
             this.saveAddNewsButton.Size = new System.Drawing.Size(75, 23);
-            this.saveAddNewsButton.TabIndex = 12;
+            this.saveAddNewsButton.TabIndex = 14;
             this.saveAddNewsButton.Text = "Save";
             this.saveAddNewsButton.UseVisualStyleBackColor = true;
-            this.saveAddNewsButton.Click += new System.EventHandler(this.saveAddNewsButton_Click);
             // 
             // AddImageWindow
             // 
-            this.AcceptButton = this.saveAddNewsButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(485, 506);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.cancelAddNewsbutton);
-            this.Controls.Add(this.saveAddNewsButton);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(501, 545);
             this.Name = "AddImageWindow";
             this.Text = "Add Image";
             this.tabControl1.ResumeLayout(false);
@@ -208,6 +231,7 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewBrowsedPictureBox)).EndInit();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -226,6 +250,7 @@
         public System.Windows.Forms.PictureBox previewBrowsedPictureBox;
         public System.Windows.Forms.Button browseImageButton;
         public System.Windows.Forms.TextBox imagePathTextBox;
+        private System.Windows.Forms.Panel panel1;
         public System.Windows.Forms.Button cancelAddNewsbutton;
         public System.Windows.Forms.Button saveAddNewsButton;
     }
