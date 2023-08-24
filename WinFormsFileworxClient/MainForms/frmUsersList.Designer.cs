@@ -1,6 +1,6 @@
 ﻿namespace Fileworx_Client
 {
-    partial class UsersList
+    partial class frmUsersList
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UsersList));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmUsersList));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.usersListView = new System.Windows.Forms.ListView();
             this.colutmnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));

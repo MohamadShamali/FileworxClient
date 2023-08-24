@@ -14,18 +14,18 @@ namespace Fileworx_Client
     public enum FormResult { Save , Cancel };
 
     public delegate void OnFormCloseHandler();
-    public partial class AddNewsWindow : Form
+    public partial class frmAddNewsWindow : Form
     {
         clsNews newsToEdit = new clsNews();
 
         public event OnFormCloseHandler OnFormClose;
-        public AddNewsWindow()
+        public frmAddNewsWindow()
         {
             InitializeComponent();
             categoryComboBox.SelectedIndex = 0;
         }
 
-        public AddNewsWindow(clsNews newsToEdit)
+        public frmAddNewsWindow(clsNews newsToEdit)
         {
             InitializeComponent();
             tiltleTextBox.Text = newsToEdit.Name;

@@ -1,6 +1,6 @@
 ﻿namespace Fileworx_Client
 {
-    partial class AddNewsWindow
+    partial class frmAddNewsWindow
     {
         /// <summary>
         /// Required designer variable.

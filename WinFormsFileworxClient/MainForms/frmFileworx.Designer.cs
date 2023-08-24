@@ -1,6 +1,6 @@
 ﻿namespace Fileworx_Client
 {
-    partial class FileWorx
+    partial class frmFileworx
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileWorx));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmFileworx));
             this.previewImagePictureBox = new System.Windows.Forms.PictureBox();
             this.bodyRichTextBox = new System.Windows.Forms.RichTextBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();

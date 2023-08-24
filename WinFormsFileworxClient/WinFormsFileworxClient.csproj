@@ -46,36 +46,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddWindows\AddUserWindow.cs">
+    <Compile Include="AddWindows\frmAddUserWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddWindows\AddUserWindow.Designer.cs">
-      <DependentUpon>AddUserWindow.cs</DependentUpon>
+    <Compile Include="AddWindows\frmAddUserWindow.Designer.cs">
+      <DependentUpon>frmAddUserWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddWindows\AddImageWindow.cs">
+    <Compile Include="AddWindows\frmAddImageWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddWindows\AddImageWindow.Designer.cs">
-      <DependentUpon>AddImageWindow.cs</DependentUpon>
+    <Compile Include="AddWindows\frmAddImageWindow.Designer.cs">
+      <DependentUpon>frmAddImageWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddWindows\AddNewsWindow.cs">
+    <Compile Include="AddWindows\frmAddNewsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddWindows\AddNewsWindow.Designer.cs">
-      <DependentUpon>AddNewsWindow.cs</DependentUpon>
+    <Compile Include="AddWindows\frmAddNewsWindow.Designer.cs">
+      <DependentUpon>frmAddNewsWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainForms\FileWorx.cs">
+    <Compile Include="MainForms\frmFileworx.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForms\FileWorx.Designer.cs">
-      <DependentUpon>FileWorx.cs</DependentUpon>
+    <Compile Include="MainForms\frmFileworx.Designer.cs">
+      <DependentUpon>frmFileworx.cs</DependentUpon>
     </Compile>
     <Compile Include="Global.cs" />
-    <Compile Include="MainForms\LogIn.cs">
+    <Compile Include="MainForms\frmLogIn.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForms\LogIn.Designer.cs">
-      <DependentUpon>LogIn.cs</DependentUpon>
+    <Compile Include="MainForms\frmLogIn.Designer.cs">
+      <DependentUpon>frmLogIn.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -84,26 +84,26 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
-    <Compile Include="MainForms\UsersList.cs">
+    <Compile Include="MainForms\frmUsersList.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForms\UsersList.Designer.cs">
-      <DependentUpon>UsersList.cs</DependentUpon>
+    <Compile Include="MainForms\frmUsersList.Designer.cs">
+      <DependentUpon>frmUsersList.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AddWindows\AddUserWindow.resx">
-      <DependentUpon>AddUserWindow.cs</DependentUpon>
+    <EmbeddedResource Include="AddWindows\frmAddUserWindow.resx">
+      <DependentUpon>frmAddUserWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AddWindows\AddImageWindow.resx">
-      <DependentUpon>AddImageWindow.cs</DependentUpon>
+    <EmbeddedResource Include="AddWindows\frmAddImageWindow.resx">
+      <DependentUpon>frmAddImageWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AddWindows\AddNewsWindow.resx">
-      <DependentUpon>AddNewsWindow.cs</DependentUpon>
+    <EmbeddedResource Include="AddWindows\frmAddNewsWindow.resx">
+      <DependentUpon>frmAddNewsWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForms\FileWorx.resx">
-      <DependentUpon>FileWorx.cs</DependentUpon>
+    <EmbeddedResource Include="MainForms\frmFileworx.resx">
+      <DependentUpon>frmFileworx.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForms\LogIn.resx">
-      <DependentUpon>LogIn.cs</DependentUpon>
+    <EmbeddedResource Include="MainForms\frmLogIn.resx">
+      <DependentUpon>frmLogIn.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -118,8 +118,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForms\UsersList.resx">
-      <DependentUpon>UsersList.cs</DependentUpon>
+    <EmbeddedResource Include="MainForms\frmUsersList.resx">
+      <DependentUpon>frmUsersList.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

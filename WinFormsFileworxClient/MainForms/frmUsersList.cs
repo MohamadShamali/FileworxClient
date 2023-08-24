@@ -12,10 +12,10 @@ using System.Windows.Forms;
 
 namespace Fileworx_Client
 {
-    public partial class UsersList : Form
+    public partial class frmUsersList : Form
     {
         private static List<clsUser> allUsers = new List<clsUser>();
-        public UsersList()
+        public frmUsersList()
         {
             InitializeComponent();
 
@@ -66,23 +66,8 @@ namespace Fileworx_Client
 
         private void onAddFormClose()
         {
-            int selectedIndex=0;
-            if (usersListView.SelectedItems.Count > 0)
-            {
-                selectedIndex = usersListView.SelectedItems[0].Index;
-            }
-
             refreshUsersList();
             addUsersListItemsToListView();
-
-            if(usersListView.SelectedItems.Count > 0)
-            {
-                usersListView.SelectedIndices.Clear();
-                usersListView.SelectedIndices.Add(selectedIndex);
-
-                clsUser selectedUser = findSelectedUser();
-                displaySelectedUser(selectedUser);
-            }
         }
 
         private void onEditFormClose()
@@ -105,7 +90,7 @@ namespace Fileworx_Client
 
         private void addUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddUserWindow addUserWindow = new AddUserWindow();
+            frmAddUserWindow addUserWindow = new frmAddUserWindow();
             addUserWindow.OnFormClose += onAddFormClose;
             addUserWindow.Show();
         }
@@ -139,7 +124,7 @@ namespace Fileworx_Client
 
             else
             {
-                AddUserWindow editUser = new AddUserWindow(selectedUser);
+                frmAddUserWindow editUser = new frmAddUserWindow(selectedUser);
                 editUser.OnFormClose += onEditFormClose;
                 editUser.Show();
             }

@@ -1,6 +1,6 @@
 ﻿namespace Fileworx_Client
 {
-    partial class AddUserWindow
+    partial class frmAddUserWindow
     {
         /// <summary>
         /// Required designer variable.

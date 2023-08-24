@@ -10,11 +10,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Fileworx_Client.FileWorx;
+using static Fileworx_Client.frmFileworx;
 
 namespace Fileworx_Client
 {
-    public partial class FileWorx : Form
+    public partial class frmFileworx : Form
     {
         // Properties
         private static List<clsFile> allFiles { get; set; }
@@ -23,7 +23,7 @@ namespace Fileworx_Client
         private TabPage hiddenTabPage;
         private enum SortBy { RecentDate, OldestDate, Alphabetically };
 
-        public FileWorx()
+        public frmFileworx()
         {
             InitializeComponent();
 
@@ -289,7 +289,7 @@ namespace Fileworx_Client
 
         private void addNewsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddNewsWindow add_News = new AddNewsWindow();
+            frmAddNewsWindow add_News = new frmAddNewsWindow();
             add_News.OnFormClose += onAddFormClose;
             add_News.Show();
         }
@@ -320,7 +320,7 @@ namespace Fileworx_Client
 
         private void usersListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UsersList usersList = new UsersList();
+            frmUsersList usersList = new frmUsersList();
             usersList.Show();
         }
 
@@ -346,7 +346,7 @@ namespace Fileworx_Client
             else
             {
                 clsNews photoToEdit = (clsNews)fileToEdit;
-                AddNewsWindow editNews = new AddNewsWindow(photoToEdit);
+                frmAddNewsWindow editNews = new frmAddNewsWindow(photoToEdit);
                 editNews.OnFormClose += onEditFormClose;
                 editNews.Show();
             }

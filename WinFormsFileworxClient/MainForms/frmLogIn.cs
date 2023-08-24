@@ -41,7 +41,7 @@ namespace Fileworx_Client
                 Global.LoggedInUser = tryingToLogIn;
 
                 // Open Fileworx form in a new thread
-                FileWorx fileworx = new FileWorx();
+                frmFileworx fileworx = new frmFileworx();
                 var fileworxThread = new Thread(()=> Application.Run(fileworx));
                 fileworxThread.SetApartmentState(ApartmentState.STA); // Set the thread to STA mode
                 fileworxThread.Start();

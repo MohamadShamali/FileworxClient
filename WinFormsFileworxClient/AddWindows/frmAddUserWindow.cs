@@ -13,17 +13,17 @@ using System.Windows.Forms;
 
 namespace Fileworx_Client
 {
-    public partial class AddUserWindow : Form
+    public partial class frmAddUserWindow : Form
     {
         clsUser userToEdit = new clsUser();
         public event OnFormCloseHandler OnFormClose;
-        public AddUserWindow()
+        public frmAddUserWindow()
         {
             InitializeComponent();
             isAdminComboBox.SelectedIndex = 0;
         }
 
-        public AddUserWindow(clsUser userToEdit)
+        public frmAddUserWindow(clsUser userToEdit)
         {
             InitializeComponent();
 
