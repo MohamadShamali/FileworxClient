@@ -21,7 +21,7 @@ namespace Fileworx_Client
         private static List<clsNews> allNews { get; set; }
         private static List<clsPhoto> allPhotos { get; set; }
         private TabPage hiddenTabPage;
-        public enum SortBy { RecentDate, OldestDate, Alphabetically };
+        private enum SortBy { RecentDate, OldestDate, Alphabetically };
 
         public FileWorx()
         {
@@ -113,7 +113,25 @@ namespace Fileworx_Client
                 allFiles = sortedList;
             }
         }
-        
+
+        private void autoSortFilesList()
+        {
+            if (recentToolStripMenuItem.Checked)
+            {
+                sortFilesList(SortBy.RecentDate);
+            }
+
+            if (oldestToolStripMenuItem.Checked)
+            {
+                sortFilesList(SortBy.OldestDate);
+            }
+
+            if (alphabeticallyToolStripMenuItem.Checked)
+            {
+                sortFilesList(SortBy.Alphabetically);
+            }
+        }
+
         private void clearAllDisplayLabels()
         {
             titleLabel.Text = String.Empty;
@@ -126,7 +144,7 @@ namespace Fileworx_Client
         {
             clsFile selectedFile =
                 (from file in allFiles
-                 where ((file.CreationDate == DateTime.Parse(newsListView.SelectedItems[0].SubItems[1].Text)))
+                 where ((file.Name == newsListView.SelectedItems[0].Text) && (file.CreationDate == DateTime.Parse(newsListView.SelectedItems[0].SubItems[1].Text)))
                  select file).FirstOrDefault();
 
             return selectedFile;
@@ -211,6 +229,27 @@ namespace Fileworx_Client
             alphabeticallyToolStripMenuItem.Checked = false;
         }
 
+        private void onAddFormClose()
+        {
+            refreshFilesList();
+            autoSortFilesList();
+            addFilesListItemsToListView();
+        }
+
+        private void onEditFormClose()
+        {
+            int selectedIndex = newsListView.SelectedItems[0].Index;
+            refreshFilesList();
+            autoSortFilesList();
+            addFilesListItemsToListView();
+
+            newsListView.SelectedIndices.Clear();
+            newsListView.SelectedIndices.Add(selectedIndex); 
+
+            clsFile selectedFile = findSelectedFile();
+            displaySelectedFile(selectedFile);
+        }
+
         //------------------------ Event Handlers ------------------------//
         private void signOutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -244,40 +283,14 @@ namespace Fileworx_Client
         private void addImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddImageWindow add_Image = new AddImageWindow();
-            DialogResult result = add_Image.ShowDialog();
-
-            if (result == DialogResult.OK)
-            {
-                refreshFilesList();
-                addFilesListItemsToListView();
-            }
-        }
-
-        private void onAddNewsFormClose()
-        {
-            refreshFilesList();
-            sortFilesList(SortBy.RecentDate);
-            addFilesListItemsToListView();
-        }
-
-        private void onEditNewsFormClose()
-        {
-            clsFile fileToEdit = findSelectedFile();
-            refreshFilesList();
-            sortFilesList(SortBy.RecentDate);
-            addFilesListItemsToListView();
-
-            // Select the updated Item
-            ListViewItem selectedItem = (from ListViewItem item in newsListView.Items
-                                         where ((item.Text == (fileToEdit.Name)) && (DateTime.Parse(item.SubItems[1].Text)) == fileToEdit.CreationDate)
-                                         select item).FirstOrDefault();
-            selectedItem.Selected = true;
+            add_Image.OnFormClose += onAddFormClose;
+            add_Image.Show();
         }
 
         private void addNewsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddNewsWindow add_News = new AddNewsWindow();
-            add_News.OnFormClose += onAddNewsFormClose;
+            add_News.OnFormClose += onAddFormClose;
             add_News.Show();
         }
 
@@ -327,20 +340,14 @@ namespace Fileworx_Client
 
                 clsPhoto photoToEdit = (clsPhoto)fileToEdit;
                 AddImageWindow editImage = new AddImageWindow(photoToEdit);
-
-                DialogResult result = editImage.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    refreshFilesList();
-                    sortFilesList(SortBy.RecentDate);
-                    addFilesListItemsToListView();
-                }
+                editImage.OnFormClose += onEditFormClose;
+                editImage.Show();
             }
             else
             {
                 clsNews photoToEdit = (clsNews)fileToEdit;
                 AddNewsWindow editNews = new AddNewsWindow(photoToEdit);
-                editNews.OnFormClose += onEditNewsFormClose;
+                editNews.OnFormClose += onEditFormClose;
                 editNews.Show();
             }
         }
@@ -359,6 +366,7 @@ namespace Fileworx_Client
                 deleteFile(selectedFile);
 
                 refreshFilesList();
+                autoSortFilesList();
                 addFilesListItemsToListView();
 
                 if (tabControl1.TabPages.Count == 2)

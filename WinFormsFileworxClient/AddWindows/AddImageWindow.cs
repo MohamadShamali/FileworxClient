@@ -15,7 +15,7 @@ namespace Fileworx_Client
     public partial class AddImageWindow : Form
     {
         clsPhoto photoToEdit = new clsPhoto();
-        private event OnFormCloseHandler OnFormClose;
+        public event OnFormCloseHandler OnFormClose;
         public AddImageWindow()
         {
             InitializeComponent();
@@ -59,7 +59,7 @@ namespace Fileworx_Client
         private void saveAddNewsButton_Click(object sender, EventArgs e)
         {
             // Add Case
-            if (!String.IsNullOrEmpty(photoToEdit.Name))
+            if (String.IsNullOrEmpty(photoToEdit.Name))
             {
                 if ((tiltleTextBox.Text != String.Empty) && (descriptionTextBox.Text != String.Empty)
                     && (bodyTextBox.Text != String.Empty) && (File.Exists(imagePathTextBox.Text)))
@@ -107,14 +107,14 @@ namespace Fileworx_Client
                     MessageBox.Show("Empty fields", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     DialogResult = DialogResult.None;
                 }
-
-                if (OnFormClose != null)
-                {
-                    OnFormClose();
-                }
-
-                this.Close();
             }
+
+            if (OnFormClose != null)
+            {
+                OnFormClose();
+            }
+
+            this.Close();
         }
 
         private void browseImageButton_Click(object sender, EventArgs e)

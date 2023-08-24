@@ -16,6 +16,7 @@ namespace Fileworx_Client
     public partial class AddUserWindow : Form
     {
         clsUser userToEdit = new clsUser();
+        public event OnFormCloseHandler OnFormClose;
         public AddUserWindow()
         {
             InitializeComponent();
@@ -52,11 +53,11 @@ namespace Fileworx_Client
             else { return false; }
         }
 
-        protected virtual void createButton_Click(object sender, EventArgs e)
+        private void createButton_Click(object sender, EventArgs e)
         {
 
             // Add Case
-            if(!String.IsNullOrEmpty(userToEdit.Name)) 
+            if(String.IsNullOrEmpty(userToEdit.Name)) 
             {
                 if ((!String.IsNullOrEmpty(signUpNameTextBox.Text)) && (!String.IsNullOrEmpty(signUpLoginNameTextBox.Text))
                    && (!String.IsNullOrEmpty(signUpPasswordTextBox.Text)))
@@ -144,8 +145,19 @@ namespace Fileworx_Client
                     DialogResult = DialogResult.None;
                 }
             }
+
+            if (OnFormClose != null)
+            {
+                OnFormClose();
+            }
+
+            this.Close();
         }
 
+        private void cancelButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     } 
 }
 

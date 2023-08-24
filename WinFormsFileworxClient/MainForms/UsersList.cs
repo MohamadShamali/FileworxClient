@@ -31,6 +31,11 @@ namespace Fileworx_Client
             allUsers = allUsersQuery.Run();
         }
 
+        private void refreshUsersList()
+        {
+            addDBUsersToUsersList();
+        }
+
         private void addUsersListItemsToListView()
         {
             usersListView.Items.Clear();
@@ -59,21 +64,50 @@ namespace Fileworx_Client
             return selectedUser;
         }
 
+        private void onAddFormClose()
+        {
+            int selectedIndex=0;
+            if (usersListView.SelectedItems.Count > 0)
+            {
+                selectedIndex = usersListView.SelectedItems[0].Index;
+            }
+
+            refreshUsersList();
+            addUsersListItemsToListView();
+
+            if(usersListView.SelectedItems.Count > 0)
+            {
+                usersListView.SelectedIndices.Clear();
+                usersListView.SelectedIndices.Add(selectedIndex);
+
+                clsUser selectedUser = findSelectedUser();
+                displaySelectedUser(selectedUser);
+            }
+        }
+
+        private void onEditFormClose()
+        {
+            int selectedIndex = usersListView.SelectedItems[0].Index;
+
+            refreshUsersList();
+            addUsersListItemsToListView();
+
+            usersListView.SelectedIndices.Clear();
+            usersListView.SelectedIndices.Add(selectedIndex);
+        }
+
+        private void displaySelectedUser(clsUser selectedUser)
+        {
+            userNameLabel.Text = selectedUser.Username;
+            nameLabel.Text = selectedUser.Name;
+            isAdminLabel.Text = selectedUser.IsAdmin ? "Yes" : "No";
+        }
+
         private void addUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddUserWindow addUserWindow = new AddUserWindow();
-            DialogResult result = addUserWindow.ShowDialog();
-
-            if (result == DialogResult.OK)
-            {
-                addDBUsersToUsersList();
-                addUsersListItemsToListView();
-            }
-
-            if (result == DialogResult.Cancel)
-            {
-                addUserWindow.Close();
-            }
+            addUserWindow.OnFormClose += onAddFormClose;
+            addUserWindow.Show();
         }
 
         private void usersListView_MouseClick(object sender, MouseEventArgs e)
@@ -91,9 +125,7 @@ namespace Fileworx_Client
                 }
             }
 
-            userNameLabel.Text = selectedUser.Username;
-            nameLabel.Text = selectedUser.Name;
-            isAdminLabel.Text = selectedUser.IsAdmin ? "Yes" : "No";
+            displaySelectedUser(selectedUser);
         }
 
         private void editUserToolStripMenuItem_Click(object sender, EventArgs e)
@@ -108,13 +140,8 @@ namespace Fileworx_Client
             else
             {
                 AddUserWindow editUser = new AddUserWindow(selectedUser);
-                DialogResult result = editUser.ShowDialog();
-
-                if (result == DialogResult.OK)
-                {
-                    addDBUsersToUsersList();
-                    addUsersListItemsToListView();
-                }
+                editUser.OnFormClose += onEditFormClose;
+                editUser.Show();
             }
         }
 

@@ -57,7 +57,7 @@
             this.signUpPasswordTextBox.Location = new System.Drawing.Point(155, 154);
             this.signUpPasswordTextBox.Name = "signUpPasswordTextBox";
             this.signUpPasswordTextBox.Size = new System.Drawing.Size(194, 20);
-            this.signUpPasswordTextBox.TabIndex = 22;
+            this.signUpPasswordTextBox.TabIndex = 5;
             this.signUpPasswordTextBox.UseSystemPasswordChar = true;
             // 
             // label3
@@ -67,7 +67,7 @@
             this.label3.Location = new System.Drawing.Point(62, 155);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(64, 15);
-            this.label3.TabIndex = 21;
+            this.label3.TabIndex = 4;
             this.label3.Text = "Password:";
             // 
             // createButton
@@ -76,7 +76,7 @@
             this.createButton.Location = new System.Drawing.Point(155, 223);
             this.createButton.Name = "createButton";
             this.createButton.Size = new System.Drawing.Size(114, 23);
-            this.createButton.TabIndex = 20;
+            this.createButton.TabIndex = 8;
             this.createButton.Text = "Create";
             this.createButton.UseVisualStyleBackColor = true;
             this.createButton.Click += new System.EventHandler(this.createButton_Click);
@@ -86,14 +86,14 @@
             this.signUpLoginNameTextBox.Location = new System.Drawing.Point(155, 118);
             this.signUpLoginNameTextBox.Name = "signUpLoginNameTextBox";
             this.signUpLoginNameTextBox.Size = new System.Drawing.Size(194, 20);
-            this.signUpLoginNameTextBox.TabIndex = 19;
+            this.signUpLoginNameTextBox.TabIndex = 3;
             // 
             // signUpNameTextBox
             // 
             this.signUpNameTextBox.Location = new System.Drawing.Point(155, 80);
             this.signUpNameTextBox.Name = "signUpNameTextBox";
             this.signUpNameTextBox.Size = new System.Drawing.Size(194, 20);
-            this.signUpNameTextBox.TabIndex = 18;
+            this.signUpNameTextBox.TabIndex = 1;
             // 
             // label1
             // 
@@ -102,7 +102,7 @@
             this.label1.Location = new System.Drawing.Point(62, 119);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(68, 15);
-            this.label1.TabIndex = 17;
+            this.label1.TabIndex = 2;
             this.label1.Text = "Username:";
             // 
             // label2
@@ -112,7 +112,7 @@
             this.label2.Location = new System.Drawing.Point(62, 80);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(44, 15);
-            this.label2.TabIndex = 16;
+            this.label2.TabIndex = 0;
             this.label2.Text = "Name:";
             // 
             // cancelButton
@@ -121,9 +121,10 @@
             this.cancelButton.Location = new System.Drawing.Point(275, 223);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(74, 23);
-            this.cancelButton.TabIndex = 24;
+            this.cancelButton.TabIndex = 9;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // label4
             // 
@@ -132,7 +133,7 @@
             this.label4.Location = new System.Drawing.Point(63, 193);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(54, 15);
-            this.label4.TabIndex = 47;
+            this.label4.TabIndex = 6;
             this.label4.Text = "Is Admin";
             // 
             // isAdminComboBox
@@ -146,7 +147,7 @@
             this.isAdminComboBox.Location = new System.Drawing.Point(155, 189);
             this.isAdminComboBox.Name = "isAdminComboBox";
             this.isAdminComboBox.Size = new System.Drawing.Size(194, 21);
-            this.isAdminComboBox.TabIndex = 46;
+            this.isAdminComboBox.TabIndex = 7;
             // 
             // AddUserWindow
             // 

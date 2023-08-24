@@ -203,6 +203,7 @@
             this.cancelAddNewsbutton.TabIndex = 13;
             this.cancelAddNewsbutton.Text = "Cancel";
             this.cancelAddNewsbutton.UseVisualStyleBackColor = true;
+            this.cancelAddNewsbutton.Click += new System.EventHandler(this.cancelAddNewsbutton_Click);
             // 
             // saveAddNewsButton
             // 
@@ -214,6 +215,7 @@
             this.saveAddNewsButton.TabIndex = 14;
             this.saveAddNewsButton.Text = "Save";
             this.saveAddNewsButton.UseVisualStyleBackColor = true;
+            this.saveAddNewsButton.Click += new System.EventHandler(this.saveAddNewsButton_Click);
             // 
             // AddImageWindow
             // 

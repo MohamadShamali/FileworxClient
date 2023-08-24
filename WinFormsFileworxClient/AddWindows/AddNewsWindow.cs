@@ -17,6 +17,7 @@ namespace Fileworx_Client
     public partial class AddNewsWindow : Form
     {
         clsNews newsToEdit = new clsNews();
+
         public event OnFormCloseHandler OnFormClose;
         public AddNewsWindow()
         {
@@ -84,7 +85,7 @@ namespace Fileworx_Client
             // Edit Case
             else
             {
-                if ((tiltleTextBox.Text != String.Empty) && (descriptionTextBox.Text != String.Empty) && (bodyTextBox.Text != String.Empty))
+                if (validateData())
                 {
                     newsToEdit.Description = descriptionTextBox.Text;
                     newsToEdit.LastModifierId = Global.LoggedInUser.Id;
@@ -106,6 +107,7 @@ namespace Fileworx_Client
             {
                 OnFormClose();
             }
+
             this.Close();
         }
     }
