@@ -24,9 +24,9 @@ namespace Fileworx_Client
         public AddImageWindow(clsPhoto photoToEdit)
         {
             InitializeComponent();
-            tiltleTextBox.Text = photoToEdit.Name;
-            descriptionTextBox.Text = photoToEdit.Description;
-            bodyTextBox.Text = photoToEdit.Body;
+            txtTitle.Text = photoToEdit.Name;
+            txtDescription.Text = photoToEdit.Description;
+            txtBody.Text = photoToEdit.Body;
             imagePathTextBox.Text = photoToEdit.Location;
 
             previewBrowsedPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
@@ -40,7 +40,7 @@ namespace Fileworx_Client
 
         private bool validateData()
         {
-            if (!String.IsNullOrEmpty(tiltleTextBox.Text) && (!String.IsNullOrEmpty(descriptionTextBox.Text)) && !String.IsNullOrEmpty(bodyTextBox.Text) && File.Exists(imagePathTextBox.Text))
+            if (!String.IsNullOrEmpty(txtTitle.Text) && (!String.IsNullOrEmpty(txtDescription.Text)) && !String.IsNullOrEmpty(txtBody.Text) && File.Exists(imagePathTextBox.Text))
             {
                 return true;
             }
@@ -61,18 +61,18 @@ namespace Fileworx_Client
             // Add Case
             if (String.IsNullOrEmpty(photoToEdit.Name))
             {
-                if ((tiltleTextBox.Text != String.Empty) && (descriptionTextBox.Text != String.Empty)
-                    && (bodyTextBox.Text != String.Empty) && (File.Exists(imagePathTextBox.Text)))
+                if ((txtTitle.Text != String.Empty) && (txtDescription.Text != String.Empty)
+                    && (txtBody.Text != String.Empty) && (File.Exists(imagePathTextBox.Text)))
                 {
 
                     clsPhoto newPhoto = new clsPhoto()
                     {
                         Id = Guid.NewGuid(),
-                        Description = descriptionTextBox.Text,
+                        Description = txtDescription.Text,
                         CreatorId = Global.LoggedInUser.Id,
                         CreatorName = Global.LoggedInUser.Name,
-                        Name = tiltleTextBox.Text,
-                        Body = bodyTextBox.Text,
+                        Name = txtTitle.Text,
+                        Body = txtBody.Text,
                         Location = imagePathTextBox.Text,
                         Class = clsBusinessObject.Type.Photo
                     };
@@ -92,11 +92,11 @@ namespace Fileworx_Client
                 if (validateData())
                 {
 
-                    photoToEdit.Description = descriptionTextBox.Text;
+                    photoToEdit.Description = txtDescription.Text;
                     photoToEdit.LastModifierId = Global.LoggedInUser.Id;
                     photoToEdit.LastModifierName = Global.LoggedInUser.Name;
-                    photoToEdit.Name = tiltleTextBox.Text;
-                    photoToEdit.Body = bodyTextBox.Text;
+                    photoToEdit.Name = txtTitle.Text;
+                    photoToEdit.Body = txtBody.Text;
                     photoToEdit.Location = imagePathTextBox.Text;
 
 

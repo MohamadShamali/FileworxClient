@@ -19,7 +19,7 @@ namespace Fileworx_Client
         {
             InitializeComponent();
 
-            label7.Text = Global.LoggedInUser.Name;
+            lblName.Text = Global.LoggedInUser.Name;
 
             addDBUsersToUsersList();
             addUsersListItemsToListView();
@@ -38,28 +38,28 @@ namespace Fileworx_Client
 
         private void addUsersListItemsToListView()
         {
-            usersListView.Items.Clear();
+            lvwUsers.Items.Clear();
             foreach (clsUser user in allUsers)
             {
                 var listViewUser = new ListViewItem($"{user.Username}");
                 listViewUser.SubItems.Add($"{user.Name}");
                 listViewUser.SubItems.Add(user.IsAdmin? "Yes":"No");
-                usersListView.Items.Add(listViewUser);
+                lvwUsers.Items.Add(listViewUser);
             }
         }
 
         private void clearAllLabels()
         {
-            userNameLabel.Text = String.Empty;
-            nameLabel.Text = String.Empty;
-            isAdminLabel.Text = String.Empty;
+            lblUsername.Text = String.Empty;
+            lblNamee.Text = String.Empty;
+            lblIsAdmin.Text = String.Empty;
         }
 
         private clsUser findSelectedUser()
         {
             clsUser selectedUser =
                 (from user in allUsers
-                 where user.Username == (usersListView.SelectedItems[0].Text)
+                 where user.Username == (lvwUsers.SelectedItems[0].Text)
                  select user).FirstOrDefault();
             return selectedUser;
         }
@@ -72,20 +72,20 @@ namespace Fileworx_Client
 
         private void onEditFormClose()
         {
-            int selectedIndex = usersListView.SelectedItems[0].Index;
+            int selectedIndex = lvwUsers.SelectedItems[0].Index;
 
             refreshUsersList();
             addUsersListItemsToListView();
 
-            usersListView.SelectedIndices.Clear();
-            usersListView.SelectedIndices.Add(selectedIndex);
+            lvwUsers.SelectedIndices.Clear();
+            lvwUsers.SelectedIndices.Add(selectedIndex);
         }
 
         private void displaySelectedUser(clsUser selectedUser)
         {
-            userNameLabel.Text = selectedUser.Username;
-            nameLabel.Text = selectedUser.Name;
-            isAdminLabel.Text = selectedUser.IsAdmin ? "Yes" : "No";
+            lblUsername.Text = selectedUser.Username;
+            lblNamee.Text = selectedUser.Name;
+            lblIsAdmin.Text = selectedUser.IsAdmin ? "Yes" : "No";
         }
 
         private void addUserToolStripMenuItem_Click(object sender, EventArgs e)
@@ -103,10 +103,10 @@ namespace Fileworx_Client
             {
                 if (selectedUser != null)
                 {
-                    contextMenuStrip1.Show(usersListView, new Point(e.X, e.Y));
+                    cmsUsersList.Show(lvwUsers, new Point(e.X, e.Y));
 
-                    if (selectedUser.Username == "admin") contextMenuStrip1.Items[1].Enabled = false;
-                    else contextMenuStrip1.Items[1].Enabled = true;
+                    if (selectedUser.Username == "admin") cmsUsersList.Items[1].Enabled = false;
+                    else cmsUsersList.Items[1].Enabled = true;
                 }
             }
 

@@ -33,16 +33,16 @@ namespace Fileworx_Client
             {
                 splitContainer1.SplitterDistance = desiredHeight;
             }
-            label7.Text = Global.LoggedInUser.Name;
+            lblName.Text = Global.LoggedInUser.Name;
             this.WindowState = FormWindowState.Maximized;
 
             // Hide and save hidden Tab
-            hiddenTabPage = tabControl1.TabPages[1];
-            tabControl1.TabPages.RemoveAt(1);
+            hiddenTabPage = tclPreview.TabPages[1];
+            tclPreview.TabPages.RemoveAt(1);
 
             //Admin access
-            if (Global.LoggedInUser.IsAdmin) usersListToolStripMenuItem.Enabled = true;
-            else usersListToolStripMenuItem.Enabled = false;
+            if (Global.LoggedInUser.IsAdmin) msiUsersList.Enabled = true;
+            else msiUsersList.Enabled = false;
 
             // Add files to listView
             addDBFilesToFilesList();
@@ -66,13 +66,13 @@ namespace Fileworx_Client
 
         private void addFilesListItemsToListView()
         {
-            newsListView.Items.Clear();
+            lvwFiles.Items.Clear();
             foreach (clsFile file in allFiles)
             {
                 var listViewNews = new ListViewItem($"{file.Name}");
                 listViewNews.SubItems.Add($"{file.CreationDate}");
                 listViewNews.SubItems.Add($"{file.Description}");
-                newsListView.Items.Add(listViewNews);
+                lvwFiles.Items.Add(listViewNews);
             }
         }
 
@@ -116,17 +116,17 @@ namespace Fileworx_Client
 
         private void autoSortFilesList()
         {
-            if (recentToolStripMenuItem.Checked)
+            if (msiSortByRecent.Checked)
             {
                 sortFilesList(SortBy.RecentDate);
             }
 
-            if (oldestToolStripMenuItem.Checked)
+            if (msiSortByOldest.Checked)
             {
                 sortFilesList(SortBy.OldestDate);
             }
 
-            if (alphabeticallyToolStripMenuItem.Checked)
+            if (msiSortByAlphabetically.Checked)
             {
                 sortFilesList(SortBy.Alphabetically);
             }
@@ -134,17 +134,17 @@ namespace Fileworx_Client
 
         private void clearAllDisplayLabels()
         {
-            titleLabel.Text = String.Empty;
-            dateLabel.Text = String.Empty;
-            categoryLabel.Text = String.Empty;
-            bodyRichTextBox.Text = String.Empty;
+            lblTitle.Text = String.Empty;
+            lblDate.Text = String.Empty;
+            lblCategory.Text = String.Empty;
+            txtBody.Text = String.Empty;
         }
 
         private clsFile findSelectedFile()
         {
             clsFile selectedFile =
                 (from file in allFiles
-                 where ((file.Name == newsListView.SelectedItems[0].Text) && (file.CreationDate == DateTime.Parse(newsListView.SelectedItems[0].SubItems[1].Text)))
+                 where ((file.Name == lvwFiles.SelectedItems[0].Text) && (file.CreationDate == DateTime.Parse(lvwFiles.SelectedItems[0].SubItems[1].Text)))
                  select file).FirstOrDefault();
 
             return selectedFile;
@@ -152,28 +152,28 @@ namespace Fileworx_Client
 
         private void displaySelectedFile (clsFile selectedFile)
         {
-            titleLabel.Text = selectedFile.Name;
-            dateLabel.Text = selectedFile.CreationDate.ToString();
-            bodyRichTextBox.Text = selectedFile.Body;
-            previewImagePictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+            lblTitle.Text = selectedFile.Name;
+            lblDate.Text = selectedFile.CreationDate.ToString();
+            txtBody.Text = selectedFile.Body;
+            picImagePreview.SizeMode = PictureBoxSizeMode.Zoom;
 
             if (selectedFile is clsPhoto)
             {
                 clsPhoto selectedPhoto = (clsPhoto)selectedFile;
 
-                label3.Text = String.Empty;
-                categoryLabel.Text = String.Empty;
+                lblCategoryTitle.Text = String.Empty;
+                lblCategory.Text = String.Empty;
 
                 if (File.Exists(selectedPhoto.Location))
                 {
-                    if (tabControl1.TabPages.Count == 1)
+                    if (tclPreview.TabPages.Count == 1)
                     {
-                        tabControl1.TabPages.Add(hiddenTabPage);
+                        tclPreview.TabPages.Add(hiddenTabPage);
                     }
 
                     using (var img = new Bitmap(selectedPhoto.Location))
                     {
-                        previewImagePictureBox.Image = new Bitmap(img);
+                        picImagePreview.Image = new Bitmap(img);
                     }
                 }
             }
@@ -182,15 +182,15 @@ namespace Fileworx_Client
             {
                 clsNews selectedNews = (clsNews)selectedFile;
 
-                label3.Text = "Category:";
-                categoryLabel.Text = selectedNews.Category;
+                lblCategoryTitle.Text = "Category:";
+                lblCategory.Text = selectedNews.Category;
 
                 try
                 {
-                    if (tabControl1.TabPages.Count == 2)
+                    if (tclPreview.TabPages.Count == 2)
                     {
-                        hiddenTabPage = tabControl1.TabPages[1];
-                        tabControl1.TabPages.RemoveAt(1);
+                        hiddenTabPage = tclPreview.TabPages[1];
+                        tclPreview.TabPages.RemoveAt(1);
                     }
                 }
                 catch 
@@ -206,10 +206,10 @@ namespace Fileworx_Client
             {
                 clsPhoto selectedPhoto = (clsPhoto) selectedFile;
 
-                if (previewImagePictureBox.Image != null)
+                if (picImagePreview.Image != null)
                 {
-                    previewImagePictureBox.Image.Dispose();
-                    previewImagePictureBox.Image = null;
+                    picImagePreview.Image.Dispose();
+                    picImagePreview.Image = null;
                 }
 
                 selectedPhoto.Delete();
@@ -224,9 +224,9 @@ namespace Fileworx_Client
 
         private void uncheckAllSortByItems()
         {
-            recentToolStripMenuItem.Checked = false;
-            oldestToolStripMenuItem.Checked = false;
-            alphabeticallyToolStripMenuItem.Checked = false;
+            msiSortByRecent.Checked = false;
+            msiSortByOldest.Checked = false;
+            msiSortByAlphabetically.Checked = false;
         }
 
         private void onAddFormClose()
@@ -238,13 +238,13 @@ namespace Fileworx_Client
 
         private void onEditFormClose()
         {
-            int selectedIndex = newsListView.SelectedItems[0].Index;
+            int selectedIndex = lvwFiles.SelectedItems[0].Index;
             refreshFilesList();
             autoSortFilesList();
             addFilesListItemsToListView();
 
-            newsListView.SelectedIndices.Clear();
-            newsListView.SelectedIndices.Add(selectedIndex); 
+            lvwFiles.SelectedIndices.Clear();
+            lvwFiles.SelectedIndices.Add(selectedIndex); 
 
             clsFile selectedFile = findSelectedFile();
             displaySelectedFile(selectedFile);
@@ -264,7 +264,7 @@ namespace Fileworx_Client
             {
                 if(selectedFile != null)
                 {
-                    contextMenuStrip1.Show(newsListView,new Point(e.X,e.Y));
+                    cmsFiles.Show(lvwFiles,new Point(e.X,e.Y));
                 }
             }
 
@@ -299,7 +299,7 @@ namespace Fileworx_Client
             sortFilesList(SortBy.RecentDate);
             addFilesListItemsToListView();
             uncheckAllSortByItems();
-            recentToolStripMenuItem.Checked = true;
+            msiSortByRecent.Checked = true;
         }
 
         private void oldestToolStripMenuItem_Click(object sender, EventArgs e)
@@ -307,7 +307,7 @@ namespace Fileworx_Client
             sortFilesList(SortBy.OldestDate);
             addFilesListItemsToListView();
             uncheckAllSortByItems();
-            oldestToolStripMenuItem.Checked = true;
+            msiSortByOldest.Checked = true;
         }
 
         private void alphabeticallyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -315,7 +315,7 @@ namespace Fileworx_Client
             sortFilesList(SortBy.Alphabetically);
             addFilesListItemsToListView();
             uncheckAllSortByItems();
-            alphabeticallyToolStripMenuItem.Checked = true;
+            msiSortByAlphabetically.Checked = true;
         }
 
         private void usersListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -360,7 +360,7 @@ namespace Fileworx_Client
 
             if (result == DialogResult.Yes)
             {
-                newsListView.SelectedItems.Clear();
+                lvwFiles.SelectedItems.Clear();
                 clearAllDisplayLabels();
 
                 deleteFile(selectedFile);
@@ -369,10 +369,10 @@ namespace Fileworx_Client
                 autoSortFilesList();
                 addFilesListItemsToListView();
 
-                if (tabControl1.TabPages.Count == 2)
+                if (tclPreview.TabPages.Count == 2)
                 {
-                    hiddenTabPage = tabControl1.TabPages[1];
-                    tabControl1.TabPages.RemoveAt(1);
+                    hiddenTabPage = tclPreview.TabPages[1];
+                    tclPreview.TabPages.RemoveAt(1);
                 }
             }
         }

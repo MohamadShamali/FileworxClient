@@ -28,91 +28,91 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.logInButton = new System.Windows.Forms.Button();
-            this.logInPasswordTextBox = new System.Windows.Forms.TextBox();
-            this.logInLogInNameTextBox = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.Title = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.picLogo = new System.Windows.Forms.PictureBox();
+            this.btnLogIn = new System.Windows.Forms.Button();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.txtUsername = new System.Windows.Forms.TextBox();
+            this.lblPassword = new System.Windows.Forms.Label();
+            this.lblUsername = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.SuspendLayout();
             // 
-            // pictureBox1
+            // picLogo
             // 
-            this.pictureBox1.Image = global::Fileworx_Client.Resource1.Logo;
-            this.pictureBox1.Location = new System.Drawing.Point(136, 41);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(198, 41);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 14;
-            this.pictureBox1.TabStop = false;
+            this.picLogo.Image = global::Fileworx_Client.Resource1.Logo;
+            this.picLogo.Location = new System.Drawing.Point(136, 41);
+            this.picLogo.Name = "picLogo";
+            this.picLogo.Size = new System.Drawing.Size(198, 41);
+            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picLogo.TabIndex = 14;
+            this.picLogo.TabStop = false;
             // 
-            // logInButton
+            // btnLogIn
             // 
-            this.logInButton.Location = new System.Drawing.Point(136, 173);
-            this.logInButton.Name = "logInButton";
-            this.logInButton.Size = new System.Drawing.Size(194, 23);
-            this.logInButton.TabIndex = 13;
-            this.logInButton.Text = "Login";
-            this.logInButton.UseVisualStyleBackColor = true;
-            this.logInButton.Click += new System.EventHandler(this.logInButton_Click);
+            this.btnLogIn.Location = new System.Drawing.Point(136, 173);
+            this.btnLogIn.Name = "btnLogIn";
+            this.btnLogIn.Size = new System.Drawing.Size(194, 23);
+            this.btnLogIn.TabIndex = 13;
+            this.btnLogIn.Text = "Login";
+            this.btnLogIn.UseVisualStyleBackColor = true;
+            this.btnLogIn.Click += new System.EventHandler(this.logInButton_Click);
             // 
-            // logInPasswordTextBox
+            // txtPassword
             // 
-            this.logInPasswordTextBox.Location = new System.Drawing.Point(136, 136);
-            this.logInPasswordTextBox.MaxLength = 255;
-            this.logInPasswordTextBox.Name = "logInPasswordTextBox";
-            this.logInPasswordTextBox.Size = new System.Drawing.Size(194, 20);
-            this.logInPasswordTextBox.TabIndex = 12;
-            this.logInPasswordTextBox.UseSystemPasswordChar = true;
+            this.txtPassword.Location = new System.Drawing.Point(136, 136);
+            this.txtPassword.MaxLength = 255;
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(194, 20);
+            this.txtPassword.TabIndex = 12;
+            this.txtPassword.UseSystemPasswordChar = true;
             // 
-            // logInLogInNameTextBox
+            // txtUsername
             // 
-            this.logInLogInNameTextBox.Location = new System.Drawing.Point(136, 98);
-            this.logInLogInNameTextBox.MaxLength = 255;
-            this.logInLogInNameTextBox.Name = "logInLogInNameTextBox";
-            this.logInLogInNameTextBox.Size = new System.Drawing.Size(194, 20);
-            this.logInLogInNameTextBox.TabIndex = 11;
+            this.txtUsername.Location = new System.Drawing.Point(136, 98);
+            this.txtUsername.MaxLength = 255;
+            this.txtUsername.Name = "txtUsername";
+            this.txtUsername.Size = new System.Drawing.Size(194, 20);
+            this.txtUsername.TabIndex = 11;
             // 
-            // label6
+            // lblPassword
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(53, 138);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(64, 15);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "Password:";
+            this.lblPassword.AutoSize = true;
+            this.lblPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPassword.Location = new System.Drawing.Point(53, 138);
+            this.lblPassword.Name = "lblPassword";
+            this.lblPassword.Size = new System.Drawing.Size(64, 15);
+            this.lblPassword.TabIndex = 10;
+            this.lblPassword.Text = "Password:";
             // 
-            // Title
+            // lblUsername
             // 
-            this.Title.AutoSize = true;
-            this.Title.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Title.Location = new System.Drawing.Point(53, 99);
-            this.Title.Name = "Title";
-            this.Title.Size = new System.Drawing.Size(68, 15);
-            this.Title.TabIndex = 9;
-            this.Title.Text = "Username:";
+            this.lblUsername.AutoSize = true;
+            this.lblUsername.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblUsername.Location = new System.Drawing.Point(53, 99);
+            this.lblUsername.Name = "lblUsername";
+            this.lblUsername.Size = new System.Drawing.Size(68, 15);
+            this.lblUsername.TabIndex = 9;
+            this.lblUsername.Text = "Username:";
             // 
             // LogIn
             // 
-            this.AcceptButton = this.logInButton;
+            this.AcceptButton = this.btnLogIn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(411, 247);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.logInButton);
-            this.Controls.Add(this.logInPasswordTextBox);
-            this.Controls.Add(this.logInLogInNameTextBox);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.Title);
+            this.Controls.Add(this.picLogo);
+            this.Controls.Add(this.btnLogIn);
+            this.Controls.Add(this.txtPassword);
+            this.Controls.Add(this.txtUsername);
+            this.Controls.Add(this.lblPassword);
+            this.Controls.Add(this.lblUsername);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(427, 286);
             this.MinimumSize = new System.Drawing.Size(427, 286);
             this.Name = "LogIn";
             this.Text = "Log In";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -120,12 +120,12 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Button logInButton;
-        private System.Windows.Forms.TextBox logInPasswordTextBox;
-        private System.Windows.Forms.TextBox logInLogInNameTextBox;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label Title;
+        private System.Windows.Forms.PictureBox picLogo;
+        private System.Windows.Forms.Button btnLogIn;
+        private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.TextBox txtUsername;
+        private System.Windows.Forms.Label lblPassword;
+        private System.Windows.Forms.Label lblUsername;
     }
 }
 

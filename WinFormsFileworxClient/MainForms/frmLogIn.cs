@@ -25,13 +25,13 @@ namespace Fileworx_Client
 
         private void logInClearTextboxes()
         {
-            logInLogInNameTextBox.Text = String.Empty;
-            logInPasswordTextBox.Text = String.Empty;
+            txtUsername.Text = String.Empty;
+            txtPassword.Text = String.Empty;
         }
 
         private void logInButton_Click(object sender, EventArgs e)
         {
-            clsUser tryingToLogIn= new clsUser() { Username = logInLogInNameTextBox.Text, Password = logInPasswordTextBox.Text };
+            clsUser tryingToLogIn= new clsUser() { Username = txtUsername.Text, Password = txtPassword.Text };
             LogInValidationResult validateResult = tryingToLogIn.ValidateLogin();
 
             if(validateResult == LogInValidationResult.Valid)
@@ -52,14 +52,14 @@ namespace Fileworx_Client
 
             else if (validateResult == LogInValidationResult.WrongPassword)
             {
-                logInPasswordTextBox.Text = String.Empty;
+                txtPassword.Text = String.Empty;
 
                 MessageBox.Show($"Invalid password for {tryingToLogIn.Username}, please try again", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             else if (validateResult == LogInValidationResult.WrongUser)
             {
-                logInPasswordTextBox.Text = String.Empty;
+                txtPassword.Text = String.Empty;
 
                 MessageBox.Show($"There is no username with the name {tryingToLogIn.Username}, please try again", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

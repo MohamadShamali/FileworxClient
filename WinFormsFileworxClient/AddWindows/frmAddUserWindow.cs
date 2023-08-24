@@ -20,33 +20,34 @@ namespace Fileworx_Client
         public frmAddUserWindow()
         {
             InitializeComponent();
-            isAdminComboBox.SelectedIndex = 0;
+            cboIsAdmin.SelectedIndex = 0;
         }
 
         public frmAddUserWindow(clsUser userToEdit)
         {
             InitializeComponent();
 
-            signUpNameTextBox.Text = userToEdit.Name;
-            signUpLoginNameTextBox.Text = userToEdit.Username;
-            signUpPasswordTextBox.Text = userToEdit.Password;
-            isAdminComboBox.SelectedIndex = userToEdit.IsAdmin ? 1 : 0;
+            txtName.Text = userToEdit.Name;
+            txtUsername.Text = userToEdit.Username;
+            txtPassword.Text = userToEdit.Password;
+            cboIsAdmin.SelectedIndex = userToEdit.IsAdmin ? 1 : 0;
 
             this.userToEdit = userToEdit;
 
             if (this.userToEdit.Username == "admin")
             {
-                signUpLoginNameTextBox.Enabled = false;
-                isAdminComboBox.Enabled = false;
+                txtUsername.Enabled = false;
+                cboIsAdmin.Enabled = false;
             }
 
             this.Text = "Edit User";
+            btnCreate.Text = "Edit";
         }
 
         private bool validateData()
         {
-            if ((!String.IsNullOrEmpty(signUpNameTextBox.Text)) && (!String.IsNullOrEmpty(signUpLoginNameTextBox.Text))
-                              && (!String.IsNullOrEmpty(signUpPasswordTextBox.Text)))
+            if ((!String.IsNullOrEmpty(txtName.Text)) && (!String.IsNullOrEmpty(txtUsername.Text))
+                              && (!String.IsNullOrEmpty(txtPassword.Text)))
             {
                 return true;
             }
@@ -59,8 +60,8 @@ namespace Fileworx_Client
             // Add Case
             if(String.IsNullOrEmpty(userToEdit.Name)) 
             {
-                if ((!String.IsNullOrEmpty(signUpNameTextBox.Text)) && (!String.IsNullOrEmpty(signUpLoginNameTextBox.Text))
-                   && (!String.IsNullOrEmpty(signUpPasswordTextBox.Text)))
+                if ((!String.IsNullOrEmpty(txtName.Text)) && (!String.IsNullOrEmpty(txtUsername.Text))
+                   && (!String.IsNullOrEmpty(txtPassword.Text)))
                 {
                     try
                     {
@@ -69,10 +70,10 @@ namespace Fileworx_Client
                             Id = Guid.NewGuid(),
                             CreatorId = Global.LoggedInUser.Id,
                             CreatorName = Global.LoggedInUser.Name,
-                            Name = signUpNameTextBox.Text,
-                            Username = signUpLoginNameTextBox.Text,
-                            Password = signUpPasswordTextBox.Text,
-                            IsAdmin = ((isAdminComboBox.SelectedIndex == 0) ? false : true),
+                            Name = txtName.Text,
+                            Username = txtUsername.Text,
+                            Password = txtPassword.Text,
+                            IsAdmin = ((cboIsAdmin.SelectedIndex == 0) ? false : true),
                             Class = clsBusinessObject.Type.User
                         };
 
@@ -113,10 +114,10 @@ namespace Fileworx_Client
                     {
                         userToEdit.LastModifierId = Global.LoggedInUser.Id;
                         userToEdit.LastModifierName = Global.LoggedInUser.Name;
-                        userToEdit.Name = signUpNameTextBox.Text;
-                        userToEdit.Username = signUpLoginNameTextBox.Text;
-                        userToEdit.Password = signUpPasswordTextBox.Text;
-                        userToEdit.IsAdmin = ((isAdminComboBox.SelectedIndex == 0) ? false : true);
+                        userToEdit.Name = txtName.Text;
+                        userToEdit.Username = txtUsername.Text;
+                        userToEdit.Password = txtPassword.Text;
+                        userToEdit.IsAdmin = ((cboIsAdmin.SelectedIndex == 0) ? false : true);
 
                         userToEdit.Update();
 

@@ -22,16 +22,16 @@ namespace Fileworx_Client
         public frmAddNewsWindow()
         {
             InitializeComponent();
-            categoryComboBox.SelectedIndex = 0;
+            cboCategory.SelectedIndex = 0;
         }
 
         public frmAddNewsWindow(clsNews newsToEdit)
         {
             InitializeComponent();
-            tiltleTextBox.Text = newsToEdit.Name;
-            descriptionTextBox.Text = newsToEdit.Description;
-            bodyTextBox.Text = newsToEdit.Body;
-            categoryComboBox.SelectedItem = newsToEdit.Category;
+            txtTiltle.Text = newsToEdit.Name;
+            txtDescription.Text = newsToEdit.Description;
+            txtBody.Text = newsToEdit.Body;
+            cboCategory.SelectedItem = newsToEdit.Category;
 
             this.Text = "Edit News";
             this.newsToEdit = newsToEdit;
@@ -39,7 +39,7 @@ namespace Fileworx_Client
 
         private bool validateData()
         {
-            if (!String.IsNullOrEmpty(tiltleTextBox.Text) && (!String.IsNullOrEmpty(descriptionTextBox.Text)) && !String.IsNullOrEmpty(bodyTextBox.Text))
+            if (!String.IsNullOrEmpty(txtTiltle.Text) && (!String.IsNullOrEmpty(txtDescription.Text)) && !String.IsNullOrEmpty(txtBody.Text))
             {
                 return true;
             }
@@ -64,12 +64,12 @@ namespace Fileworx_Client
                     clsNews newNews = new clsNews()
                     {
                         Id = Guid.NewGuid(),
-                        Description = descriptionTextBox.Text,
+                        Description = txtDescription.Text,
                         CreatorId = Global.LoggedInUser.Id,
                         CreatorName = Global.LoggedInUser.Name,
-                        Name = tiltleTextBox.Text,
-                        Body = bodyTextBox.Text,
-                        Category = categoryComboBox.SelectedItem.ToString(),
+                        Name = txtTiltle.Text,
+                        Body = txtBody.Text,
+                        Category = cboCategory.SelectedItem.ToString(),
                         Class = clsBusinessObject.Type.News
                     };
 
@@ -87,12 +87,12 @@ namespace Fileworx_Client
             {
                 if (validateData())
                 {
-                    newsToEdit.Description = descriptionTextBox.Text;
+                    newsToEdit.Description = txtDescription.Text;
                     newsToEdit.LastModifierId = Global.LoggedInUser.Id;
                     newsToEdit.LastModifierName = Global.LoggedInUser.Name;
-                    newsToEdit.Name = tiltleTextBox.Text;
-                    newsToEdit.Body = bodyTextBox.Text;
-                    newsToEdit.Category = categoryComboBox.SelectedItem.ToString();
+                    newsToEdit.Name = txtTiltle.Text;
+                    newsToEdit.Body = txtBody.Text;
+                    newsToEdit.Category = cboCategory.SelectedItem.ToString();
 
                     newsToEdit.Update();
                 }
