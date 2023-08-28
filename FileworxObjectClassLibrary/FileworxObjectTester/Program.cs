@@ -10,7 +10,7 @@ namespace FileworxObjectTester
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             // Index Creation
             //IndexCreation.CreateIndex();
@@ -111,16 +111,16 @@ namespace FileworxObjectTester
             //Console.WriteLine(toupdate.Name);
 
             // Delete News
-            var toDelete = new clsUser();
-            toDelete.Id = new Guid("77a7b071-45f4-48f5-b494-b860da0b5c2f");
-            toDelete.Delete();
+            //var toDelete = new clsUser();
+            //toDelete.Id = new Guid("77a7b071-45f4-48f5-b494-b860da0b5c2f");
+            //toDelete.Delete();
 
             //____________________________________________________________________________________________________
 
             //Buisiness Object Query
-            //var query = new clsBusinessObjectQuery();
-            //query.QClasses = new clsBusinessObjectQuery.ClassIds[] { clsBusinessObjectQuery.ClassIds.Users };
-            //var result = query.Run();
+            //var query = new clsBusinessObjectQuery(QuerySource.ES);
+            //query.QClasses = new clsBusinessObjectQuery.ClassIds[] { clsBusinessObjectQuery.ClassIds.Photos };
+            //var result = await query.Run();
             //foreach (var c in result)
             //{
             //    Console.WriteLine(c.Name);
@@ -128,19 +128,19 @@ namespace FileworxObjectTester
             //____________________________________________________________________________________________________
 
             //File Query
-            //var query = new clsFileQuery();
+            //var query = new clsFileQuery(QuerySource.ES);
             //query.QClasses = new clsFileQuery.ClassIds[] { clsFileQuery.ClassIds.Photos, clsFileQuery.ClassIds.News };
-            //var result = query.Run();
+            //var result = await query.Run();
             //foreach (var c in result)
             //{
-            //    Console.WriteLine(c.CreatorName);
+            //    Console.WriteLine(c.Name);
             //}
 
             //____________________________________________________________________________________________________
 
             //User Query
-            //var query = new clsUserQuery();
-            //var result = query.Run();
+            //var query = new clsUserQuery(QuerySource.ES);
+            //var result = await query.Run();
             //foreach (var c in result)
             //{
             //    Console.WriteLine(c.Username);
@@ -149,21 +149,21 @@ namespace FileworxObjectTester
             //____________________________________________________________________________________________________
 
             //News Query
-            //var query = new clsNewsQuery();
-            //var result = query.Run();
+            //var query = new clsNewsQuery(QuerySource.ES);
+            //var result = await query.Run();
             //foreach (var c in result)
             //{
-            //    Console.WriteLine(c.CreatorName);
+            //    Console.WriteLine(c.Name);
             //}
 
             //____________________________________________________________________________________________________
 
             //Photos Query
-            //var query = new clsPhotoQuery();
-            //var result = query.Run();
+            //var query = new clsPhotoQuery(QuerySource.ES);
+            //var result = await query.Run();
             //foreach (var c in result)
             //{
-            //    Console.WriteLine(c.LastModifierName);
+            //    Console.WriteLine(c.Name);
             //}
 
             //____________________________________________________________________________________________________
