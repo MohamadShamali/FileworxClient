@@ -140,6 +140,10 @@ namespace FileworxObjectClassLibrary
                             allFiles.Add(file);
                         }
                     }
+                    if (!response.IsValidResponse)
+                    {
+                        throw new Exception("Error while working with Elastic");
+                    }
                 }
                 if (QClasses.Contains(ClassIds.Photos))
                 {
@@ -156,6 +160,10 @@ namespace FileworxObjectClassLibrary
                         {
                             allFiles.Add(file);
                         }
+                    }
+                    if (!response.IsValidResponse)
+                    {
+                        throw new Exception("Error while working with Elastic");
                     }
                 }
             }

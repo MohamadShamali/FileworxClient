@@ -142,6 +142,10 @@ namespace FileworxObjectClassLibrary
                             allBusinessObjects.Add(obj);
                         }
                     }
+                    if (!response.IsValidResponse)
+                    {
+                        throw new Exception("Error while working with Elastic");
+                    }
                 }
                 if (QClasses.Contains(ClassIds.News))
                 {
@@ -159,6 +163,10 @@ namespace FileworxObjectClassLibrary
                             allBusinessObjects.Add(obj);
                         }
                     }
+                    if (!response.IsValidResponse)
+                    {
+                        throw new Exception("Error while working with Elastic");
+                    }
                 }
                 if (QClasses.Contains(ClassIds.Photos))
                 {
@@ -175,6 +183,10 @@ namespace FileworxObjectClassLibrary
                         {
                             allBusinessObjects.Add(obj);
                         }
+                    }
+                    if (!response.IsValidResponse)
+                    {
+                        throw new Exception("Error while working with Elastic");
                     }
                 }
             }

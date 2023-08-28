@@ -68,6 +68,10 @@ namespace FileworxObjectClassLibrary
                 }
             }
             var response = await client.IndexAsync(this, "businessobject");
+            if (!response.IsValidResponse)
+            {
+                throw new Exception("Error while working with Elastic");
+            }
         }
 
         public async override void Delete()
@@ -80,6 +84,10 @@ namespace FileworxObjectClassLibrary
             }
 
             var response = await client.DeleteAsync("businessobject", Id);
+            if (!response.IsValidResponse)
+            {
+                throw new Exception("Error while working with Elastic");
+            }
         }
 
         public async override void Update()
@@ -106,6 +114,10 @@ namespace FileworxObjectClassLibrary
             }
 
             var response = await client.UpdateAsync<clsPhoto, clsPhoto>("businessobject", Id, u => u.Doc(this));
+            if (!response.IsValidResponse)
+            {
+                throw new Exception("Error while working with Elastic");
+            }
         }
 
         public override void Read()

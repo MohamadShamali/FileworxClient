@@ -124,6 +124,10 @@ namespace FileworxObjectClassLibrary
                         allPhotos.Add(photo);
                     }
                 }
+                if (!response.IsValidResponse)
+                {
+                    throw new Exception("Error while working with Elastic");
+                }
             }
             return allPhotos;
         }

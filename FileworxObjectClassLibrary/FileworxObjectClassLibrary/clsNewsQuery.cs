@@ -124,7 +124,11 @@ namespace FileworxObjectClassLibrary
                         allNews.Add(news);
                     }
                 }
-                
+                if (!response.IsValidResponse)
+                {
+                    throw new Exception("Error while working with Elastic");
+                }
+
             }
             return allNews;
         }
