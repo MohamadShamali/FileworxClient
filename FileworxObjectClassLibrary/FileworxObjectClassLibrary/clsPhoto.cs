@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Elastic.Clients.Elasticsearch;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
@@ -12,6 +13,8 @@ namespace FileworxObjectClassLibrary
     {
         // Constants
         static string tableName = "T_PHOTO";
+        private ElasticsearchClientSettings settings;
+        private ElasticsearchClient client;
 
         // Properties
         private string location;
@@ -42,11 +45,14 @@ namespace FileworxObjectClassLibrary
 
         public clsPhoto()
         {
-            Class=Type.Photo;
+            settings = new ElasticsearchClientSettings(new Uri("http://localhost:9200"));
+            client = new ElasticsearchClient(settings);
+
+            Class =Type.Photo;
             photoUpdated = false;
         }
 
-        public override void Insert()
+        public async override void Insert()
         {
             base.Insert();
             copyImage();
@@ -61,9 +67,10 @@ namespace FileworxObjectClassLibrary
                     command.ExecuteNonQuery();
                 }
             }
+            var response = await client.IndexAsync(this, "businessobject");
         }
 
-        public override void Delete()
+        public async override void Delete()
         {
             base.Delete();
 
@@ -71,9 +78,11 @@ namespace FileworxObjectClassLibrary
             {
                 File.Delete(location);
             }
+
+            var response = await client.DeleteAsync("businessobject", Id);
         }
 
-        public override void Update()
+        public async override void Update()
         {
             base.Update();
             if (photoUpdated)
@@ -95,6 +104,8 @@ namespace FileworxObjectClassLibrary
                     command.ExecuteNonQuery();
                 }
             }
+
+            var response = await client.UpdateAsync<clsPhoto, clsPhoto>("businessobject", Id, u => u.Doc(this));
         }
 
         public override void Read()

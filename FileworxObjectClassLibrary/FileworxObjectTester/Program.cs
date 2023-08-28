@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using FileworxObjectClassLibrary;
@@ -11,6 +12,9 @@ namespace FileworxObjectTester
     {
         static void Main(string[] args)
         {
+            // Index Creation
+            //IndexCreation.CreateIndex();
+            //____________________________________________________________________________________________________
             // Insert Photo
             //var photo = new clsPhoto();
             //photo.Id = new Guid("52a7b071-45f4-48f5-b494-b860da0b5c2f");
@@ -107,9 +111,9 @@ namespace FileworxObjectTester
             //Console.WriteLine(toupdate.Name);
 
             // Delete News
-            //var toDelete = new clsUser();
-            //toDelete.Id = new Guid("77a7b071-45f4-48f5-b494-b860da0b5c2f");
-            //toDelete.Delete();
+            var toDelete = new clsUser();
+            toDelete.Id = new Guid("77a7b071-45f4-48f5-b494-b860da0b5c2f");
+            toDelete.Delete();
 
             //____________________________________________________________________________________________________
 

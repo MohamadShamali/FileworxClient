@@ -99,7 +99,7 @@ namespace FileworxObjectClassLibrary
                             }
 
                             int c = (int)(reader[9]);
-                            file.Class = (clsBusinessObject.Type)c;
+                            file.Class = (Type)c;
 
                             file.Body = reader[10].ToString();
 

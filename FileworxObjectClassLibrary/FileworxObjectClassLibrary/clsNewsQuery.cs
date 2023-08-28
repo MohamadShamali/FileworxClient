@@ -80,7 +80,7 @@ namespace FileworxObjectClassLibrary
                             }
 
                             int c = (int)(reader[9]);
-                            news.Class = (clsBusinessObject.Type)c;
+                            news.Class = (Type)c;
 
                             news.Body = reader[10].ToString();
 

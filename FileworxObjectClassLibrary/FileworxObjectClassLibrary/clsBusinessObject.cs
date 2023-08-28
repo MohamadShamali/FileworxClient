@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Elastic.Clients.Elasticsearch;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -8,23 +9,35 @@ using System.Threading.Tasks;
 
 namespace FileworxObjectClassLibrary
 {
+    public enum Type { User = 1, News = 2, Photo = 3 }
     public class clsBusinessObject
     {
         // Constants
         static string tableName = "T_BUSINESSOBJECT";
-        public enum Type { User = 1, News = 2, Photo = 3 }
-        
+
         // Properties
         public Guid Id { get; set; }
         public string Description { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime ModificationDate { get; set; }
         public Guid CreatorId { get; set; }
-        public string CreatorName { get; set; }
+        public string CreatorName { get; set; } = String.Empty;
         public Guid? LastModifierId { get; set; } = null;
         public string LastModifierName { get; set; } = String.Empty;
         public string Name { get; set; }
-        public Type Class { get; set; }
+        public Type Class
+        {
+            get { return _class; }
+            set
+            {
+                if (value == Type.User) ClassID = 1;
+                if (value == Type.News) ClassID = 2;
+                if (value == Type.Photo) ClassID = 3;
+                _class = value;
+            }
+        }
+        private Type _class;
+        public int ClassID { get; set; } // Added for Elasticsearch Search
 
         public clsBusinessObject()
         {
@@ -49,7 +62,6 @@ namespace FileworxObjectClassLibrary
                     command.ExecuteNonQuery();
                 }
             }
-
         }
 
         public virtual void Delete()

@@ -74,7 +74,7 @@ namespace Fileworx_Client
                             Username = txtUsername.Text,
                             Password = txtPassword.Text,
                             IsAdmin = ((cboIsAdmin.SelectedIndex == 0) ? false : true),
-                            Class = clsBusinessObject.Type.User
+                            Class = FileworxObjectClassLibrary.Type.User
                         };
 
                         newUser.Insert();

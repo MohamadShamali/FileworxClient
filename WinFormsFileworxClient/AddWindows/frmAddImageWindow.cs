@@ -74,7 +74,7 @@ namespace Fileworx_Client
                         Name = txtTitle.Text,
                         Body = txtBody.Text,
                         Location = imagePathTextBox.Text,
-                        Class = clsBusinessObject.Type.Photo
+                        Class = FileworxObjectClassLibrary.Type.Photo
                     };
 
                     newPhoto.Insert();

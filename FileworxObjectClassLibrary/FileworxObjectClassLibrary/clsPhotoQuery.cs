@@ -82,7 +82,7 @@ namespace FileworxObjectClassLibrary
                             }
 
                             int c = (int)(reader[9]);
-                            photo.Class = (clsBusinessObject.Type)c;
+                            photo.Class = (Type)c;
 
                             photo.Body = reader[10].ToString();
 

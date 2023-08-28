@@ -4,6 +4,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Elastic.Clients.Elasticsearch;
+using Elastic.Clients.Elasticsearch.IndexManagement;
 
 namespace FileworxObjectClassLibrary
 {
@@ -11,16 +13,21 @@ namespace FileworxObjectClassLibrary
     {
         // Constants
         static string tableName = "T_NEWS";
+        private ElasticsearchClientSettings settings;
+        private ElasticsearchClient client;
 
         // Properties
         public string Category { get; set; }
 
         public clsNews()
         {
+            settings = new ElasticsearchClientSettings(new Uri("http://localhost:9200"));
+            client = new ElasticsearchClient(settings);
+
             Class = Type.News;
         }
 
-        public override void Insert()
+        public async override void Insert()
         {
             base.Insert();
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
@@ -33,9 +40,16 @@ namespace FileworxObjectClassLibrary
                     command.ExecuteNonQuery();
                 }
             }
+            var response = await client.IndexAsync(this, "businessobject");
         }
 
-        public override void Update()
+        public async override void Delete()
+        {
+            base.Delete();
+            var response = await client.DeleteAsync("businessobject", Id);
+        }
+
+        public async override void Update()
         {
             base.Update();
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
@@ -50,6 +64,7 @@ namespace FileworxObjectClassLibrary
                     command.ExecuteNonQuery();
                 }
             }
+            var response = await client.UpdateAsync<clsNews, clsNews>("businessobject", Id, u => u.Doc(this));
         }
 
         public override void Read()

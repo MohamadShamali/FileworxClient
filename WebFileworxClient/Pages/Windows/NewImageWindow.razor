@@ -159,7 +159,7 @@
                     Body = body,
                     CreatorId = usersServices.LoggedInUser.Id,
                     CreatorName = usersServices.LoggedInUser.CreatorName,
-                    Class = clsBusinessObject.Type.Photo
+                    Class = FileworxObjectClassLibrary.Type.Photo
                 };
             addedPhoto.Read();
             await OnSave.InvokeAsync(addedPhoto);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Elastic.Clients.Elasticsearch;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -19,6 +20,8 @@ namespace FileworxObjectClassLibrary
     {
         // Constants
         static string tableName = "T_USER";
+        private ElasticsearchClientSettings settings;
+        private ElasticsearchClient client;
 
         // Properties
         public string Username { get; set; }
@@ -27,10 +30,13 @@ namespace FileworxObjectClassLibrary
 
         public clsUser()
         {
+            settings = new ElasticsearchClientSettings(new Uri("http://localhost:9200"));
+            client = new ElasticsearchClient(settings);
+
             Class = Type.User;
         }
 
-        public override void Insert()
+        public async override void Insert()
         {
             base.Insert();
 
@@ -62,10 +68,16 @@ namespace FileworxObjectClassLibrary
                     throw new InvalidOperationException("An error occurred while processing.", ex);
                 }
             }
-
+            var response = await client.IndexAsync(this, "businessobject");
         }
 
-        public override void Update()
+        public async override void Delete()
+        {
+            base.Delete();
+            var response = await client.DeleteAsync("businessobject", Id);
+        }
+
+        public async override void Update()
         {
             base.Update();
 
@@ -99,6 +111,7 @@ namespace FileworxObjectClassLibrary
                     throw new InvalidOperationException("An error occurred while processing.", ex);
                 }
             }
+            var response = await client.UpdateAsync<clsUser, clsUser>("businessobject", Id, u => u.Doc(this));
         }
 
         public override void Read()

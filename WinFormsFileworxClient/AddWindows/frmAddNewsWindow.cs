@@ -70,7 +70,7 @@ namespace Fileworx_Client
                         Name = txtTiltle.Text,
                         Body = txtBody.Text,
                         Category = cboCategory.SelectedItem.ToString(),
-                        Class = clsBusinessObject.Type.News
+                        Class = FileworxObjectClassLibrary.Type.News
                     };
 
                     newNews.Insert();

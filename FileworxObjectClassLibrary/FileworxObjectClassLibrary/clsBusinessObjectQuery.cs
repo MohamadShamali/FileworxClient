@@ -104,7 +104,7 @@ namespace FileworxObjectClassLibrary
                             }
 
                             int c = (int)(reader[9]);
-                            businessObject.Class = (clsBusinessObject.Type) c;
+                            businessObject.Class = (Type) c;
 
                             allBusinessObjects.Add(businessObject);
                         }

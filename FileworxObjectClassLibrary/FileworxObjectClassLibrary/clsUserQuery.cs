@@ -65,7 +65,7 @@ namespace FileworxObjectClassLibrary
                             }
 
                             int c = (int)(reader[7]);
-                            user.Class = (clsBusinessObject.Type) c;
+                            user.Class = (Type) c;
 
                             user.Username = reader[8].ToString();
 
