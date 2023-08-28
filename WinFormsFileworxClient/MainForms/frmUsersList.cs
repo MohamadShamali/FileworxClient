@@ -25,10 +25,10 @@ namespace Fileworx_Client
             addUsersListItemsToListView();
         }
 
-        private void addDBUsersToUsersList()
+        private async void addDBUsersToUsersList()
         {
-            clsUserQuery allUsersQuery = new clsUserQuery();
-            allUsers = allUsersQuery.Run();
+            clsUserQuery allUsersQuery = new clsUserQuery(QuerySource.DB);
+            allUsers = await allUsersQuery.Run();
         }
 
         private void refreshUsersList()

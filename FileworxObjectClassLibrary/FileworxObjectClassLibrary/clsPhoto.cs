@@ -19,18 +19,25 @@ namespace FileworxObjectClassLibrary
         // Properties
         private string location;
 
-        private bool photoUpdated;
+        private bool photoUpdated { get; 
+            set; }
         public string Location 
         { 
             get { return location; }
             set
             {
+                string directoryPath = Path.GetDirectoryName(value);
+                string fileNameWithExtension = Path.GetFileName(value);
+
                 if (File.Exists(value))
                 {
-                    if(File.Exists(location))
+                    if(directoryPath != @"C:\Users\M.AL-Shamali\Desktop\Demo Projects\FileworxClient\WebFileworxClient\wwwroot\Images\StoredImages")
                     {
-                        File.Delete(location);
-                        photoUpdated = true;
+                        if (File.Exists(location))
+                        {
+                            File.Delete(location);
+                            photoUpdated = true;
+                        }
                     }
 
                     location = value;
@@ -56,7 +63,7 @@ namespace FileworxObjectClassLibrary
         {
             base.Insert();
             copyImage();
-
+            photoUpdated = false;
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 connection.Open();

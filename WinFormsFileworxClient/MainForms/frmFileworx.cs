@@ -50,13 +50,13 @@ namespace Fileworx_Client
             addFilesListItemsToListView();
         }
 
-        private void addDBFilesToFilesList()
+        private async void addDBFilesToFilesList()
         {
-            clsNewsQuery allNewsQuery = new clsNewsQuery();
-            allNews = allNewsQuery.Run();
+            clsNewsQuery allNewsQuery = new clsNewsQuery(QuerySource.DB);
+            allNews = await allNewsQuery.Run();
 
-            clsPhotoQuery allPhotosQuery = new clsPhotoQuery();
-            allPhotos = allPhotosQuery.Run();
+            clsPhotoQuery allPhotosQuery = new clsPhotoQuery(QuerySource.DB);
+            allPhotos = await allPhotosQuery.Run();
 
 
             allFiles = new List<clsFile>();
