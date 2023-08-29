@@ -52,10 +52,12 @@ namespace Fileworx_Client
 
         private async void addDBFilesToFilesList()
         {
-            clsNewsQuery allNewsQuery = new clsNewsQuery(QuerySource.DB);
+            clsNewsQuery allNewsQuery = new clsNewsQuery();
+            allNewsQuery.Source = QuerySource.DB;
             allNews = await allNewsQuery.Run();
 
-            clsPhotoQuery allPhotosQuery = new clsPhotoQuery(QuerySource.DB);
+            clsPhotoQuery allPhotosQuery = new clsPhotoQuery();
+            allPhotosQuery.Source = QuerySource.DB;
             allPhotos = await allPhotosQuery.Run();
 
 

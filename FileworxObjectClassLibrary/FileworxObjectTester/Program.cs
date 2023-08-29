@@ -114,20 +114,20 @@ namespace FileworxObjectTester
             //Console.WriteLine(toupdate.Name);
 
             // Delete News
-            var toDelete = new clsUser();
-            toDelete.Id = new Guid("77a7b071-45f4-48f5-b494-b860da0b5c2f");
-            toDelete.Delete();
+            //var toDelete = new clsUser();
+            //toDelete.Id = new Guid("77a7b071-45f4-48f5-b494-b860da0b5c2f");
+            //toDelete.Delete();
 
             //____________________________________________________________________________________________________
 
             //Buisiness Object Query
-            //var query = new clsBusinessObjectQuery() { Source = QuerySource.ES };
+            var query = new clsBusinessObjectQuery() { Source = QuerySource.ES };
             //query.QClasses = new clsBusinessObjectQuery.ClassIds[] { clsBusinessObjectQuery.ClassIds.Photos };
-            //var result = await query.Run();
-            //foreach (var c in result)
-            //{
-            //    Console.WriteLine(c.Name);
-            //}
+            var result = await query.Run();
+            foreach (var c in result)
+            {
+                Console.WriteLine(c.Name);
+            }
             //____________________________________________________________________________________________________
 
             //File Query

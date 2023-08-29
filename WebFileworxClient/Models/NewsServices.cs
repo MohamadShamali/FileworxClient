@@ -17,10 +17,12 @@ namespace Web_Fileworx_Client.Models
 
         public async void AddDBFilesToFilesList()
         {
-            clsNewsQuery allNewsQuery = new clsNewsQuery(QuerySource.DB);
+            clsNewsQuery allNewsQuery = new clsNewsQuery();
+            allNewsQuery.Source = QuerySource.DB;
             AllNews = await allNewsQuery.Run();
 
-            clsPhotoQuery allPhotosQuery = new clsPhotoQuery(QuerySource.DB);
+            clsPhotoQuery allPhotosQuery = new clsPhotoQuery();
+            allPhotosQuery.Source = QuerySource.DB;
             AllPhotos = await allPhotosQuery.Run();
 
 

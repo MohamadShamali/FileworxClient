@@ -27,7 +27,8 @@ namespace Fileworx_Client
 
         private async void addDBUsersToUsersList()
         {
-            clsUserQuery allUsersQuery = new clsUserQuery(QuerySource.DB);
+            clsUserQuery allUsersQuery = new clsUserQuery();
+            allUsersQuery.Source = QuerySource.DB;
             allUsers = await allUsersQuery.Run();
         }
 

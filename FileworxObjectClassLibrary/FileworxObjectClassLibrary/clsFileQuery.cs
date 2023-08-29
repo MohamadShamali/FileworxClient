@@ -1,4 +1,5 @@
 ﻿using Elastic.Clients.Elasticsearch;
+using Elastic.Clients.Elasticsearch.QueryDsl;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -119,24 +120,12 @@ namespace FileworxObjectClassLibrary
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
 
-                int[] requiredIDs = { 0, 0};
-                if (QClasses.Contains(ClassIds.News))
-                {
-                    requiredIDs[0] = 2;
-                }
-                if (QClasses.Contains(ClassIds.Photos))
-                {
-                    requiredIDs[1] = 3;
-                }
-
                 var response = await client.SearchAsync<clsFile>(s => s
-                                                                .Index(EditBeforRun.ElasticFilesIndex)
-                                                                .From(0)
-                                                                .Size(10000)
-                                                                .Query(q => q.Bool(b => b
-                                                                .Should(
-                                                                    bs => bs.Term(p => p.ClassID, requiredIDs[0]),
-                                                                    bs => bs.Term(p => p.ClassID, requiredIDs[1])))));
+                            .Index(EditBeforRun.ElasticBusinessObjectAlias)
+                            .From(0)
+                            .Size(10000)
+                            .Query(q => q.Bool(b => b
+                            .Should(shouldQueries))));
 
                 if (response.IsValidResponse)
                 {
@@ -156,7 +145,13 @@ namespace FileworxObjectClassLibrary
             return allFiles;
         }
 
-
+        private void shouldQueries(QueryDescriptor<clsFile> bs)
+        {
+            foreach (var a in QClasses)
+            {
+                bs.Term(p => p.ClassID, (int)a);
+            }
+        }
 
     }
 }

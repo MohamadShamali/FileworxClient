@@ -1,4 +1,5 @@
 ﻿using Elastic.Clients.Elasticsearch;
+using Elastic.Clients.Elasticsearch.QueryDsl;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -116,10 +117,7 @@ namespace FileworxObjectClassLibrary
 
             else
             {
-                var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
-                var client = new ElasticsearchClient(settings);
-
-                int[] requiredIDs = {0,0,0};
+                int[] requiredIDs = { 0, 0, 0 };
                 if (QClasses.Contains(ClassIds.Users))
                 {
                     requiredIDs[0] = 1;
@@ -133,15 +131,18 @@ namespace FileworxObjectClassLibrary
                     requiredIDs[2] = 3;
                 }
 
+                var shouldQueries = new List<Action<QueryDescriptor<clsBusinessObject>>>();
+                foreach(var id in QClasses) { shouldQueries.Add(bs => bs.Term(p => p.ClassID, (int) id)); }
+
+                var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+                var client = new ElasticsearchClient(settings);
+
                 var response = await client.SearchAsync<clsBusinessObject>(s => s
                             .Index(EditBeforRun.ElasticBusinessObjectAlias)
                             .From(0)
                             .Size(10000)
                             .Query(q => q.Bool(b => b
-                            .Should(
-                                bs => bs.Term(p => p.ClassID, requiredIDs[0]),
-                                bs => bs.Term(p => p.ClassID, requiredIDs[1]),
-                                bs => bs.Term(p => p.ClassID, requiredIDs[2])))));
+                            .Should(shouldQueries.ToArray()))));
 
                 if (response.IsValidResponse)
                 {
