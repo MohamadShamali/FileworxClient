@@ -3,10 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace FileworxObjectClassLibrary
 {
@@ -21,10 +18,6 @@ namespace FileworxObjectClassLibrary
         public ClassIds[] QClasses { get; set; } = {ClassIds.Users , ClassIds.News , ClassIds.Photos};
         public QuerySource Source { get; set; }
 
-        public clsBusinessObjectQuery(QuerySource source)
-        {
-            Source = source;
-        }
         public async Task<List<clsBusinessObject>> Run()
         {
             List<clsBusinessObject> allBusinessObjects = new List<clsBusinessObject>();
@@ -123,71 +116,45 @@ namespace FileworxObjectClassLibrary
 
             else
             {
-                var settings = new ElasticsearchClientSettings(new Uri("http://localhost:9200"));
+                var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
 
+                int[] requiredIDs = {0,0,0};
                 if (QClasses.Contains(ClassIds.Users))
                 {
-                    var response = await client.SearchAsync<clsBusinessObject>(s => s
-                                                .Index("businessobject")
-                                                .From(0)
-                                                .Size(10000)
-                                                .Query(q => q.Term(t => t.ClassID, 1)));
-
-                    if (response.IsValidResponse)
-                    {
-                        var objs = response.Documents;
-                        foreach (var obj in objs)
-                        {
-                            allBusinessObjects.Add(obj);
-                        }
-                    }
-                    if (!response.IsValidResponse)
-                    {
-                        throw new Exception("Error while working with Elastic");
-                    }
+                    requiredIDs[0] = 1;
                 }
                 if (QClasses.Contains(ClassIds.News))
                 {
-                    var response = await client.SearchAsync<clsBusinessObject>(s => s
-                                                .Index("businessobject")
-                                                .From(0)
-                                                .Size(10000)
-                                                .Query(q => q.Term(t => t.ClassID, 2)));
-
-                    if (response.IsValidResponse)
-                    {
-                        var objs = response.Documents;
-                        foreach (var obj in objs)
-                        {
-                            allBusinessObjects.Add(obj);
-                        }
-                    }
-                    if (!response.IsValidResponse)
-                    {
-                        throw new Exception("Error while working with Elastic");
-                    }
+                    requiredIDs[1] = 2;
                 }
                 if (QClasses.Contains(ClassIds.Photos))
                 {
-                    var response = await client.SearchAsync<clsBusinessObject>(s => s
-                                                .Index("businessobject")
-                                                .From(0)
-                                                .Size(10000)
-                                                .Query(q => q.Term(t => t.ClassID, 3)));
+                    requiredIDs[2] = 3;
+                }
 
-                    if (response.IsValidResponse)
+                var response = await client.SearchAsync<clsBusinessObject>(s => s
+                            .Index(EditBeforRun.ElasticBusinessObjectAlias)
+                            .From(0)
+                            .Size(10000)
+                            .Query(q => q.Bool(b => b
+                            .Should(
+                                bs => bs.Term(p => p.ClassID, requiredIDs[0]),
+                                bs => bs.Term(p => p.ClassID, requiredIDs[1]),
+                                bs => bs.Term(p => p.ClassID, requiredIDs[2])))));
+
+                if (response.IsValidResponse)
+                {
+                    var objs = response.Documents;
+                    foreach (var obj in objs)
                     {
-                        var objs = response.Documents;
-                        foreach (var obj in objs)
-                        {
-                            allBusinessObjects.Add(obj);
-                        }
+                        allBusinessObjects.Add(obj);
                     }
-                    if (!response.IsValidResponse)
-                    {
-                        throw new Exception("Error while working with Elastic");
-                    }
+                }
+
+                if (!response.IsValidResponse)
+                {
+                    throw new Exception("Error while working with Elastic");
                 }
             }
 

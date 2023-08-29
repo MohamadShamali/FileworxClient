@@ -30,7 +30,7 @@ namespace FileworxObjectClassLibrary
 
         public clsUser()
         {
-            settings = new ElasticsearchClientSettings(new Uri("http://localhost:9200"));
+            settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
             client = new ElasticsearchClient(settings);
 
             Class = Type.User;
@@ -68,7 +68,7 @@ namespace FileworxObjectClassLibrary
                     throw new InvalidOperationException("An error occurred while processing.", ex);
                 }
             }
-            var response = await client.IndexAsync(this, "businessobject");
+            var response = await client.IndexAsync(this, EditBeforRun.ElasticUsersIndex);
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
@@ -78,7 +78,7 @@ namespace FileworxObjectClassLibrary
         public async override void Delete()
         {
             base.Delete();
-            var response = await client.DeleteAsync("businessobject", Id);
+            var response = await client.DeleteAsync(EditBeforRun.ElasticUsersIndex, Id);
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
@@ -119,7 +119,7 @@ namespace FileworxObjectClassLibrary
                     throw new InvalidOperationException("An error occurred while processing.", ex);
                 }
             }
-            var response = await client.UpdateAsync<clsUser, clsUser>("businessobject", Id, u => u.Doc(this));
+            var response = await client.UpdateAsync<clsUser, clsUser>(EditBeforRun.ElasticUsersIndex, Id, u => u.Doc(this));
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");

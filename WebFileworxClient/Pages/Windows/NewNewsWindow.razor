@@ -72,10 +72,11 @@
         {
             clsNews addedNews = new clsNews()
             {
-                Id=Guid.NewGuid(), Class= clsBusinessObject.Type.News,
-                Name = title, Description = description, Category = catagory, Body = body, 
-                CreatorId = usersServices.LoggedInUser.Id, 
-                CreatorName=usersServices.LoggedInUser.CreatorName
+                    Id = Guid.NewGuid(),
+                    Class = FileworxObjectClassLibrary.Type.News,
+                    Name = title, Description = description, Category = catagory, Body = body, 
+                    CreatorId = usersServices.LoggedInUser.Id, 
+                    CreatorName=usersServices.LoggedInUser.CreatorName
                 };
             addedNews.Read();
             await OnSave.InvokeAsync(addedNews);

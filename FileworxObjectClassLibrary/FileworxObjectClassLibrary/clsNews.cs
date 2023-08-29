@@ -21,7 +21,7 @@ namespace FileworxObjectClassLibrary
 
         public clsNews()
         {
-            settings = new ElasticsearchClientSettings(new Uri("http://localhost:9200"));
+            settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
             client = new ElasticsearchClient(settings);
 
             Class = Type.News;
@@ -40,7 +40,7 @@ namespace FileworxObjectClassLibrary
                     command.ExecuteNonQuery();
                 }
             }
-            var response = await client.IndexAsync(this, "businessobject");
+            var response = await client.IndexAsync(this, EditBeforRun.ElasticFilesIndex);
 
             if (!response.IsValidResponse)
             {
@@ -51,7 +51,7 @@ namespace FileworxObjectClassLibrary
         public async override void Delete()
         {
             base.Delete();
-            var response = await client.DeleteAsync("businessobject", Id);
+            var response = await client.DeleteAsync(EditBeforRun.ElasticFilesIndex, Id);
 
             if (!response.IsValidResponse)
             {
@@ -74,7 +74,7 @@ namespace FileworxObjectClassLibrary
                     command.ExecuteNonQuery();
                 }
             }
-            var response = await client.UpdateAsync<clsNews, clsNews>("businessobject", Id, u => u.Doc(this));
+            var response = await client.UpdateAsync<clsNews, clsNews>(EditBeforRun.ElasticFilesIndex, Id, u => u.Doc(this));
 
             if (!response.IsValidResponse)
             {

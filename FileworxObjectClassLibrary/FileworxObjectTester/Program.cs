@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,9 @@ namespace FileworxObjectTester
         static async Task Main(string[] args)
         {
             // Index Creation
-            //IndexCreation.CreateIndex();
+            //await IndexCreation.CreateFilesIndex();
+            //await IndexCreation.CreateUsersIndex();
+            //await IndexCreation.CreateBusinessObjectAlias();
             //____________________________________________________________________________________________________
             // Insert Photo
             //var photo = new clsPhoto();
@@ -111,14 +114,14 @@ namespace FileworxObjectTester
             //Console.WriteLine(toupdate.Name);
 
             // Delete News
-            //var toDelete = new clsUser();
-            //toDelete.Id = new Guid("77a7b071-45f4-48f5-b494-b860da0b5c2f");
-            //toDelete.Delete();
+            var toDelete = new clsUser();
+            toDelete.Id = new Guid("77a7b071-45f4-48f5-b494-b860da0b5c2f");
+            toDelete.Delete();
 
             //____________________________________________________________________________________________________
 
             //Buisiness Object Query
-            //var query = new clsBusinessObjectQuery(QuerySource.ES);
+            //var query = new clsBusinessObjectQuery() { Source = QuerySource.ES };
             //query.QClasses = new clsBusinessObjectQuery.ClassIds[] { clsBusinessObjectQuery.ClassIds.Photos };
             //var result = await query.Run();
             //foreach (var c in result)
@@ -128,7 +131,8 @@ namespace FileworxObjectTester
             //____________________________________________________________________________________________________
 
             //File Query
-            //var query = new clsFileQuery(QuerySource.ES);
+            //var query = new clsFileQuery();
+            //query.Source = QuerySource.ES;
             //query.QClasses = new clsFileQuery.ClassIds[] { clsFileQuery.ClassIds.Photos, clsFileQuery.ClassIds.News };
             //var result = await query.Run();
             //foreach (var c in result)
@@ -139,7 +143,8 @@ namespace FileworxObjectTester
             //____________________________________________________________________________________________________
 
             //User Query
-            //var query = new clsUserQuery(QuerySource.ES);
+            //var query = new clsUserQuery();
+            //query.Source = QuerySource.ES;
             //var result = await query.Run();
             //foreach (var c in result)
             //{
@@ -149,7 +154,8 @@ namespace FileworxObjectTester
             //____________________________________________________________________________________________________
 
             //News Query
-            //var query = new clsNewsQuery(QuerySource.ES);
+            //var query = new clsNewsQuery();
+            //query.Source = QuerySource.ES;
             //var result = await query.Run();
             //foreach (var c in result)
             //{
@@ -159,7 +165,8 @@ namespace FileworxObjectTester
             //____________________________________________________________________________________________________
 
             //Photos Query
-            //var query = new clsPhotoQuery(QuerySource.ES);
+            //var query = new clsPhotoQuery();
+            //query.Source = QuerySource.ES;
             //var result = await query.Run();
             //foreach (var c in result)
             //{
@@ -169,7 +176,7 @@ namespace FileworxObjectTester
             //____________________________________________________________________________________________________
 
             //User Validation
-            //var user = new clsUser() { Username="a" , Password="a"};
+            //var user = new clsUser() { Username = "a", Password = "a" };
 
             //Console.WriteLine(user.ValidateLogin());
 

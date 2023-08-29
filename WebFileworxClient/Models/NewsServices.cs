@@ -15,13 +15,13 @@ namespace Web_Fileworx_Client.Models
         public clsFile? SelectedFile { get; set; }
 
 
-        public void AddDBFilesToFilesList()
+        public async void AddDBFilesToFilesList()
         {
-            clsNewsQuery allNewsQuery = new clsNewsQuery();
-            AllNews = allNewsQuery.Run();
+            clsNewsQuery allNewsQuery = new clsNewsQuery(QuerySource.DB);
+            AllNews = await allNewsQuery.Run();
 
-            clsPhotoQuery allPhotosQuery = new clsPhotoQuery();
-            AllPhotos = allPhotosQuery.Run();
+            clsPhotoQuery allPhotosQuery = new clsPhotoQuery(QuerySource.DB);
+            AllPhotos = await allPhotosQuery.Run();
 
 
             AllFiles = new List<clsFile>();

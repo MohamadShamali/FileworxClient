@@ -20,11 +20,6 @@ namespace FileworxObjectClassLibrary
         public ClassIds[] QClasses { get; set; } = { ClassIds.News, ClassIds.Photos };
         public QuerySource Source { get; set; }
 
-        public clsFileQuery(QuerySource source)
-        {
-            Source = source;
-        }
-
         public async Task<List<clsFile>> Run()
         {
             List<clsFile> allFiles = new List<clsFile>();
@@ -121,50 +116,40 @@ namespace FileworxObjectClassLibrary
 
             if(Source == QuerySource.ES)
             {
-                var settings = new ElasticsearchClientSettings(new Uri("http://localhost:9200"));
+                var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
 
+                int[] requiredIDs = { 0, 0};
                 if (QClasses.Contains(ClassIds.News))
                 {
-                    var response = await client.SearchAsync<clsFile>(s => s
-                                                .Index("businessobject")
-                                                .From(0)
-                                                .Size(10000)
-                                                .Query(q => q.Term(t => t.ClassID, 2)));
-
-                    if (response.IsValidResponse)
-                    {
-                        var files = response.Documents;
-                        foreach (var file in files)
-                        {
-                            allFiles.Add(file);
-                        }
-                    }
-                    if (!response.IsValidResponse)
-                    {
-                        throw new Exception("Error while working with Elastic");
-                    }
+                    requiredIDs[0] = 2;
                 }
                 if (QClasses.Contains(ClassIds.Photos))
                 {
-                    var response = await client.SearchAsync<clsFile>(s => s
-                                                .Index("businessobject")
-                                                .From(0)
-                                                .Size(10000)
-                                                .Query(q => q.Term(t => t.ClassID, 3)));
+                    requiredIDs[1] = 3;
+                }
 
-                    if (response.IsValidResponse)
+                var response = await client.SearchAsync<clsFile>(s => s
+                                                                .Index(EditBeforRun.ElasticFilesIndex)
+                                                                .From(0)
+                                                                .Size(10000)
+                                                                .Query(q => q.Bool(b => b
+                                                                .Should(
+                                                                    bs => bs.Term(p => p.ClassID, requiredIDs[0]),
+                                                                    bs => bs.Term(p => p.ClassID, requiredIDs[1])))));
+
+                if (response.IsValidResponse)
+                {
+                    var objs = response.Documents;
+                    foreach (var obj in objs)
                     {
-                        var files = response.Documents;
-                        foreach (var file in files)
-                        {
-                            allFiles.Add(file);
-                        }
+                        allFiles.Add(obj);
                     }
-                    if (!response.IsValidResponse)
-                    {
-                        throw new Exception("Error while working with Elastic");
-                    }
+                }
+
+                if (!response.IsValidResponse)
+                {
+                    throw new Exception("Error while working with Elastic");
                 }
             }
 

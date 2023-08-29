@@ -27,7 +27,6 @@ namespace FileworxObjectClassLibrary
             set
             {
                 string directoryPath = Path.GetDirectoryName(value);
-                string fileNameWithExtension = Path.GetFileName(value);
 
                 if (File.Exists(value))
                 {
@@ -35,8 +34,11 @@ namespace FileworxObjectClassLibrary
                     {
                         if (File.Exists(location))
                         {
-                            File.Delete(location);
-                            photoUpdated = true;
+                            if(location != value)
+                            {
+                                File.Delete(location);
+                                photoUpdated = true;
+                            }
                         }
                     }
 
@@ -52,7 +54,7 @@ namespace FileworxObjectClassLibrary
 
         public clsPhoto()
         {
-            settings = new ElasticsearchClientSettings(new Uri("http://localhost:9200"));
+            settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
             client = new ElasticsearchClient(settings);
 
             Class =Type.Photo;
@@ -74,7 +76,7 @@ namespace FileworxObjectClassLibrary
                     command.ExecuteNonQuery();
                 }
             }
-            var response = await client.IndexAsync(this, "businessobject");
+            var response = await client.IndexAsync(this, EditBeforRun.ElasticFilesIndex);
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
@@ -90,7 +92,7 @@ namespace FileworxObjectClassLibrary
                 File.Delete(location);
             }
 
-            var response = await client.DeleteAsync("businessobject", Id);
+            var response = await client.DeleteAsync(EditBeforRun.ElasticFilesIndex, Id);
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
@@ -120,7 +122,7 @@ namespace FileworxObjectClassLibrary
                 }
             }
 
-            var response = await client.UpdateAsync<clsPhoto, clsPhoto>("businessobject", Id, u => u.Doc(this));
+            var response = await client.UpdateAsync<clsPhoto, clsPhoto>(EditBeforRun.ElasticFilesIndex, Id, u => u.Doc(this));
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");

@@ -16,10 +16,6 @@ namespace FileworxObjectClassLibrary
         // Properties
         public QuerySource Source { get; set; }
 
-        public clsPhotoQuery(QuerySource source)
-        {
-            Source = source;
-        }
         public async Task<List<clsPhoto>> Run()
         {
 
@@ -107,11 +103,11 @@ namespace FileworxObjectClassLibrary
             
             if(Source == QuerySource.ES)
             {
-                var settings = new ElasticsearchClientSettings(new Uri("http://localhost:9200"));
+                var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
 
                 var response = await client.SearchAsync<clsPhoto>(s => s
-                                            .Index("businessobject")
+                                            .Index(EditBeforRun.ElasticFilesIndex)
                                             .From(0)
                                             .Size(10000)
                                             .Query(q => q.Term(t => t.ClassID, 3)));

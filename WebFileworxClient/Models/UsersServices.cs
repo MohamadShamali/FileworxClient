@@ -8,10 +8,10 @@ namespace Web_Fileworx_Client.Models
         public clsUser LoggedInUser { get; set; } = null;
         public clsUser SelectedUser { get; set; } = null;
 
-        public void AddDBUsersToUsersList()
+        public async void AddDBUsersToUsersList()
         {
-            clsUserQuery allUsersQuery = new clsUserQuery();
-            AllUsers = allUsersQuery.Run();
+            clsUserQuery allUsersQuery = new clsUserQuery(QuerySource.DB);
+            AllUsers = await allUsersQuery.Run();
         }
 
         public void RefreshUsersList()

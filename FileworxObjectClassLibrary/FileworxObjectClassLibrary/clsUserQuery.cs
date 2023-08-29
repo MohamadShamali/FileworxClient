@@ -16,11 +16,6 @@ namespace FileworxObjectClassLibrary
         // Properties
         public QuerySource Source { get; set; }
 
-        public clsUserQuery(QuerySource source)
-        {
-            Source = source;
-        }
-
         public async Task<List<clsUser>> Run()
         {
             List<clsUser> allUsers = new List<clsUser>();
@@ -93,11 +88,11 @@ namespace FileworxObjectClassLibrary
             
             if(Source == QuerySource.ES)
             {
-                var settings = new ElasticsearchClientSettings(new Uri("http://localhost:9200"));
+                var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
 
                 var response = await client.SearchAsync<clsUser>(s => s
-                                            .Index("businessobject")
+                                            .Index(EditBeforRun.ElasticUsersIndex)
                                             .From(0)
                                             .Size(10000)
                                             .Query(q => q.Term(t => t.ClassID, 1)));
