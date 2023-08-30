@@ -18,7 +18,7 @@ namespace FileworxObjectTester
             //await IndexCreation.CreateUsersIndex();
             //await IndexCreation.CreateBusinessObjectAlias();
             //____________________________________________________________________________________________________
-            // Insert Photo
+            //// Insert Photo
             //var photo = new clsPhoto();
             //photo.Id = new Guid("52a7b071-45f4-48f5-b494-b860da0b5c2f");
             //photo.Description = "photo";
@@ -122,7 +122,7 @@ namespace FileworxObjectTester
 
             //Buisiness Object Query
             var query = new clsBusinessObjectQuery() { Source = QuerySource.ES };
-            //query.QClasses = new clsBusinessObjectQuery.ClassIds[] { clsBusinessObjectQuery.ClassIds.Photos };
+            query.QClasses = new clsBusinessObjectQuery.ClassIds[] { clsBusinessObjectQuery.ClassIds.Photos, clsBusinessObjectQuery.ClassIds.Users };
             var result = await query.Run();
             foreach (var c in result)
             {
@@ -133,7 +133,7 @@ namespace FileworxObjectTester
             //File Query
             //var query = new clsFileQuery();
             //query.Source = QuerySource.ES;
-            //query.QClasses = new clsFileQuery.ClassIds[] { clsFileQuery.ClassIds.Photos, clsFileQuery.ClassIds.News };
+            //query.QClasses = new clsFileQuery.ClassIds[] { clsFileQuery.ClassIds.Photos };
             //var result = await query.Run();
             //foreach (var c in result)
             //{

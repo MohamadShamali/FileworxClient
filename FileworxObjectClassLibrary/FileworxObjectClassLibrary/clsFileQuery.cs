@@ -115,13 +115,21 @@ namespace FileworxObjectClassLibrary
                 }
             }
 
-            if(Source == QuerySource.ES)
+            else
             {
+                var shouldQueries = new Action<QueryDescriptor<clsFile>>[QClasses.Length];
+
+                for (int i = 0; i < shouldQueries.Length; i++)
+                {
+                    int capturedIndex = i; // Capture the current value of i
+                    shouldQueries[i] = (bs => bs.Term(p => p.ClassID, (int)QClasses[capturedIndex]));
+                }
+
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
 
                 var response = await client.SearchAsync<clsFile>(s => s
-                            .Index(EditBeforRun.ElasticBusinessObjectAlias)
+                            .Index(EditBeforRun.ElasticFilesIndex)
                             .From(0)
                             .Size(10000)
                             .Query(q => q.Bool(b => b
@@ -129,10 +137,10 @@ namespace FileworxObjectClassLibrary
 
                 if (response.IsValidResponse)
                 {
-                    var objs = response.Documents;
-                    foreach (var obj in objs)
+                    var files = response.Documents;
+                    foreach (var file in files)
                     {
-                        allFiles.Add(obj);
+                        allFiles.Add(file);
                     }
                 }
 
@@ -145,13 +153,6 @@ namespace FileworxObjectClassLibrary
             return allFiles;
         }
 
-        private void shouldQueries(QueryDescriptor<clsFile> bs)
-        {
-            foreach (var a in QClasses)
-            {
-                bs.Term(p => p.ClassID, (int)a);
-            }
-        }
 
     }
 }

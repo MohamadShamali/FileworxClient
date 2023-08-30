@@ -117,22 +117,14 @@ namespace FileworxObjectClassLibrary
 
             else
             {
-                int[] requiredIDs = { 0, 0, 0 };
-                if (QClasses.Contains(ClassIds.Users))
-                {
-                    requiredIDs[0] = 1;
-                }
-                if (QClasses.Contains(ClassIds.News))
-                {
-                    requiredIDs[1] = 2;
-                }
-                if (QClasses.Contains(ClassIds.Photos))
-                {
-                    requiredIDs[2] = 3;
-                }
 
-                var shouldQueries = new List<Action<QueryDescriptor<clsBusinessObject>>>();
-                foreach(var id in QClasses) { shouldQueries.Add(bs => bs.Term(p => p.ClassID, (int) id)); }
+                var shouldQueries = new Action<QueryDescriptor<clsBusinessObject>>[QClasses.Length];
+
+                for (int i = 0; i < shouldQueries.Length; i++)
+                {
+                    int capturedIndex = i; // Capture the current value of i
+                    shouldQueries[i] = (bs => bs.Term(p => p.ClassID, (int)QClasses[capturedIndex]));
+                }
 
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
@@ -142,7 +134,7 @@ namespace FileworxObjectClassLibrary
                             .From(0)
                             .Size(10000)
                             .Query(q => q.Bool(b => b
-                            .Should(shouldQueries.ToArray()))));
+                            .Should(shouldQueries))));
 
                 if (response.IsValidResponse)
                 {
