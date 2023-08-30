@@ -75,9 +75,9 @@ namespace FileworxObjectClassLibrary
             }
         }
 
-        public async override void Delete()
+        public async override Task Delete()
         {
-            base.Delete();
+            await base.Delete();
             var response = await client.DeleteAsync(EditBeforRun.ElasticUsersIndex, Id);
             if (!response.IsValidResponse)
             {

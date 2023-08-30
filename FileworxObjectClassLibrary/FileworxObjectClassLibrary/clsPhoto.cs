@@ -83,7 +83,7 @@ namespace FileworxObjectClassLibrary
             }
         }
 
-        public async override void Delete()
+        public async override Task Delete()
         {
             base.Delete();
 

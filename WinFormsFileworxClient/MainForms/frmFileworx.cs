@@ -20,44 +20,50 @@ namespace Fileworx_Client
         private static List<clsFile> allFiles { get; set; }
         private static List<clsNews> allNews { get; set; }
         private static List<clsPhoto> allPhotos { get; set; }
+        private QuerySource querySource { get; set; } = QuerySource.ES;
         private TabPage hiddenTabPage;
         private enum SortBy { RecentDate, OldestDate, Alphabetically };
 
         public frmFileworx()
         {
             InitializeComponent();
-
-            // UI 
-            int desiredHeight = (int)((this.Height * 2 / 3) );
-            if (splitContainer1.Panel1MinSize <= desiredHeight && desiredHeight <= splitContainer1.Height - splitContainer1.Panel2MinSize)
-            {
-                splitContainer1.SplitterDistance = desiredHeight;
-            }
-            lblName.Text = Global.LoggedInUser.Name;
-            this.WindowState = FormWindowState.Maximized;
-
-            // Hide and save hidden Tab
-            hiddenTabPage = tclPreview.TabPages[1];
-            tclPreview.TabPages.RemoveAt(1);
-
-            //Admin access
-            if (Global.LoggedInUser.IsAdmin) msiUsersList.Enabled = true;
-            else msiUsersList.Enabled = false;
-
-            // Add files to listView
-            addDBFilesToFilesList();
-            sortFilesList(SortBy.RecentDate);
-            addFilesListItemsToListView();
         }
 
-        private async void addDBFilesToFilesList()
+        public static async Task<frmFileworx> Create()
+        {
+            var fileworx = new frmFileworx();
+            // UI 
+            int desiredHeight = (int)((fileworx.Height * 2 / 3));
+            if (fileworx.splitContainer1.Panel1MinSize <= desiredHeight && desiredHeight <= fileworx.splitContainer1.Height - fileworx.splitContainer1.Panel2MinSize)
+            {
+                fileworx.splitContainer1.SplitterDistance = desiredHeight;
+            }
+            fileworx.lblName.Text = Global.LoggedInUser.Name;
+            fileworx.WindowState = FormWindowState.Maximized;
+
+            // Hide and save hidden Tab
+            fileworx.hiddenTabPage = fileworx.tclPreview.TabPages[1];
+            fileworx.tclPreview.TabPages.RemoveAt(1);
+
+            //Admin access
+            if (Global.LoggedInUser.IsAdmin) fileworx.msiUsersList.Enabled = true;
+            else fileworx.msiUsersList.Enabled = false;
+
+            // Add files to listView
+            await fileworx.addDBFilesToFilesList();
+            fileworx.sortFilesList(SortBy.RecentDate);
+            fileworx.addFilesListItemsToListView();
+            return fileworx;
+        }
+
+        private async Task addDBFilesToFilesList()
         {
             clsNewsQuery allNewsQuery = new clsNewsQuery();
-            allNewsQuery.Source = QuerySource.DB;
+            allNewsQuery.Source = querySource;
             allNews = await allNewsQuery.Run();
 
             clsPhotoQuery allPhotosQuery = new clsPhotoQuery();
-            allPhotosQuery.Source = QuerySource.DB;
+            allPhotosQuery.Source = querySource;
             allPhotos = await allPhotosQuery.Run();
 
 
@@ -78,12 +84,12 @@ namespace Fileworx_Client
             }
         }
 
-        private void refreshFilesList()
+        private async Task refreshFilesList()
         {
             allFiles.Clear();
             allNews.Clear();
             allPhotos.Clear(); 
-            addDBFilesToFilesList();
+            await addDBFilesToFilesList();
         }
 
         private void sortFilesList(SortBy sortBy)
@@ -146,7 +152,7 @@ namespace Fileworx_Client
         {
             clsFile selectedFile =
                 (from file in allFiles
-                 where ((file.Name == lvwFiles.SelectedItems[0].Text) && (file.CreationDate == DateTime.Parse(lvwFiles.SelectedItems[0].SubItems[1].Text)))
+                 where ((file.Name == lvwFiles.SelectedItems[0].Text) && (file.CreationDate.ToString() == (lvwFiles.SelectedItems[0].SubItems[1].Text)))
                  select file).FirstOrDefault();
 
             return selectedFile;
@@ -202,7 +208,7 @@ namespace Fileworx_Client
             }
         }
 
-        private void deleteFile (clsFile selectedFile)
+        private async Task deleteFile (clsFile selectedFile)
         {
             if (selectedFile is clsPhoto)
             {
@@ -214,13 +220,13 @@ namespace Fileworx_Client
                     picImagePreview.Image = null;
                 }
 
-                selectedPhoto.Delete();
+                await selectedPhoto.Delete().ConfigureAwait(false);
             }
 
             else
             {
                 clsNews selectedNews = (clsNews)selectedFile;
-                selectedNews.Delete();
+                await selectedNews.Delete().ConfigureAwait(false);
             }
         }
 
@@ -231,9 +237,9 @@ namespace Fileworx_Client
             msiSortByAlphabetically.Checked = false;
         }
 
-        private void onAddFormClose()
-        {
-            refreshFilesList();
+        private async void onAddFormClose()
+         {
+            await refreshFilesList();
             autoSortFilesList();
             addFilesListItemsToListView();
         }
@@ -354,20 +360,22 @@ namespace Fileworx_Client
             }
         }
 
-        private void removeFileToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void removeFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             clsFile selectedFile = findSelectedFile();
-            DialogResult result = MessageBox.Show($"Are you sure you want to delete {selectedFile.Name}?",
-                                        "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            //DialogResult result = MessageBox.Show($"Are you sure you want to delete {selectedFile.Name}?",
+            //                            "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            if (result == DialogResult.Yes)
-            {
+            //if (result == DialogResult.Yes)
+            //{
                 lvwFiles.SelectedItems.Clear();
                 clearAllDisplayLabels();
 
-                deleteFile(selectedFile);
+                await deleteFile(selectedFile).ConfigureAwait(false);
 
-                refreshFilesList();
+                MessageBox.Show(await IndexCreation.tst());
+
+                await refreshFilesList();
                 autoSortFilesList();
                 addFilesListItemsToListView();
 
@@ -376,7 +384,7 @@ namespace Fileworx_Client
                     hiddenTabPage = tclPreview.TabPages[1];
                     tclPreview.TabPages.RemoveAt(1);
                 }
-            }
+            //}
         }
     }
 }

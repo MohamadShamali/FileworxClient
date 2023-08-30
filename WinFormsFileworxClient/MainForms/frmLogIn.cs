@@ -29,7 +29,7 @@ namespace Fileworx_Client
             txtPassword.Text = String.Empty;
         }
 
-        private void logInButton_Click(object sender, EventArgs e)
+        private async void logInButton_Click(object sender, EventArgs e)
         {
             clsUser tryingToLogIn= new clsUser() { Username = txtUsername.Text, Password = txtPassword.Text };
             LogInValidationResult validateResult = tryingToLogIn.ValidateLogin();
@@ -41,7 +41,7 @@ namespace Fileworx_Client
                 Global.LoggedInUser = tryingToLogIn;
 
                 // Open Fileworx form in a new thread
-                frmFileworx fileworx = new frmFileworx();
+                frmFileworx fileworx = await frmFileworx.Create();
                 var fileworxThread = new Thread(()=> Application.Run(fileworx));
                 fileworxThread.SetApartmentState(ApartmentState.STA); // Set the thread to STA mode
                 fileworxThread.Start();

@@ -102,5 +102,26 @@ namespace FileworxObjectClassLibrary
                 throw new Exception("Error while working with Elastic");
             }
         }
+
+        public async static Task<string> tst()
+        {
+            var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            var client = new ElasticsearchClient(settings);
+
+            var response = await client.SearchAsync<clsNews>(s => s
+                                        .Index(EditBeforRun.ElasticFilesIndex)
+                                        .From(0)
+                                        .Size(10000)
+                                        .Query(q => q.Term(t => t.ClassID, 2)));
+
+                var News = response.Documents;
+                foreach (var news in News)
+                {
+                    return news.Name;
+                }
+
+            return "s";
+            
+        }
     }
 }

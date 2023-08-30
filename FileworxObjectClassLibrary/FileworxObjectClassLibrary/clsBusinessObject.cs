@@ -64,7 +64,7 @@ namespace FileworxObjectClassLibrary
             }
         }
 
-        public virtual void Delete()
+        public virtual async Task Delete()
         {
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
