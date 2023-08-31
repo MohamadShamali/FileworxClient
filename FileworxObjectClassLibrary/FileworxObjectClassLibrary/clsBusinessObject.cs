@@ -77,7 +77,7 @@ namespace FileworxObjectClassLibrary
             }
         }
 
-        public virtual void Update()
+        public virtual async Task UpdateAsync()
         {
             if (Description != null)
             Description = Description.Replace("'", "''");
@@ -86,7 +86,7 @@ namespace FileworxObjectClassLibrary
 
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
 
                 string query = $"UPDATE {tableName} SET C_DESCRIPTION = '{Description}', C_CREATIONDATE = '{CreationDate.ToString("yyyy-MM-dd HH:mm:ss")}'," +
                                $"C_MODIFICATIONDATE = '{ModificationDate.ToString("yyyy-MM-dd HH:mm:ss")}', C_CREATORID= '{CreatorId}', C_LASTMODIFIERID= '{LastModifierId}', " +
@@ -94,7 +94,7 @@ namespace FileworxObjectClassLibrary
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
         }
