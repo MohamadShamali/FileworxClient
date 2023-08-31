@@ -45,7 +45,7 @@ namespace FileworxObjectClassLibrary
             LastModifierId = new Guid("ffd7c672-aa84-47b1-a9a3-c7875a503708"); // to remove
         }
 
-        public virtual void Insert()
+        public virtual async Task InsertAsync()
         {
             if (Description != null) 
             Description = Description.Replace("'", "''");
@@ -54,17 +54,17 @@ namespace FileworxObjectClassLibrary
 
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 string query = $"INSERT INTO {tableName}(ID, C_DESCRIPTION, C_CREATIONDATE, C_CREATORID, C_NAME, C_CLASSID)" +
                                $"VALUES('{Id}', '{Description}', '{CreationDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{CreatorId}', '{Name}', {(int) Class});";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
         }
 
-        public virtual async Task Delete()
+        public virtual async Task DeleteAsync()
         {
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {

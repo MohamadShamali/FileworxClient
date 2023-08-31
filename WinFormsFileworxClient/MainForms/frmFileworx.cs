@@ -366,36 +366,18 @@ namespace Fileworx_Client
         private async void removeFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             clsFile selectedFile = findSelectedFile();
-            //DialogResult result = MessageBox.Show($"Are you sure you want to delete {selectedFile.Name}?",
-            //                            "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show($"Are you sure you want to delete {selectedFile.Name}?",
+                                       "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            //if (result == DialogResult.Yes)
-            //{
+            if (result == DialogResult.Yes)
+            {
                 lvwFiles.SelectedItems.Clear();
                 clearAllDisplayLabels();
 
-            if (selectedFile is clsPhoto)
-            {
-                clsPhoto selectedPhoto = (clsPhoto)selectedFile;
+                await deleteFile(selectedFile);
 
-                if (picImagePreview.Image != null)
-                {
-                    picImagePreview.Image.Dispose();
-                    picImagePreview.Image = null;
-                }
-
-                await selectedPhoto.Delete();
-            }
-
-            else
-            {
-                clsNews selectedNews = (clsNews)selectedFile;
-                await selectedNews.Delete();
-            }
-            string g = await IndexCreation.tst();
-            MessageBox.Show(g);
-            //Thread.Sleep(500);
-            await refreshFilesList();
+            
+                await refreshFilesList();
                 autoSortFilesList();
                 addFilesListItemsToListView();
 
@@ -404,7 +386,7 @@ namespace Fileworx_Client
                     hiddenTabPage = tclPreview.TabPages[1];
                     tclPreview.TabPages.RemoveAt(1);
                 }
-            //}
+            }
         }
 
         private async void btnRefresh_Click(object sender, EventArgs e)

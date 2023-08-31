@@ -15,42 +15,42 @@ namespace FileworxObjectClassLibrary
         // Properties
         public string Body { get; set; }
 
-        public override void Insert()
+        public override async Task InsertAsync()
         {
-            base.Insert();
+            await base.InsertAsync();
 
             Body.Replace(Environment.NewLine, "\\n");
             Body = Body.Replace("'", "''");
             
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 string query = $"INSERT INTO T_FILE (ID, C_BODY) " +
                                $"VALUES('{Id}', '{Body}');";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
         }
 
-        public override void Update()
+        public override async Task UpdateAsync()
         {
-            base.Update();
+            await base.UpdateAsync();
 
             Body.Replace(Environment.NewLine, "\\n");
             Body = Body.Replace("'", "''");
 
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
 
                 string query = $"UPDATE T_FILE SET C_BODY = '{Body}' " +
                                $"WHERE Id = '{Id}';";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
         }

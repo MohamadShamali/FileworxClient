@@ -61,19 +61,19 @@ namespace FileworxObjectClassLibrary
             photoUpdated = false;
         }
 
-        public async override void Insert()
+        public async override Task InsertAsync()
         {
-            base.Insert();
+            await base.InsertAsync();
             copyImage();
             photoUpdated = false;
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 string query = $"INSERT INTO T_PHOTO (ID, C_LOCATION) " +
                                $"VALUES('{Id}', '{Location}')";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
             var response = await client.IndexAsync(this, EditBeforRun.ElasticFilesIndex);
@@ -81,11 +81,12 @@ namespace FileworxObjectClassLibrary
             {
                 throw new Exception("Error while working with Elastic");
             }
+            client.Indices.Refresh(EditBeforRun.ElasticFilesIndex);
         }
 
-        public async override Task Delete()
+        public async override Task DeleteAsync()
         {
-            await base.Delete();
+            await base.DeleteAsync();
 
             if (File.Exists(location))
             {
@@ -97,11 +98,12 @@ namespace FileworxObjectClassLibrary
             {
                 throw new Exception("Error while working with Elastic");
             }
+            client.Indices.Refresh(EditBeforRun.ElasticFilesIndex);
         }
 
-        public async override void Update()
+        public async override Task UpdateAsync()
         {
-            base.Update();
+            await base.UpdateAsync();
             if (photoUpdated)
             {
                 copyImage();
@@ -110,7 +112,7 @@ namespace FileworxObjectClassLibrary
 
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
 
                 string query = $"UPDATE {tableName} " +
                                $"SET C_LOCATION = '{Location}' " +
@@ -118,7 +120,7 @@ namespace FileworxObjectClassLibrary
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
 
@@ -127,6 +129,7 @@ namespace FileworxObjectClassLibrary
             {
                 throw new Exception("Error while working with Elastic");
             }
+            client.Indices.Refresh(EditBeforRun.ElasticFilesIndex);
         }
 
         public override void Read()

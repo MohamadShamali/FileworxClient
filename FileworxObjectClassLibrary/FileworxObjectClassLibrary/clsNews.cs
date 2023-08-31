@@ -27,17 +27,17 @@ namespace FileworxObjectClassLibrary
             Class = Type.News;
         }
 
-        public async override void Insert()
+        public async override Task InsertAsync()
         {
-            base.Insert();
+            await base.InsertAsync();
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 string query = $"INSERT INTO T_NEWS (ID, C_CATEGORY) " +
                                $"VALUES('{Id}', '{Category}')";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
             var response = await client.IndexAsync(this, EditBeforRun.ElasticFilesIndex);
@@ -46,40 +46,34 @@ namespace FileworxObjectClassLibrary
             {
                 throw new Exception("Error while working with Elastic");
             }
+            client.Indices.Refresh(EditBeforRun.ElasticFilesIndex); // refresh index 
         }
 
-        public async override Task Delete()
+        public async override Task DeleteAsync()
         {
-            try
-            {
-                var response = await client.DeleteAsync(EditBeforRun.ElasticFilesIndex, Id);
+            await base.DeleteAsync();
+            var response = await client.DeleteAsync(EditBeforRun.ElasticFilesIndex, Id);
 
-                if (!response.IsValidResponse)
-                {
-                    throw new Exception("Error while working with Elastic");
-                }
-                await base.Delete();
-            }
-
-            catch (Exception ex)
+            if (!response.IsValidResponse)
             {
-                throw ex;
+                throw new Exception("Error while working with Elastic");
             }
+            client.Indices.Refresh(EditBeforRun.ElasticFilesIndex);
         }
 
-        public async override void Update()
+        public async override Task UpdateAsync()
         {
-            base.Update();
+            await base.UpdateAsync();
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
 
                 string query = $"UPDATE T_NEWS SET C_CATEGORY = '{Category}' " +
                                $"WHERE Id = '{Id}'";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
             var response = await client.UpdateAsync<clsNews, clsNews>(EditBeforRun.ElasticFilesIndex, Id, u => u.Doc(this));
@@ -88,6 +82,7 @@ namespace FileworxObjectClassLibrary
             {
                 throw new Exception("Error while working with Elastic");
             }
+            client.Indices.Refresh(EditBeforRun.ElasticFilesIndex);
         }
 
         public override void Read()

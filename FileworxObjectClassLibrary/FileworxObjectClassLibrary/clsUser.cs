@@ -36,9 +36,9 @@ namespace FileworxObjectClassLibrary
             Class = Type.User;
         }
 
-        public async override void Insert()
+        public async override Task InsertAsync()
         {
-            base.Insert();
+            await base.InsertAsync();
 
             Username = Username.Replace("'", "''");
             Password = Password.Replace("'", "''");
@@ -46,12 +46,12 @@ namespace FileworxObjectClassLibrary
             {
                 using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
                     string query = $"INSERT INTO T_USER(ID, C_USERNAME, C_PASSWORD, ISADMIN) " +
                                    $"VALUES('{Id}', '{Username}', '{Password}', '{IsAdmin}');";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.ExecuteNonQuery();
+                        await command.ExecuteNonQueryAsync();
                     }
                 }
             }
@@ -73,21 +73,23 @@ namespace FileworxObjectClassLibrary
             {
                 throw new Exception("Error while working with Elastic");
             }
+            client.Indices.Refresh(EditBeforRun.ElasticUsersIndex);
         }
 
-        public async override Task Delete()
+        public async override Task DeleteAsync()
         {
-            await base.Delete();
+            await base.DeleteAsync();
             var response = await client.DeleteAsync(EditBeforRun.ElasticUsersIndex, Id);
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
             }
+            client.Indices.Refresh(EditBeforRun.ElasticUsersIndex);
         }
 
-        public async override void Update()
+        public async override Task UpdateAsync()
         {
-            base.Update();
+            await base.UpdateAsync();
 
             Username = Username.Replace("'", "''");
             Password = Password.Replace("'", "''");
@@ -95,14 +97,14 @@ namespace FileworxObjectClassLibrary
             {
                 using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
 
                     string query = $"UPDATE T_USER " +
                                    $"SET C_USERNAME= '{Username}', C_PASSWORD= '{Password}', ISADMIN= '{IsAdmin}' WHERE Id = '{Id}'";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.ExecuteNonQuery();
+                        await command.ExecuteNonQueryAsync();
                     }
                 }
             }
@@ -124,6 +126,7 @@ namespace FileworxObjectClassLibrary
             {
                 throw new Exception("Error while working with Elastic");
             }
+            client.Indices.Refresh(EditBeforRun.ElasticUsersIndex);
         }
 
         public override void Read()
