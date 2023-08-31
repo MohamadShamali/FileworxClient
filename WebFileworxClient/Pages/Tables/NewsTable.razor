@@ -29,12 +29,11 @@
     public EventCallback<clsFile> OnRowClick { get; set; }
 
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
-        newsServices.AddDBFilesToFilesList();
+        await newsServices.AddDBFilesToFilesList();
         base.OnInitialized();
     }
-
 
 
 

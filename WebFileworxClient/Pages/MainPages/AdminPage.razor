@@ -51,11 +51,11 @@
     private bool showDeleteAdminErrorWindow = false;
     private bool showFileErrorWindow = false;
 
-    private void onRemoveUser()
+    private async Task onRemoveUser()
     {
         if (usersServices.SelectedUser != null)
         {
-            usersServices.SelectedUser.Delete();
+            await usersServices.SelectedUser.DeleteAsync();
             usersServices.SelectedUser = null;
 
             usersServices.RefreshUsersList();
@@ -90,11 +90,11 @@
         showEditUserWindow = false;
     }
 
-    private void onAddUser(clsUser addedUser)
+    private async Task onAddUser(clsUser addedUser)
     {
         try
         {
-            addedUser.Insert();
+            await addedUser.InsertAsync();
             usersServices.RefreshUsersList();
 
             showAddUserWindow = false;
@@ -110,11 +110,11 @@
         }
     }
 
-    private void onEditUser(clsUser editedUser)
+    private async Task onEditUser(clsUser editedUser)
     {
         try
         {
-            editedUser.Update();
+            await editedUser.UpdateAsync();
             usersServices.RefreshUsersList();
 
             showEditUserWindow = false;

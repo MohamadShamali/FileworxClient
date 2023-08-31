@@ -7,11 +7,12 @@ namespace Web_Fileworx_Client.Models
         public List<clsUser> AllUsers = new List<clsUser>();
         public clsUser LoggedInUser { get; set; } = null;
         public clsUser SelectedUser { get; set; } = null;
+        private QuerySource querySource { get; set; } = QuerySource.ES;
 
-        public async void AddDBUsersToUsersList()
+        public async Task AddDBUsersToUsersList()
         {
             clsUserQuery allUsersQuery = new clsUserQuery();
-            allUsersQuery.Source = QuerySource.DB;
+            allUsersQuery.Source = querySource;
             AllUsers = await allUsersQuery.Run();
         }
 

@@ -137,8 +137,8 @@
         showFileErrorWindow = false;
     }
 
-    private void onConfirmDelete()
-    {
+    private async Task onConfirmDelete()
+     {
         confirmDelete = true;
 
         if (newsServices.SelectedFile != null)
@@ -147,14 +147,14 @@
             {
                 clsPhoto selectedPhoto = (clsPhoto)newsServices.SelectedFile;
 
-                selectedPhoto.Delete();
+                await selectedPhoto.DeleteAsync();
             }
 
             else
             {
                 clsNews selectedNews = (clsNews)newsServices.SelectedFile;
 
-                selectedNews.Delete();
+              await selectedNews.DeleteAsync();
             }
             newsServices.SelectedFile = null;
             newsServices.RefreshFilesList();
@@ -164,11 +164,11 @@
         showDeleteConfirmationWindow = false;
     }
 
-    private void onAddNews(clsNews addedNews)
+    private async Task onAddNews(clsNews addedNews)
     {
         try
         {
-            addedNews.Insert();
+            await addedNews.InsertAsync();
             newsServices.RefreshFilesList();
 
             showAddNewsWindow = false;
@@ -180,11 +180,11 @@
 
     }
 
-    private void onEditNews(clsNews editedNews)
+    private async Task onEditNews(clsNews editedNews)
     {
         try
         {
-            editedNews.Update();
+            await editedNews.UpdateAsync();
             newsServices.RefreshFilesList();
 
             showEditNewsWindow = false;
@@ -195,11 +195,11 @@
         }
     }
 
-    private void onAddImage(clsPhoto addedPhoto)
+    private async Task onAddImage(clsPhoto addedPhoto)
     {
         try
         {
-            addedPhoto.Insert();
+            await addedPhoto.InsertAsync();
             newsServices.RefreshFilesList();
 
             showAddImageWindow = false;
@@ -212,11 +212,11 @@
 
     }
 
-    private void onEditImage(clsPhoto editedPhoto)
+    private async Task onEditImage(clsPhoto editedPhoto)
     {
         try
         {
-            editedPhoto.Update();
+            await editedPhoto.UpdateAsync();
             newsServices.RefreshFilesList();
 
             showEditImageWindow = false;
