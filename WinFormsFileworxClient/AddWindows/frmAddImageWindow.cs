@@ -56,7 +56,7 @@ namespace Fileworx_Client
             this.Close();
         }
 
-        private void saveAddNewsButton_Click(object sender, EventArgs e)
+        private async void saveAddNewsButton_Click(object sender, EventArgs e)
         {
             // Add Case
             if (String.IsNullOrEmpty(photoToEdit.Name))
@@ -77,7 +77,7 @@ namespace Fileworx_Client
                         Class = FileworxObjectClassLibrary.Type.Photo
                     };
 
-                    newPhoto.Insert();
+                    await newPhoto.InsertAsync();
                 }
                 else
                 {
@@ -100,7 +100,7 @@ namespace Fileworx_Client
                     photoToEdit.Location = imagePathTextBox.Text;
 
 
-                    photoToEdit.Update();
+                    await photoToEdit.InsertAsync();
                 }
                 else
                 {
@@ -111,7 +111,7 @@ namespace Fileworx_Client
 
             if (OnFormClose != null)
             {
-                OnFormClose();
+                await OnFormClose();
             }
 
             this.Close();

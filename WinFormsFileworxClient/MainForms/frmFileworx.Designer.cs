@@ -46,6 +46,7 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colutmnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.picLogo = new System.Windows.Forms.PictureBox();
             this.signOutButton = new System.Windows.Forms.Button();
             this.lblWelcome = new System.Windows.Forms.Label();
@@ -67,7 +68,9 @@
             this.cmsFiles = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmiEditFile = new System.Windows.Forms.ToolStripMenuItem();
             this.cmiRemoveFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnRefresh = new System.Windows.Forms.Button();
+            this.cboDataStoreSource = new System.Windows.Forms.ComboBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.lblDataStoreSourceTitle = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picImagePreview)).BeginInit();
             this.tpgPreview.SuspendLayout();
             this.tclPreview.SuspendLayout();
@@ -81,6 +84,7 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.cmsFiles.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // picImagePreview
@@ -235,7 +239,7 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.btnRefresh);
+            this.panel1.Controls.Add(this.panel3);
             this.panel1.Controls.Add(this.picLogo);
             this.panel1.Controls.Add(this.signOutButton);
             this.panel1.Controls.Add(this.lblWelcome);
@@ -247,6 +251,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1167, 60);
             this.panel1.TabIndex = 85;
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnRefresh.Location = new System.Drawing.Point(124, 22);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
+            this.btnRefresh.TabIndex = 85;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // picLogo
             // 
@@ -261,7 +276,7 @@
             // signOutButton
             // 
             this.signOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.signOutButton.Location = new System.Drawing.Point(6902, 24);
+            this.signOutButton.Location = new System.Drawing.Point(8069, 24);
             this.signOutButton.Name = "signOutButton";
             this.signOutButton.Size = new System.Drawing.Size(75, 23);
             this.signOutButton.TabIndex = 84;
@@ -450,15 +465,41 @@
             this.cmiRemoveFile.Text = "Remove File";
             this.cmiRemoveFile.Click += new System.EventHandler(this.removeFileToolStripMenuItem_Click);
             // 
-            // btnRefresh
+            // cboDataStoreSource
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(1067, 29);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
-            this.btnRefresh.TabIndex = 85;
-            this.btnRefresh.Text = "Refresh";
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            this.cboDataStoreSource.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cboDataStoreSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboDataStoreSource.FormattingEnabled = true;
+            this.cboDataStoreSource.Items.AddRange(new object[] {
+            "Database",
+            "Elasticsearch"});
+            this.cboDataStoreSource.Location = new System.Drawing.Point(15, 24);
+            this.cboDataStoreSource.Name = "cboDataStoreSource";
+            this.cboDataStoreSource.Size = new System.Drawing.Size(103, 21);
+            this.cboDataStoreSource.TabIndex = 86;
+            // 
+            // panel3
+            // 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3.Controls.Add(this.lblDataStoreSourceTitle);
+            this.panel3.Controls.Add(this.cboDataStoreSource);
+            this.panel3.Controls.Add(this.btnRefresh);
+            this.panel3.Location = new System.Drawing.Point(938, 10);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(204, 50);
+            this.panel3.TabIndex = 87;
+            // 
+            // lblDataStoreSourceTitle
+            // 
+            this.lblDataStoreSourceTitle.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDataStoreSourceTitle.AutoSize = true;
+            this.lblDataStoreSourceTitle.Location = new System.Drawing.Point(17, 6);
+            this.lblDataStoreSourceTitle.Name = "lblDataStoreSourceTitle";
+            this.lblDataStoreSourceTitle.Size = new System.Drawing.Size(95, 13);
+            this.lblDataStoreSourceTitle.TabIndex = 87;
+            this.lblDataStoreSourceTitle.Text = "Data Store Source";
             // 
             // frmFileworx
             // 
@@ -489,6 +530,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.cmsFiles.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -533,5 +576,8 @@
         private System.Windows.Forms.ToolStripMenuItem cmiEditFile;
         private System.Windows.Forms.ToolStripMenuItem cmiRemoveFile;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.ComboBox cboDataStoreSource;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label lblDataStoreSourceTitle;
     }
 }

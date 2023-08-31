@@ -54,7 +54,7 @@ namespace Fileworx_Client
             else { return false; }
         }
 
-        private void createButton_Click(object sender, EventArgs e)
+        private async void createButton_Click(object sender, EventArgs e)
         {
 
             // Add Case
@@ -77,7 +77,7 @@ namespace Fileworx_Client
                             Class = FileworxObjectClassLibrary.Type.User
                         };
 
-                        newUser.Insert();
+                        await newUser.InsertAsync();
 
                         MessageBox.Show("Account Created! \n\rLog in with the entered information", "Account Created", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -119,7 +119,7 @@ namespace Fileworx_Client
                         userToEdit.Password = txtPassword.Text;
                         userToEdit.IsAdmin = ((cboIsAdmin.SelectedIndex == 0) ? false : true);
 
-                        userToEdit.Update();
+                        await userToEdit.InsertAsync();
 
                         MessageBox.Show($"Account Updated!", "Account Updated", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
@@ -149,7 +149,7 @@ namespace Fileworx_Client
 
             if (OnFormClose != null)
             {
-                OnFormClose();
+                await OnFormClose();
             }
 
             this.Close();

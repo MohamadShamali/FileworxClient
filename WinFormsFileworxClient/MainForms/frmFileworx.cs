@@ -40,6 +40,7 @@ namespace Fileworx_Client
             }
             fileworx.lblName.Text = Global.LoggedInUser.Name;
             fileworx.WindowState = FormWindowState.Maximized;
+            fileworx.cboDataStoreSource.SelectedIndex = 1;
 
             // Hide and save hidden Tab
             fileworx.hiddenTabPage = fileworx.tclPreview.TabPages[1];
@@ -223,13 +224,13 @@ namespace Fileworx_Client
                     picImagePreview.Image = null;
                 }
 
-                await selectedPhoto.Delete();
+                await selectedPhoto.DeleteAsync();
             }
 
             else
             {
                 clsNews selectedNews = (clsNews)selectedFile;
-                await selectedNews.Delete();
+                await selectedNews.DeleteAsync();
             }
         }
 
@@ -240,17 +241,17 @@ namespace Fileworx_Client
             msiSortByAlphabetically.Checked = false;
         }
 
-        private async void onAddFormClose()
+        private async Task onAddFormClose()
          {
             await refreshFilesList();
             autoSortFilesList();
             addFilesListItemsToListView();
         }
 
-        private void onEditFormClose()
+        private async Task onEditFormClose()
         {
             int selectedIndex = lvwFiles.SelectedItems[0].Index;
-            refreshFilesList();
+            await refreshFilesList();
             autoSortFilesList();
             addFilesListItemsToListView();
 
@@ -329,9 +330,9 @@ namespace Fileworx_Client
             msiSortByAlphabetically.Checked = true;
         }
 
-        private void usersListToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void usersListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmUsersList usersList = new frmUsersList();
+            frmUsersList usersList = await frmUsersList.Create();
             usersList.Show();
         }
 
@@ -391,6 +392,15 @@ namespace Fileworx_Client
 
         private async void btnRefresh_Click(object sender, EventArgs e)
         {
+            if(cboDataStoreSource.SelectedIndex == 0)
+            {
+                querySource = QuerySource.DB;
+            }
+            if (cboDataStoreSource.SelectedIndex == 1)
+            {
+                querySource = QuerySource.ES;
+            }
+
             await refreshFilesList();
             autoSortFilesList();
             addFilesListItemsToListView();

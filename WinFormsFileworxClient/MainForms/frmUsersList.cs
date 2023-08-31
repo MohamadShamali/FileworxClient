@@ -15,26 +15,36 @@ namespace Fileworx_Client
     public partial class frmUsersList : Form
     {
         private static List<clsUser> allUsers = new List<clsUser>();
+        private QuerySource querySource { get; set; } = QuerySource.ES;
         public frmUsersList()
         {
             InitializeComponent();
-
-            lblName.Text = Global.LoggedInUser.Name;
-
-            addDBUsersToUsersList();
-            addUsersListItemsToListView();
         }
 
-        private async void addDBUsersToUsersList()
+        public static async Task<frmUsersList> Create()
+        {
+            var usersList = new frmUsersList();
+
+            // UI
+            usersList.lblName.Text = Global.LoggedInUser.Name;
+            usersList.cboDataStoreSource.SelectedIndex = 1;
+
+            await usersList.addDBUsersToUsersList();
+            usersList.addUsersListItemsToListView();
+
+            return usersList;
+        }
+
+        private async Task addDBUsersToUsersList()
         {
             clsUserQuery allUsersQuery = new clsUserQuery();
-            allUsersQuery.Source = QuerySource.DB;
+            allUsersQuery.Source = querySource;
             allUsers = await allUsersQuery.Run();
         }
 
-        private void refreshUsersList()
+        private async Task refreshUsersList()
         {
-            addDBUsersToUsersList();
+            await addDBUsersToUsersList();
         }
 
         private void addUsersListItemsToListView()
@@ -65,17 +75,17 @@ namespace Fileworx_Client
             return selectedUser;
         }
 
-        private void onAddFormClose()
+        private async Task onAddFormClose()
         {
-            refreshUsersList();
+            await refreshUsersList();
             addUsersListItemsToListView();
         }
 
-        private void onEditFormClose()
+        private async Task onEditFormClose()
         {
             int selectedIndex = lvwUsers.SelectedItems[0].Index;
 
-            refreshUsersList();
+            await refreshUsersList();
             addUsersListItemsToListView();
 
             lvwUsers.SelectedIndices.Clear();
@@ -131,7 +141,7 @@ namespace Fileworx_Client
             }
         }
 
-        private void removeUserToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void removeUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             clsUser selectedUser = findSelectedUser();
 
@@ -140,10 +150,25 @@ namespace Fileworx_Client
             if (result == DialogResult.Yes)
             {
                 clearAllLabels();
-                selectedUser.Delete();
+                await selectedUser.DeleteAsync();
                 addDBUsersToUsersList();
                 addUsersListItemsToListView();
             }
+        }
+
+        private async void btnRefresh_Click(object sender, EventArgs e)
+        {
+            if (cboDataStoreSource.SelectedIndex == 0)
+            {
+                querySource = QuerySource.DB;
+            }
+            if (cboDataStoreSource.SelectedIndex == 1)
+            {
+                querySource = QuerySource.ES;
+            }
+
+            await refreshUsersList();
+            addUsersListItemsToListView();
         }
     }
 }

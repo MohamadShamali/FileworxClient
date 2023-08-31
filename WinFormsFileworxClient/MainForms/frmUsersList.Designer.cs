@@ -52,6 +52,10 @@
             this.cmsUsersList = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmiEditUser = new System.Windows.Forms.ToolStripMenuItem();
             this.cmiRemoveUser = new System.Windows.Forms.ToolStripMenuItem();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.lblDataStoreSourceTitle = new System.Windows.Forms.Label();
+            this.cboDataStoreSource = new System.Windows.Forms.ComboBox();
+            this.btnRefresh = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -60,6 +64,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.mnuMenuStrip.SuspendLayout();
             this.cmsUsersList.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -127,6 +132,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.panel3);
             this.panel1.Controls.Add(this.picLogo);
             this.panel1.Controls.Add(this.signOutButton);
             this.panel1.Controls.Add(this.lblWelcome);
@@ -152,7 +158,7 @@
             // signOutButton
             // 
             this.signOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.signOutButton.Location = new System.Drawing.Point(10403, 24);
+            this.signOutButton.Location = new System.Drawing.Point(11570, 24);
             this.signOutButton.Name = "signOutButton";
             this.signOutButton.Size = new System.Drawing.Size(75, 23);
             this.signOutButton.TabIndex = 84;
@@ -278,6 +284,53 @@
             this.cmiRemoveUser.Text = "Remove User";
             this.cmiRemoveUser.Click += new System.EventHandler(this.removeUserToolStripMenuItem_Click);
             // 
+            // panel3
+            // 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3.Controls.Add(this.lblDataStoreSourceTitle);
+            this.panel3.Controls.Add(this.cboDataStoreSource);
+            this.panel3.Controls.Add(this.btnRefresh);
+            this.panel3.Location = new System.Drawing.Point(936, 5);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(204, 50);
+            this.panel3.TabIndex = 88;
+            // 
+            // lblDataStoreSourceTitle
+            // 
+            this.lblDataStoreSourceTitle.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDataStoreSourceTitle.AutoSize = true;
+            this.lblDataStoreSourceTitle.Location = new System.Drawing.Point(17, 6);
+            this.lblDataStoreSourceTitle.Name = "lblDataStoreSourceTitle";
+            this.lblDataStoreSourceTitle.Size = new System.Drawing.Size(95, 13);
+            this.lblDataStoreSourceTitle.TabIndex = 87;
+            this.lblDataStoreSourceTitle.Text = "Data Store Source";
+            // 
+            // cboDataStoreSource
+            // 
+            this.cboDataStoreSource.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cboDataStoreSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboDataStoreSource.FormattingEnabled = true;
+            this.cboDataStoreSource.Items.AddRange(new object[] {
+            "Database",
+            "Elasticsearch"});
+            this.cboDataStoreSource.Location = new System.Drawing.Point(15, 24);
+            this.cboDataStoreSource.Name = "cboDataStoreSource";
+            this.cboDataStoreSource.Size = new System.Drawing.Size(103, 21);
+            this.cboDataStoreSource.TabIndex = 86;
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnRefresh.Location = new System.Drawing.Point(124, 22);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
+            this.btnRefresh.TabIndex = 85;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
             // frmUsersList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -300,6 +353,8 @@
             this.mnuMenuStrip.ResumeLayout(false);
             this.mnuMenuStrip.PerformLayout();
             this.cmsUsersList.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -328,5 +383,9 @@
         private System.Windows.Forms.ContextMenuStrip cmsUsersList;
         private System.Windows.Forms.ToolStripMenuItem cmiEditUser;
         private System.Windows.Forms.ToolStripMenuItem cmiRemoveUser;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label lblDataStoreSourceTitle;
+        private System.Windows.Forms.ComboBox cboDataStoreSource;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }

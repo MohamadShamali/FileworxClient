@@ -13,7 +13,7 @@ namespace Fileworx_Client
 {
     public enum FormResult { Save , Cancel };
 
-    public delegate void OnFormCloseHandler();
+    public delegate Task OnFormCloseHandler();
     public partial class frmAddNewsWindow : Form
     {
         clsNews newsToEdit = new clsNews();
@@ -54,7 +54,7 @@ namespace Fileworx_Client
         {
             this.Close();
         }
-        private void saveAddNewsButton_Click(object sender, EventArgs e)
+        private async void saveAddNewsButton_Click(object sender, EventArgs e)
         {
             // ADD Case
             if (String.IsNullOrEmpty(newsToEdit.Name))
@@ -73,7 +73,7 @@ namespace Fileworx_Client
                         Class = FileworxObjectClassLibrary.Type.News
                     };
 
-                    newNews.Insert();
+                    await newNews.InsertAsync();
                 }
                 else
                 {
@@ -94,7 +94,7 @@ namespace Fileworx_Client
                     newsToEdit.Body = txtBody.Text;
                     newsToEdit.Category = cboCategory.SelectedItem.ToString();
 
-                    newsToEdit.Update();
+                    await newsToEdit.UpdateAsync();
                 }
                 else
                 {
@@ -105,7 +105,7 @@ namespace Fileworx_Client
 
             if (OnFormClose != null)
             {
-                OnFormClose();
+                await OnFormClose();
             }
 
             this.Close();
