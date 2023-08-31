@@ -85,7 +85,7 @@ namespace FileworxObjectClassLibrary
 
         public async override Task Delete()
         {
-            base.Delete();
+            await base.Delete();
 
             if (File.Exists(location))
             {

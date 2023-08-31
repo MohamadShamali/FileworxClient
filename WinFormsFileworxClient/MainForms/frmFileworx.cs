@@ -74,7 +74,10 @@ namespace Fileworx_Client
 
         private void addFilesListItemsToListView()
         {
-            lvwFiles.Items.Clear();
+            if(lvwFiles.Items.Count > 0)
+            {
+                lvwFiles.Items.Clear();
+            }
             foreach (clsFile file in allFiles)
             {
                 var listViewNews = new ListViewItem($"{file.Name}");
@@ -220,13 +223,13 @@ namespace Fileworx_Client
                     picImagePreview.Image = null;
                 }
 
-                await selectedPhoto.Delete().ConfigureAwait(false);
+                await selectedPhoto.Delete();
             }
 
             else
             {
                 clsNews selectedNews = (clsNews)selectedFile;
-                await selectedNews.Delete().ConfigureAwait(false);
+                await selectedNews.Delete();
             }
         }
 
@@ -371,11 +374,28 @@ namespace Fileworx_Client
                 lvwFiles.SelectedItems.Clear();
                 clearAllDisplayLabels();
 
-                await deleteFile(selectedFile).ConfigureAwait(false);
+            if (selectedFile is clsPhoto)
+            {
+                clsPhoto selectedPhoto = (clsPhoto)selectedFile;
 
-                MessageBox.Show(await IndexCreation.tst());
+                if (picImagePreview.Image != null)
+                {
+                    picImagePreview.Image.Dispose();
+                    picImagePreview.Image = null;
+                }
 
-                await refreshFilesList();
+                await selectedPhoto.Delete();
+            }
+
+            else
+            {
+                clsNews selectedNews = (clsNews)selectedFile;
+                await selectedNews.Delete();
+            }
+            string g = await IndexCreation.tst();
+            MessageBox.Show(g);
+            //Thread.Sleep(500);
+            await refreshFilesList();
                 autoSortFilesList();
                 addFilesListItemsToListView();
 
@@ -385,6 +405,13 @@ namespace Fileworx_Client
                     tclPreview.TabPages.RemoveAt(1);
                 }
             //}
+        }
+
+        private async void btnRefresh_Click(object sender, EventArgs e)
+        {
+            await refreshFilesList();
+            autoSortFilesList();
+            addFilesListItemsToListView();
         }
     }
 }

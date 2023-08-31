@@ -67,6 +67,7 @@
             this.cmsFiles = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmiEditFile = new System.Windows.Forms.ToolStripMenuItem();
             this.cmiRemoveFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnRefresh = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.picImagePreview)).BeginInit();
             this.tpgPreview.SuspendLayout();
             this.tclPreview.SuspendLayout();
@@ -234,6 +235,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnRefresh);
             this.panel1.Controls.Add(this.picLogo);
             this.panel1.Controls.Add(this.signOutButton);
             this.panel1.Controls.Add(this.lblWelcome);
@@ -259,7 +261,7 @@
             // signOutButton
             // 
             this.signOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.signOutButton.Location = new System.Drawing.Point(5735, 24);
+            this.signOutButton.Location = new System.Drawing.Point(6902, 24);
             this.signOutButton.Name = "signOutButton";
             this.signOutButton.Size = new System.Drawing.Size(75, 23);
             this.signOutButton.TabIndex = 84;
@@ -287,21 +289,21 @@
             // msiUsersList
             // 
             this.msiUsersList.Name = "msiUsersList";
-            this.msiUsersList.Size = new System.Drawing.Size(180, 22);
+            this.msiUsersList.Size = new System.Drawing.Size(123, 22);
             this.msiUsersList.Text = "Users List";
             this.msiUsersList.Click += new System.EventHandler(this.usersListToolStripMenuItem_Click);
             // 
             // msiSortByAlphabetically
             // 
             this.msiSortByAlphabetically.Name = "msiSortByAlphabetically";
-            this.msiSortByAlphabetically.Size = new System.Drawing.Size(180, 22);
+            this.msiSortByAlphabetically.Size = new System.Drawing.Size(149, 22);
             this.msiSortByAlphabetically.Text = "Alphabetically";
             this.msiSortByAlphabetically.Click += new System.EventHandler(this.alphabeticallyToolStripMenuItem_Click);
             // 
             // msiSortByOldest
             // 
             this.msiSortByOldest.Name = "msiSortByOldest";
-            this.msiSortByOldest.Size = new System.Drawing.Size(180, 22);
+            this.msiSortByOldest.Size = new System.Drawing.Size(149, 22);
             this.msiSortByOldest.Text = "Oldest";
             this.msiSortByOldest.Click += new System.EventHandler(this.oldestToolStripMenuItem_Click);
             // 
@@ -310,7 +312,7 @@
             this.msiSortByRecent.Checked = true;
             this.msiSortByRecent.CheckState = System.Windows.Forms.CheckState.Checked;
             this.msiSortByRecent.Name = "msiSortByRecent";
-            this.msiSortByRecent.Size = new System.Drawing.Size(180, 22);
+            this.msiSortByRecent.Size = new System.Drawing.Size(149, 22);
             this.msiSortByRecent.Text = "Recent";
             this.msiSortByRecent.Click += new System.EventHandler(this.recentToolStripMenuItem_Click);
             // 
@@ -321,7 +323,7 @@
             this.msiSortByOldest,
             this.msiSortByAlphabetically});
             this.msiSortBy.Name = "msiSortBy";
-            this.msiSortBy.Size = new System.Drawing.Size(180, 22);
+            this.msiSortBy.Size = new System.Drawing.Size(123, 22);
             this.msiSortBy.Text = "Sort By..";
             // 
             // showToolStripMenuItem
@@ -336,14 +338,14 @@
             // msiAddNews
             // 
             this.msiAddNews.Name = "msiAddNews";
-            this.msiAddNews.Size = new System.Drawing.Size(180, 22);
+            this.msiAddNews.Size = new System.Drawing.Size(132, 22);
             this.msiAddNews.Text = "Add News";
             this.msiAddNews.Click += new System.EventHandler(this.addNewsToolStripMenuItem_Click);
             // 
             // msiAddImage
             // 
             this.msiAddImage.Name = "msiAddImage";
-            this.msiAddImage.Size = new System.Drawing.Size(180, 22);
+            this.msiAddImage.Size = new System.Drawing.Size(132, 22);
             this.msiAddImage.Text = "Add Image";
             this.msiAddImage.Click += new System.EventHandler(this.addImageToolStripMenuItem_Click);
             // 
@@ -379,7 +381,7 @@
             // msiSignOut
             // 
             this.msiSignOut.Name = "msiSignOut";
-            this.msiSignOut.Size = new System.Drawing.Size(180, 22);
+            this.msiSignOut.Size = new System.Drawing.Size(120, 22);
             this.msiSignOut.Text = "Sign Out";
             this.msiSignOut.Click += new System.EventHandler(this.signOutToolStripMenuItem_Click);
             // 
@@ -447,6 +449,16 @@
             this.cmiRemoveFile.Size = new System.Drawing.Size(138, 22);
             this.cmiRemoveFile.Text = "Remove File";
             this.cmiRemoveFile.Click += new System.EventHandler(this.removeFileToolStripMenuItem_Click);
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(1067, 29);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
+            this.btnRefresh.TabIndex = 85;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // frmFileworx
             // 
@@ -520,5 +532,6 @@
         private System.Windows.Forms.ContextMenuStrip cmsFiles;
         private System.Windows.Forms.ToolStripMenuItem cmiEditFile;
         private System.Windows.Forms.ToolStripMenuItem cmiRemoveFile;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }

@@ -50,12 +50,20 @@ namespace FileworxObjectClassLibrary
 
         public async override Task Delete()
         {
-            await base.Delete();
-            var response = await client.DeleteAsync(EditBeforRun.ElasticFilesIndex, Id);
-
-            if (!response.IsValidResponse)
+            try
             {
-                throw new Exception("Error while working with Elastic");
+                var response = await client.DeleteAsync(EditBeforRun.ElasticFilesIndex, Id);
+
+                if (!response.IsValidResponse)
+                {
+                    throw new Exception("Error while working with Elastic");
+                }
+                await base.Delete();
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 

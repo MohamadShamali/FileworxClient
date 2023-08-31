@@ -68,11 +68,11 @@ namespace FileworxObjectClassLibrary
         {
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 string query = $"DELETE FROM {tableName} WHERE Id = '{Id}'";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
         }
