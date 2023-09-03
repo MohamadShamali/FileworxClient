@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FileworxObjectClassLibrary
 {
-    public enum Type { User = 1, News = 2, Photo = 3 }
+    public enum Type { User = 1, News = 2, Photo = 3, Contact=4 }
     public class clsBusinessObject
     {
         // Constants
@@ -30,9 +30,8 @@ namespace FileworxObjectClassLibrary
             get { return _class; }
             set
             {
-                if (value == Type.User) ClassID = 1;
-                if (value == Type.News) ClassID = 2;
-                if (value == Type.Photo) ClassID = 3;
+                ClassID = (int) value;
+
                 _class = value;
             }
         }

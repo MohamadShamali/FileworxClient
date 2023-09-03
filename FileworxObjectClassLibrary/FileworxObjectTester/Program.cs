@@ -17,6 +17,38 @@ namespace FileworxObjectTester
             //await IndexCreation.CreateFilesIndex();
             //await IndexCreation.CreateUsersIndex();
             //await IndexCreation.CreateBusinessObjectAlias();
+            //await IndexCreation.CreateContactsIndex();
+            //____________________________________________________________________________________________________
+            //// Insert Contact
+            //var photo = new clsContact();
+            //photo.Id = new Guid("52a7b071-45f4-48f5-b494-b860da0b5c2f");
+            //photo.Description = "contact";
+            //photo.Name = "contact";
+            //photo.Direction = ContactDirection.TransmitAndReceive;
+            //photo.Location = @"D:\skysports-novak-djokovic-tennis_6214595.jpg";
+            //await photo.InsertAsync();
+
+            // Read Contact
+            //var unknown = new clsContact();
+            //unknown.Id = new Guid("52a7b071-45f4-48f5-b494-b860da0b5c2f");
+            //unknown.Read();
+            //Console.WriteLine(unknown.Location);
+
+            //// Update Contact
+            //var toupdate = new clsContact();
+            //toupdate.Id = new Guid("52a7b071-45f4-48f5-b494-b860da0b5c2f");
+            //toupdate.Read();
+            //toupdate.Description = "Updated photo";
+            //toupdate.Name = "Updated photo";
+            //toupdate.Location = @"D:\skysports-novak-djokovic-tennis_6214595.jpg";
+            //await toupdate.UpdateAsync();
+            //Console.WriteLine(toupdate.Name);
+
+            // Delete Contact
+            //var toDelete = new clsContact();
+            //toDelete.Id = new Guid("52a7b071-45f4-48f5-b494-b860da0b5c2f");
+            //toDelete.Read();
+            //await toDelete.DeleteAsync();
             //____________________________________________________________________________________________________
             //// Insert Photo
             //var photo = new clsPhoto();
@@ -120,14 +152,25 @@ namespace FileworxObjectTester
 
             //____________________________________________________________________________________________________
 
-            //Buisiness Object Query
-            var query = new clsBusinessObjectQuery() { Source = QuerySource.ES };
-            query.QClasses = new clsBusinessObjectQuery.ClassIds[] { clsBusinessObjectQuery.ClassIds.Photos, clsBusinessObjectQuery.ClassIds.Users };
+            //Contact Query
+            var query = new clsContactQuery() { Source = QuerySource.DB };
+            //query.QDirection = new ContactDirection[] { ContactDirection.TransmitAndReceive };
             var result = await query.Run();
             foreach (var c in result)
             {
                 Console.WriteLine(c.Name);
             }
+
+            //____________________________________________________________________________________________________
+
+            //Buisiness Object Query
+            //var query = new clsBusinessObjectQuery() { Source = QuerySource.ES };
+            //query.QClasses = new clsBusinessObjectQuery.ClassIds[] { clsBusinessObjectQuery.ClassIds.Contacts };
+            //var result = await query.Run();
+            //foreach (var c in result)
+            //{
+            //    Console.WriteLine(c.Name);
+            //}
             //____________________________________________________________________________________________________
 
             //File Query

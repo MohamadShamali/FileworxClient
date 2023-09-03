@@ -13,10 +13,10 @@ namespace FileworxObjectClassLibrary
     {
         // Constants
         static string tableName = "T_BUSINESSOBJECT";
-        public enum ClassIds { Users = 1, News = 2, Photos = 3 }
+        public enum ClassIds { Users = 1, News = 2, Photos = 3, Contacts=4 }
 
         // Properties
-        public ClassIds[] QClasses { get; set; } = {ClassIds.Users , ClassIds.News , ClassIds.Photos};
+        public ClassIds[] QClasses { get; set; } = {ClassIds.Users , ClassIds.News , ClassIds.Photos, ClassIds.Contacts};
         public QuerySource Source { get; set; }
 
         public async Task<List<clsBusinessObject>> Run()
@@ -25,24 +25,14 @@ namespace FileworxObjectClassLibrary
 
             if(Source == QuerySource.DB)
             {
-                string condition1 = "b1.C_CLASSID = 0 OR ";
-                string condition2 = "b1.C_CLASSID = 0 OR ";
-                string condition3 = "b1.C_CLASSID = 0 ";
-
-                if (QClasses.Contains(ClassIds.Users))
+                string[] conditions = new string[QClasses.Length];
+                for(int i = 0; i< QClasses.Length; i++)
                 {
-                    condition1 = "b1.C_CLASSID = 1 OR ";
+                    conditions[i]= $"b1.C_CLASSID = {(int)QClasses[i]} OR ";
+                    if (i == (QClasses.Length - 1)) conditions[i].Replace(" OR ", "");
                 }
 
-                if (QClasses.Contains(ClassIds.News))
-                {
-                    condition2 = "b1.C_CLASSID = 2 OR ";
-                }
-
-                if (QClasses.Contains(ClassIds.Photos))
-                {
-                    condition3 = "b1.C_CLASSID = 3 ";
-                }
+                string conditionsString = string.Join(" ", conditions);
 
                 using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
                 {
@@ -53,7 +43,7 @@ namespace FileworxObjectClassLibrary
                                    $"FROM {tableName} b1 " +
                                    $"Left JOIN {tableName} b2 ON b1.C_CREATORID = b2.ID " +
                                    $"Left JOIN {tableName} b3 ON b1.C_LASTMODIFIERID = b3.ID " +
-                                   $"WHERE " + condition1 + condition2 + condition3;
+                                   $"WHERE " + conditionsString;
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {

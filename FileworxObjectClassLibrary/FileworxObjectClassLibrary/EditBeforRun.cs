@@ -14,6 +14,7 @@ namespace FileworxObjectClassLibrary
 
         public static string ElasticUsersIndex = "users";
         public static string ElasticFilesIndex = "files";
+        public static string ElasticContactsIndex = "contacts";
         public static string ElasticBusinessObjectAlias = "businessobjectalias";
     }
 }

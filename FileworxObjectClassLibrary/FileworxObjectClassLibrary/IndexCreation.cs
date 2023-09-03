@@ -62,6 +62,33 @@ namespace FileworxObjectClassLibrary
             }
         }
 
+        public static async Task CreateContactsIndex()
+        {
+            var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            var client = new ElasticsearchClient(settings);
+
+            var response1 = await client.Indices.CreateAsync("contacts");
+
+            if (response1.IsValidResponse)
+            {
+                Console.WriteLine("index added successfully.");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to add index. Error: {response1.ElasticsearchServerError}");
+            }
+            var response2 = await client.Indices.PutAliasAsync("contacts", "businessobjectalias");
+
+            if (response2.IsValidResponse)
+            {
+                Console.WriteLine("Alias added successfully.");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to add alias. Error: {response1.ElasticsearchServerError} + {response2.ElasticsearchServerError}");
+            }
+        }
+
         public static async Task CreateBusinessObjectAlias()
         {
             var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));

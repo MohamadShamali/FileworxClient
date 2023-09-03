@@ -95,7 +95,7 @@ namespace FileworxObjectClassLibrary
                                             .Index(EditBeforRun.ElasticUsersIndex)
                                             .From(0)
                                             .Size(10000)
-                                            .Query(q => q.Term(t => t.ClassID, 1)));
+                                            .Query(q => q.MatchAll()));
 
                 if (response.IsValidResponse)
                 {

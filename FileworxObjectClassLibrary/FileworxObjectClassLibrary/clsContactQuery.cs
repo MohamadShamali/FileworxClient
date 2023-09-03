@@ -6,32 +6,36 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Elastic.Clients.Elasticsearch.QueryDsl;
 
 namespace FileworxObjectClassLibrary
 {
-    public class clsNewsQuery
+    public class clsContactQuery
     {
         // Constants
-        static string tableName = "T_NEWS";
+        static string tableName = "T_CONTACT";
 
         // Properties
         public QuerySource Source { get; set; }
-
-        public async Task<List<clsNews>> Run()
+        public ContactDirection[] QDirection { get; set; } = {ContactDirection.Transmit, ContactDirection.Receive, ContactDirection.TransmitAndReceive };
+        public clsContactQuery()
         {
-            List<clsNews> allNews = new List<clsNews>();
+            
+        }
+        public async Task<List<clsContact>> Run()
+        {
+            List<clsContact> allContacts = new List<clsContact>();
 
-            if(Source == QuerySource.DB)
+            if (Source == QuerySource.DB)
             {
                 using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
                 {
                     connection.Open();
 
                     string query = $"SELECT b1.ID, b1.C_DESCRIPTION, b1.C_CREATIONDATE, b1.C_MODIFICATIONDATE, b1.C_CREATORID, b2.C_NAME AS CREATORNAME , " +
-                                   $"b1.C_LASTMODIFIERID, b3.C_NAME AS LASTMODIFIERNAME, b1.C_NAME , b1.C_CLASSID, f1.C_BODY, {tableName}.C_CATEGORY " +
+                                   $"b1.C_LASTMODIFIERID, b3.C_NAME AS LASTMODIFIERNAME, b1.C_NAME , b1.C_CLASSID, {tableName}.C_LOCATION,  {tableName}.C_CONTACTDIRECTIONID " +
                                    $"FROM {tableName} " +
                                    $"INNER JOIN T_BUSINESSOBJECT b1 ON {tableName}.ID = b1.ID " +
-                                   $"INNER JOIN T_FILE f1 ON {tableName}.ID = f1.ID " +
                                    $"Left JOIN T_BUSINESSOBJECT b2 ON b1.C_CREATORID = b2.ID " +
                                    $"Left JOIN T_BUSINESSOBJECT b3 ON b1.C_LASTMODIFIERID = b3.ID ";
 
@@ -41,82 +45,92 @@ namespace FileworxObjectClassLibrary
                         {
                             while (reader.Read())
                             {
-                                clsNews news = new clsNews();
+                                clsContact Contact = new clsContact();
 
-                                news.Id = new Guid(reader[0].ToString());
+                                Contact.Id = new Guid(reader[0].ToString());
 
                                 if (!String.IsNullOrEmpty(reader[1].ToString()))
                                 {
-                                    news.Description = (reader[1].ToString());
+                                    Contact.Description = (reader[1].ToString());
                                 }
 
                                 if (!String.IsNullOrEmpty(reader[2].ToString()))
                                 {
-                                    news.CreationDate = DateTime.Parse(reader[2].ToString());
+                                    Contact.CreationDate = DateTime.Parse(reader[2].ToString());
                                 }
 
                                 if (!String.IsNullOrEmpty(reader[3].ToString()))
                                 {
-                                    news.ModificationDate = DateTime.Parse(reader[3].ToString());
+                                    Contact.ModificationDate = DateTime.Parse(reader[3].ToString());
                                 }
 
                                 if (!String.IsNullOrEmpty(reader[4].ToString()))
                                 {
-                                    news.CreatorId = new Guid(reader[4].ToString());
+                                    Contact.CreatorId = new Guid(reader[4].ToString());
                                 }
 
 
                                 if (!String.IsNullOrEmpty(reader[5].ToString()))
                                 {
-                                    news.CreatorName = reader[5].ToString();
+                                    Contact.CreatorName = reader[5].ToString();
                                 }
 
                                 if (!String.IsNullOrEmpty(reader[6].ToString()))
                                 {
-                                    news.LastModifierId = new Guid(reader[6].ToString());
+                                    Contact.LastModifierId = new Guid(reader[6].ToString());
                                 }
 
                                 if (!String.IsNullOrEmpty(reader[7].ToString()))
                                 {
-                                    news.LastModifierName = reader[7].ToString();
+                                    Contact.LastModifierName = reader[7].ToString();
                                 }
 
                                 if (!String.IsNullOrEmpty(reader[8].ToString()))
                                 {
-                                    news.Name = reader[8].ToString();
+                                    Contact.Name = reader[8].ToString();
                                 }
 
                                 int c = (int)(reader[9]);
-                                news.Class = (Type)c;
+                                Contact.Class = (Type)c;
 
-                                news.Body = reader[10].ToString();
+                                Contact.Location = reader[10].ToString();
 
-                                news.Category = reader[11].ToString();
+                                int d = (int)(reader[11]);
+                                Contact.Direction = (ContactDirection)d;
 
-                                allNews.Add(news);
+                                allContacts.Add(Contact);
                             }
                         }
                     }
                 }
-            }   
-           
-            if(Source == QuerySource.ES)
+            }
+
+            if (Source == QuerySource.ES)
             {
+                var shouldQueries = new Action<QueryDescriptor<clsContact>>[QDirection.Length];
+
+                for (int i = 0; i < shouldQueries.Length; i++)
+                {
+                    int capturedIndex = i; // Capture the current value of i
+                    shouldQueries[i] = (bs => bs.Term(p => p.DirectionID, (int)QDirection[capturedIndex]));
+                }
+
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
 
-                var response = await client.SearchAsync<clsNews>(s => s
-                                            .Index(EditBeforRun.ElasticFilesIndex)
+                var response = await client.SearchAsync<clsContact>(s => s
+                                            .Index(EditBeforRun.ElasticContactsIndex)
                                             .From(0)
                                             .Size(10000)
-                                            .Query(q => q.MatchAll()));
+                                            .Query(q => q.Bool( b=> b.
+                                             Should(shouldQueries))));
 
                 if (response.IsValidResponse)
                 {
-                    var News = response.Documents;
-                    foreach (var news in News)
+                    var contacts = response.Documents;
+                    foreach (var contact in contacts)
                     {
-                        allNews.Add(news);
+                        allContacts.Add(contact);
                     }
                 }
                 if (!response.IsValidResponse)
@@ -125,7 +139,7 @@ namespace FileworxObjectClassLibrary
                 }
 
             }
-            return allNews;
+            return allContacts;
         }
     }
 }
