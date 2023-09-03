@@ -1,22 +1,32 @@
-﻿@inject NavigationManager navnManager
-@inject UsersServices usersServices
+﻿@inject UsersServices usersServices
 @inject NewsServices newsServices
-@inject IJSRuntime JSRuntime
 
-
+@layout _Layout
 @page "/f"
 
-<img class="mb-2.5 w-72" src="images/download.png" alt="download" />
+<PageTitle>Fileworx: News Page</PageTitle>
 
-<div class="flex mt-1">
-    <button @onclick=addNewsRequest class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer"><b>Add News</b></button>
-    <button @onclick=addImageRequest class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer"><b>Add Image</b></button>
-    <button @onclick="editRequest" class="@editButtonClass()" disabled="@removeAndEditDisable()"><b>Edit Image/News</b></button>
-    <button @onclick="removeRequest" class="@removeButtonClass()" disabled="@removeAndEditDisable()"><b>Remove </b></button>
-    @if (usersServices.LoggedInUser.IsAdmin)
-    {
-        <button @onclick=openAdminTab class="mr-1 bg-prpl hover:bg-prpl-hover rounded-md text-white p-1 cursor-pointer ml-auto"><b>Admin Window</b></button>
-    }
+<div class="flex justify-start">
+    <div>
+        <button @onclick=addNewsRequest class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white py-1.5 px-2 cursor-pointer"><b>Add News</b></button>
+        <button @onclick=addImageRequest class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white py-1.5 px-2 cursor-pointer"><b>Add Image</b></button>
+        <button @onclick="editRequest" class="@editButtonClass()" disabled="@removeAndEditDisable()"><b>Edit Image/News</b></button>
+        <button @onclick="removeRequest" class="@removeButtonClass()" disabled="@removeAndEditDisable()"><b>Remove </b></button>
+    </div>
+
+
+    <div class="ml-auto">
+        <select @bind="querySource" class="p-2.5 border-solid border-gray-300 border-2 rounded-3xl">
+            <option value="Elasticsearch">Elasticsearch</option>
+            <option value="Database">Database</option>
+        </select>
+        <button @onclick="changeQuerySource" class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer ml-1 justify-end">
+            <b>Refresh</b>
+        </button>
+    </div>
+
+    
+
 </div>
 
 <div class="flex justify-between">
@@ -59,6 +69,8 @@
 }
 @code {
 
+    private string querySource { get; set; } = "Elasticsearch";
+
     // Windows Appearance
     private bool showAddNewsWindow = false;
     private bool showAddImageWindow = false;
@@ -73,6 +85,12 @@
     //Delete Confirmation
     private bool confirmDelete = false;
 
+    private async Task changeQuerySource()
+    {
+        newsServices.QuerySource = (querySource == "Elasticsearch") ? QuerySource.ES : QuerySource.DB;
+        await newsServices.RefreshFilesList();
+    }
+
     private void OnRowClick(clsFile selectedFile)
     {
         if (newsServices.SelectedFile == selectedFile)
@@ -84,12 +102,6 @@
         {
             newsServices.SelectedFile = selectedFile; // Select the clicked row
         }
-    }
-
-    private void openAdminTab()
-    {
-        string url = navnManager.BaseUri + "admin"; 
-        JSRuntime.InvokeVoidAsync("open", url, "_blank");
     }
 
     private void removeRequest()
@@ -232,11 +244,11 @@
     {
         if (newsServices.SelectedFile != null)
         {
-            return "bg-rid hover:bg-rid-hover rounded-md mr-2 text-white p-1 cursor-pointer";
+            return "bg-rid hover:bg-rid-hover rounded-md mr-2 text-white py-1.5 px-2 cursor-pointer";
         }
         else
         {
-            return "bg-disable rounded-md mr-2 text-white p-1 cursor-default";
+            return "bg-disable rounded-md mr-2 text-white py-1.5 px-2 cursor-default";
         }
     }
 
@@ -244,11 +256,11 @@
     {
         if (newsServices.SelectedFile != null)
         {
-            return "bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer";
+            return "bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white py-1.5 px-2 cursor-pointer";
         }
         else
         {
-            return "bg-disable rounded-md mr-2 text-white p-1 cursor-default";
+            return "bg-disable rounded-md mr-2 text-white py-1.5 px-2 cursor-default";
         }
     }
 

@@ -1,0 +1,65 @@
+﻿@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
+@inject NavigationManager navnManager
+@inject UsersServices usersServices
+
+<!-- _Layout.razor -->
+<div class="flex flex-col min-h-screen">
+        <!-- _Layout.razor -->
+        <div class="flex bg-gray-50 rounded-lg shadow-md">
+            <!-- Left side with image and vertical separator -->
+            <div class="w-1/6 p-2 relative">
+                <img src="images/download.png" alt="download" class="w-full rounded-lg ml-1 mr-1.5" />
+                <div class="absolute top-0 right-0 h-full bg-gray-300 w-0.5 ml-3.5"></div> <!-- Vertical separator -->
+            </div>
+
+            <!-- Right side with navigation -->
+            <div class="w-3/4 p-2 flex items-center justify-start space-x-4">
+            @if (usersServices.LoggedInUser.IsAdmin)
+            {
+                <button @onclick="openAdminTab" class="h-full text-xl bg-gray-50 hover:text-fw-blue text-gray-500 font-bold py-2 px-2">
+                    Admin Page
+                </button>
+            }
+                <button @onclick="openNewsTab" class="h-full text-xl bg-gray-50 hover:text-fw-blue text-gray-500 font-bold py-2 px-2">
+                    News Page
+                </button>
+                <button class="h-full text-xl bg-gray-50 hover:text-fw-blue text-gray-500 font-bold py-2 px-2 ml-auto">
+                    About
+                </button>
+            </div>
+        </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 text-gray-800 py-4 drop-shadow-xl fixed bottom-0 w-full">
+        <img src="images/sedco-logo.png" alt="download" class="w-48 rounded-lg ml-1 mr-1.5" />
+        <div class="container mx-auto text-center">
+            <!-- Footer content goes here -->
+            &copy; 2023 Systems and Electronics Development FZCO. All Rights Reserved.
+        </div>
+    </footer>
+
+    <!-- Content -->
+    <main class="flex-grow">
+
+
+        <!-- Page content -->
+        <div class="p-3">
+            @Body
+        </div>
+    </main>
+</div>
+
+@code{
+    private void openAdminTab()
+    {
+        string url = navnManager.BaseUri + "admin";
+        JSRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
+
+    private void openNewsTab()
+    {
+        string url = navnManager.BaseUri + "f";
+        JSRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
+}

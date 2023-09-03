@@ -1,15 +1,26 @@
 ﻿@inject UsersServices usersServices
 @inject NavigationManager navnManager
-
+@layout _Layout
 @page "/admin"
 
-<PageTitle>Users Maneger</PageTitle>
-<img class="mb-2.5 w-72" src="images/download.png" alt="download" />
+<PageTitle>Fileworx: Admin Page</PageTitle>
 
 <div class="flex mt-1">
-    <button @onclick="addUserRequest" class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer"><b>Add User</b></button>
-    <button @onclick="editUserRequest" class="@editButtonClass()" disabled="@removeAndEditDisable()"><b>Edit User</b></button>
-    <button @onclick="deleteUserRequest" class="@removeButtonClass()" disabled="@removeAndEditDisable()"><b>Remove User</b></button>
+    <div>
+        <button @onclick="addUserRequest" class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer"><b>Add User</b></button>
+        <button @onclick="editUserRequest" class="@editButtonClass()" disabled="@removeAndEditDisable()"><b>Edit User</b></button>
+        <button @onclick="deleteUserRequest" class="@removeButtonClass()" disabled="@removeAndEditDisable()"><b>Remove User</b></button>
+    </div>
+
+    <div class="ml-auto">
+        <select @bind="querySource" class="p-2.5 border-solid border-gray-300 border-2 rounded-3xl">
+            <option value="Elasticsearch">Elasticsearch</option>
+            <option value="Database">Database</option>
+        </select>
+        <button @onclick="changeQuerySource" class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer ml-1 justify-end">
+            <b>Refresh</b>
+        </button>
+    </div>
         </div>
 
         <div class="t">
@@ -43,6 +54,8 @@
 
 @code {
 
+    private string querySource { get; set; } = "Elasticsearch";
+
     // Display
     private bool showAddUserWindow = false;
     private bool showEditUserWindow = false;
@@ -51,6 +64,12 @@
     private bool showDeleteAdminErrorWindow = false;
     private bool showFileErrorWindow = false;
 
+    private async Task changeQuerySource()
+    {
+        usersServices.QuerySource = (querySource == "Elasticsearch") ? QuerySource.ES : QuerySource.DB;
+        await usersServices.RefreshUsersList();
+    }
+
     private async Task onRemoveUser()
     {
         if (usersServices.SelectedUser != null)
@@ -58,7 +77,7 @@
             await usersServices.SelectedUser.DeleteAsync();
             usersServices.SelectedUser = null;
 
-            usersServices.RefreshUsersList();
+            await usersServices.RefreshUsersList();
         }
 
         showDeleteUserConfirmation = false;
@@ -95,7 +114,7 @@
         try
         {
             await addedUser.InsertAsync();
-            usersServices.RefreshUsersList();
+            await usersServices.RefreshUsersList();
 
             showAddUserWindow = false;
         }
@@ -115,7 +134,7 @@
         try
         {
             await editedUser.UpdateAsync();
-            usersServices.RefreshUsersList();
+            await usersServices.RefreshUsersList();
 
             showEditUserWindow = false;
         }

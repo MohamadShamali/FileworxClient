@@ -29,10 +29,10 @@
     public EventCallback<clsFile> OnRowClick { get; set; }
 
 
-    protected async override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        // Perform your async initialization here
         await newsServices.AddDBFilesToFilesList();
-        base.OnInitialized();
     }
 
 
