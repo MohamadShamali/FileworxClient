@@ -13,10 +13,9 @@ namespace FileworxObjectClassLibrary
     {
         // Constants
         static string tableName = "T_BUSINESSOBJECT";
-        public enum ClassIds { Users = 1, News = 2, Photos = 3, Contacts=4 }
 
         // Properties
-        public ClassIds[] QClasses { get; set; } = {ClassIds.Users , ClassIds.News , ClassIds.Photos, ClassIds.Contacts};
+        public Type[] QClasses { get; set; } = { Type.User, Type.News, Type.Photo, Type.Contact };
         public QuerySource Source { get; set; }
 
         public async Task<List<clsBusinessObject>> Run()
@@ -107,13 +106,12 @@ namespace FileworxObjectClassLibrary
 
             else
             {
-
                 var shouldQueries = new Action<QueryDescriptor<clsBusinessObject>>[QClasses.Length];
 
                 for (int i = 0; i < shouldQueries.Length; i++)
                 {
                     int capturedIndex = i; // Capture the current value of i
-                    shouldQueries[i] = (bs => bs.Term(p => p.ClassID, (int)QClasses[capturedIndex]));
+                    shouldQueries[i] = (bs => bs.Term(p => p.Class, QClasses[capturedIndex].ToString().ToLower()));
                 }
 
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));

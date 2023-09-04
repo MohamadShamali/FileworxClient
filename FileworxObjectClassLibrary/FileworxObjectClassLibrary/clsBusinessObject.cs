@@ -25,19 +25,7 @@ namespace FileworxObjectClassLibrary
         public Guid? LastModifierId { get; set; } = null;
         public string LastModifierName { get; set; } = String.Empty;
         public string Name { get; set; }
-        public Type Class
-        {
-            get { return _class; }
-            set
-            {
-                ClassID = (int) value;
-
-                _class = value;
-            }
-        }
-        private Type _class;
-        public int ClassID { get; set; } // Added for Elasticsearch Search
-
+        public Type Class { get; set; }
         public clsBusinessObject()
         {
             CreatorId = new Guid("ffd7c672-aa84-47b1-a9a3-c7875a503708"); // to remove

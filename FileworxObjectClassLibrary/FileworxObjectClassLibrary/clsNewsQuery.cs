@@ -109,7 +109,7 @@ namespace FileworxObjectClassLibrary
                                             .Index(EditBeforRun.ElasticFilesIndex)
                                             .From(0)
                                             .Size(10000)
-                                            .Query(q => q.MatchAll()));
+                                            .Query(q => q.Term(t => t.Class, Type.News.ToString().ToLower())));
 
                 if (response.IsValidResponse)
                 {

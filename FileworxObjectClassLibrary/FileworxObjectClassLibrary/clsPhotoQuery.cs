@@ -110,7 +110,7 @@ namespace FileworxObjectClassLibrary
                                             .Index(EditBeforRun.ElasticFilesIndex)
                                             .From(0)
                                             .Size(10000)
-                                            .Query(q => q.Term(t => t.ClassID, 3)));
+                                            .Query(q => q.Term(t => t.Class, Type.Photo.ToString().ToLower())));
 
                 if (response.IsValidResponse)
                 {

@@ -15,10 +15,9 @@ namespace FileworxObjectClassLibrary
     {
         //Constats
         static string tableName = "T_FILE";
-        public enum ClassIds { News = 2, Photos = 3 }
 
         // Properties
-        public ClassIds[] QClasses { get; set; } = { ClassIds.News, ClassIds.Photos };
+        public Type[] QClasses { get; set; } = { Type.News, Type.Photo };
         public QuerySource Source { get; set; }
 
         public async Task<List<clsFile>> Run()
@@ -27,18 +26,14 @@ namespace FileworxObjectClassLibrary
 
             if (Source == QuerySource.DB)
             {
-                string condition1 = "b1.C_CLASSID = 0 OR ";
-                string condition2 = "b1.C_CLASSID = 0 ";
-
-                if (QClasses.Contains(ClassIds.News))
+                string[] conditions = new string[QClasses.Length];
+                for (int i = 0; i < QClasses.Length; i++)
                 {
-                    condition1 = "b1.C_CLASSID = 2 OR ";
+                    conditions[i] = $"b1.C_CLASSID = {(int)QClasses[i]} OR ";
+                    if (i == (QClasses.Length - 1)) conditions[i] = conditions[i].Replace("OR", "");
                 }
 
-                if (QClasses.Contains(ClassIds.Photos))
-                {
-                    condition2 = "b1.C_CLASSID = 3 ";
-                }
+                string conditionsString = string.Join(" ", conditions);
 
                 using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
                 {
@@ -50,7 +45,7 @@ namespace FileworxObjectClassLibrary
                                    $"INNER JOIN T_BUSINESSOBJECT b1 ON {tableName}.ID = b1.ID " +
                                    $"Left JOIN T_BUSINESSOBJECT b2 ON b1.C_CREATORID = b2.ID " +
                                    $"Left JOIN T_BUSINESSOBJECT b3 ON b1.C_LASTMODIFIERID = b3.ID " +
-                                   $"WHERE " + condition1 + condition2;
+                                   $"WHERE " + conditionsString;
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
@@ -122,7 +117,7 @@ namespace FileworxObjectClassLibrary
                 for (int i = 0; i < shouldQueries.Length; i++)
                 {
                     int capturedIndex = i; // Capture the current value of i
-                    shouldQueries[i] = (bs => bs.Term(p => p.ClassID, (int)QClasses[capturedIndex]));
+                    shouldQueries[i] = (bs => bs.Term(p => p.Class, QClasses[capturedIndex].ToString().ToLower()));
                 }
 
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));

@@ -30,18 +30,14 @@ namespace FileworxObjectClassLibrary
 
                 if (File.Exists(value))
                 {
-                    if(directoryPath != @"C:\Users\M.AL-Shamali\Desktop\Demo Projects\FileworxClient\WebFileworxClient\wwwroot\Images\StoredImages")
+                    if(directoryPath != EditBeforRun.PhotosLocation)
                     {
-                        if (File.Exists(location))
+                        if (File.Exists(location) && (location != value))
                         {
-                            if(location != value)
-                            {
-                                File.Delete(location);
-                                photoUpdated = true;
-                            }
+                            File.Delete(location);
+                            photoUpdated = true;
                         }
                     }
-
                     location = value;
                 }
 
@@ -158,7 +154,6 @@ namespace FileworxObjectClassLibrary
 
         private void copyImage()
         {
-            string photoName = Path.GetFileNameWithoutExtension(location);
             string photoextention = Path.GetExtension(location);
             if(!File.Exists(EditBeforRun.PhotosLocation + @"\" + Id.ToString() + photoextention))
             {

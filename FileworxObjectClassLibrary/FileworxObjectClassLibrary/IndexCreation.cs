@@ -139,7 +139,7 @@ namespace FileworxObjectClassLibrary
                                         .Index(EditBeforRun.ElasticFilesIndex)
                                         .From(0)
                                         .Size(10000)
-                                        .Query(q => q.Term(t => t.ClassID, 2)));
+                                        .Query(q => q.Term(t => t.Class, Type.News)));
 
                 var News = response.Documents;
                 foreach (var news in News)

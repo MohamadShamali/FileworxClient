@@ -45,7 +45,7 @@ namespace FileworxObjectClassLibrary
             {
                 await connection.OpenAsync();
 
-                string query = $"UPDATE T_FILE SET C_BODY = '{Body}', " +
+                string query = $"UPDATE T_FILE SET C_BODY = '{Body}' " +
                                $"WHERE Id = '{Id}';";
 
                 using (SqlCommand command = new SqlCommand(query, connection))

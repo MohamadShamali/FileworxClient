@@ -18,9 +18,7 @@ namespace FileworxObjectClassLibrary
 
         // Properties
         public string Location { get; set; }
-        public ContactDirection Direction { get { return direction; } set { direction = value; DirectionID = (int) value;  } }
-        private ContactDirection direction;
-        public int DirectionID { get; set; }
+        public ContactDirection Direction {get; set;}
         public clsContact()
         {
             Class = Type.Contact;

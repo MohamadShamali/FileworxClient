@@ -121,7 +121,7 @@ namespace FileworxObjectClassLibrary
                 for (int i = 0; i < shouldQueries.Length; i++)
                 {
                     int capturedIndex = i; // Capture the current value of i
-                    shouldQueries[i] = (bs => bs.Term(p => p.DirectionID, (int)QDirection[capturedIndex]));
+                    shouldQueries[i] = (bs => bs.Term(p => p.Direction, QDirection[capturedIndex].ToString().ToLower()));
                 }
 
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
