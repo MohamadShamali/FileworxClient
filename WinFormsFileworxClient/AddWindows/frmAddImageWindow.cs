@@ -61,8 +61,7 @@ namespace Fileworx_Client
             // Add Case
             if (String.IsNullOrEmpty(photoToEdit.Name))
             {
-                if ((txtTitle.Text != String.Empty) && (txtDescription.Text != String.Empty)
-                    && (txtBody.Text != String.Empty) && (File.Exists(imagePathTextBox.Text)))
+                if (validateData())
                 {
 
                     clsPhoto newPhoto = new clsPhoto()

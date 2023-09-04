@@ -60,8 +60,7 @@ namespace Fileworx_Client
             // Add Case
             if(String.IsNullOrEmpty(userToEdit.Name)) 
             {
-                if ((!String.IsNullOrEmpty(txtName.Text)) && (!String.IsNullOrEmpty(txtUsername.Text))
-                   && (!String.IsNullOrEmpty(txtPassword.Text)))
+                if (validateData())
                 {
                     try
                     {
