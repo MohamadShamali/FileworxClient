@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FileworxObjectClassLibrary
 {
-    public enum ContactDirection { Transmit= 1, Receive= 2, TransmitAndReceive= 3 };
+    public enum ContactDirection { Transmit= 1, Receive= 2};
     public class clsContact : clsBusinessObject
     {
         // Constants
@@ -18,7 +18,8 @@ namespace FileworxObjectClassLibrary
 
         // Properties
         public string Location { get; set; }
-        public ContactDirection Direction {get; set;}
+        public ContactDirection Direction {get; set;} = (ContactDirection.Transmit | ContactDirection.Receive);
+        public bool Enabled { get; set; } = true;
         public clsContact()
         {
             Class = Type.Contact;
@@ -34,8 +35,8 @@ namespace FileworxObjectClassLibrary
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 await connection.OpenAsync();
-                string query = $"INSERT INTO T_CONTACT (ID, C_LOCATION, C_CONTACTDIRECTIONID) " +
-                               $"VALUES('{Id}', '{Location}',{(int) Direction});";
+                string query = $"INSERT INTO T_CONTACT (ID, C_LOCATION, C_CONTACTDIRECTIONID , C_ENABLED) " +
+                               $"VALUES('{Id}', '{Location}',{(int) Direction} , '{Enabled}');";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     await command.ExecuteNonQueryAsync();
@@ -71,7 +72,7 @@ namespace FileworxObjectClassLibrary
             {
                 await connection.OpenAsync();
 
-                string query = $"UPDATE T_CONTACT SET C_LOCATION = '{Location}, C_CONTACTDIRECTIONID={(int)Direction}' " +
+                string query = $"UPDATE T_CONTACT SET C_LOCATION = '{Location}', C_CONTACTDIRECTIONID='{(int)Direction}',C_ENABLED= '{Enabled}' " +
                                $"WHERE Id = '{Id}';";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -96,7 +97,7 @@ namespace FileworxObjectClassLibrary
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 connection.Open();
-                string query = $"SELECT C_LOCATION, C_CONTACTDIRECTIONID " +
+                string query = $"SELECT C_LOCATION, C_CONTACTDIRECTIONID, C_ENABLED " +
                                $"FROM {tableName} " +
                                $"WHERE Id = '{Id}'";
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -111,6 +112,7 @@ namespace FileworxObjectClassLibrary
                                 Location = (reader[0].ToString());
                                 int d = (int)(reader[1]);
                                 Direction = (ContactDirection) d;
+                                Enabled= (bool)reader[2];
                             }
                         }
                     }

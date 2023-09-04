@@ -26,8 +26,9 @@ namespace FileworxObjectTester
             //contact.Id = new Guid("62a7b071-45f4-48f5-b494-b860da0b5c2f");
             //contact.Description = "contact";
             //contact.Name = "contact";
-            //contact.Direction = ContactDirection.TransmitAndReceive;
+            //contact.Direction = ContactDirection.Transmit;
             //contact.Location = @"D:\skysports-novak-djokovic-tennis_6214595.jpg";
+            //contact.Enabled = true;
             //await contact.InsertAsync();
 
             // Read Contact
