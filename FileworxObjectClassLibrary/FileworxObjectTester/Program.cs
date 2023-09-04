@@ -171,7 +171,7 @@ namespace FileworxObjectTester
             //var result = await query.Run();
             //foreach (var c in result)
             //{
-            //    Console.WriteLine(c.Name);
+            //    Console.WriteLine(c.Name); 
             //}
             //____________________________________________________________________________________________________
 
