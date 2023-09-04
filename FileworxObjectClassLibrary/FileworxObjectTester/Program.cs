@@ -153,8 +153,8 @@ namespace FileworxObjectTester
             //____________________________________________________________________________________________________
 
             //Contact Query
-            var query = new clsContactQuery() { Source = QuerySource.DB };
-            //query.QDirection = new ContactDirection[] { ContactDirection.TransmitAndReceive };
+            var query = new clsContactQuery() { Source = QuerySource.ES };
+            query.QDirection = new ContactDirection[] { ContactDirection.TransmitAndReceive };
             var result = await query.Run();
             foreach (var c in result)
             {
@@ -164,8 +164,8 @@ namespace FileworxObjectTester
             //____________________________________________________________________________________________________
 
             //Buisiness Object Query
-            //var query = new clsBusinessObjectQuery() { Source = QuerySource.ES };
-            //query.QClasses = new clsBusinessObjectQuery.ClassIds[] { clsBusinessObjectQuery.ClassIds.Contacts };
+            //var query = new clsBusinessObjectQuery() { Source = QuerySource.DB };
+            ////query.QClasses = new clsBusinessObjectQuery.ClassIds[] { clsBusinessObjectQuery.ClassIds.Contacts };
             //var result = await query.Run();
             //foreach (var c in result)
             //{

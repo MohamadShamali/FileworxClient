@@ -28,6 +28,14 @@ namespace FileworxObjectClassLibrary
 
             if (Source == QuerySource.DB)
             {
+                string[] conditions = new string[QDirection.Length];
+                for (int i = 0; i < QDirection.Length; i++)
+                {
+                    conditions[i] = $"T_CONTACT.C_CONTACTDIRECTIONID = {(int) QDirection[i]} OR ";
+                    if (i == (QDirection.Length - 1)) conditions[i]=conditions[i].Replace("OR", "");
+                }
+
+                string conditionsString = string.Join(" ", conditions);
                 using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
                 {
                     connection.Open();
@@ -37,7 +45,8 @@ namespace FileworxObjectClassLibrary
                                    $"FROM {tableName} " +
                                    $"INNER JOIN T_BUSINESSOBJECT b1 ON {tableName}.ID = b1.ID " +
                                    $"Left JOIN T_BUSINESSOBJECT b2 ON b1.C_CREATORID = b2.ID " +
-                                   $"Left JOIN T_BUSINESSOBJECT b3 ON b1.C_LASTMODIFIERID = b3.ID ";
+                                   $"Left JOIN T_BUSINESSOBJECT b3 ON b1.C_LASTMODIFIERID = b3.ID " +
+                                   $"WHERE " + conditionsString;
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {

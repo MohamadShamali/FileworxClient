@@ -29,7 +29,7 @@ namespace FileworxObjectClassLibrary
                 for(int i = 0; i< QClasses.Length; i++)
                 {
                     conditions[i]= $"b1.C_CLASSID = {(int)QClasses[i]} OR ";
-                    if (i == (QClasses.Length - 1)) conditions[i].Replace(" OR ", "");
+                    if (i == (QClasses.Length - 1)) conditions[i]= conditions[i].Replace("OR", "");
                 }
 
                 string conditionsString = string.Join(" ", conditions);
