@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Elastic.Clients.Elasticsearch.QueryDsl;
+using Elastic.Clients.Elasticsearch.Fluent;
+using System.Security.Claims;
 
 namespace FileworxObjectClassLibrary
 {
@@ -41,7 +43,7 @@ namespace FileworxObjectClassLibrary
                     connection.Open();
 
                     string query = $"SELECT b1.ID, b1.C_DESCRIPTION, b1.C_CREATIONDATE, b1.C_MODIFICATIONDATE, b1.C_CREATORID, b2.C_NAME AS CREATORNAME , " +
-                                   $"b1.C_LASTMODIFIERID, b3.C_NAME AS LASTMODIFIERNAME, b1.C_NAME , b1.C_CLASSID, {tableName}.C_LOCATION,  {tableName}.C_CONTACTDIRECTIONID , {tableName}.C_ENABLED " +
+                                   $"b1.C_LASTMODIFIERID, b3.C_NAME AS LASTMODIFIERNAME, b1.C_NAME , b1.C_CLASSID, {tableName}.C_TRANSMITLOCATION , {tableName}.C_RECEIVELOCATION,  {tableName}.C_CONTACTDIRECTIONID , {tableName}.C_ENABLED " +
                                    $"FROM {tableName} " +
                                    $"INNER JOIN T_BUSINESSOBJECT b1 ON {tableName}.ID = b1.ID " +
                                    $"Left JOIN T_BUSINESSOBJECT b2 ON b1.C_CREATORID = b2.ID " +
@@ -102,12 +104,12 @@ namespace FileworxObjectClassLibrary
                                 int c = (int)(reader[9]);
                                 contact.Class = (Type)c;
 
-                                contact.Location = reader[10].ToString();
-
-                                int d = (int)(reader[11]);
+                                contact.TransmitLocation = reader[10].ToString();
+                                contact.ReceiveLocation = reader[11].ToString();
+                                int d = (int)(reader[12]);
                                 contact.Direction = (ContactDirection)d;
 
-                                contact.Enabled = (bool) reader[12];
+                                contact.Enabled = (bool) reader[13];
 
                                 allContacts.Add(contact);
                             }
@@ -118,18 +120,18 @@ namespace FileworxObjectClassLibrary
 
             if (Source == QuerySource.ES)
             {
-                var shouldQueries = new Action<QueryDescriptor<clsContact>>[QDirection.Length];
+                var shouldQueries = new Action<QueryDescriptor<clsContactDto>>[QDirection.Length];
 
                 for (int i = 0; i < shouldQueries.Length; i++)
                 {
                     int capturedIndex = i; // Capture the current value of i
-                    shouldQueries[i] = (bs => bs.Term(p => p.Direction, QDirection[capturedIndex].ToString().ToLower()));
+                    shouldQueries[i] = (bs => bs.Term(p => p.Direction, (int) QDirection[capturedIndex]));
                 }
 
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
 
-                var response = await client.SearchAsync<clsContact>(s => s
+                var response = await client.SearchAsync<clsContactDto>(s => s
                                             .Index(EditBeforRun.ElasticContactsIndex)
                                             .From(0)
                                             .Size(10000)
@@ -138,10 +140,10 @@ namespace FileworxObjectClassLibrary
 
                 if (response.IsValidResponse)
                 {
-                    var contacts = response.Documents;
-                    foreach (var contact in contacts)
+                    var dtoContacts = response.Documents;
+                    foreach (var dtoContact in dtoContacts)
                     {
-                        allContacts.Add(contact);
+                        allContacts.Add(dtoMap(dtoContact));
                     }
                 }
                 if (!response.IsValidResponse)
@@ -151,6 +153,29 @@ namespace FileworxObjectClassLibrary
 
             }
             return allContacts;
+        }
+
+        private clsContact dtoMap (clsContactDto dto)
+        {
+            var contact = new clsContact()
+            {
+                Id = dto.Id,
+                Description = dto.Description,
+                CreationDate = dto.CreationDate,
+                ModificationDate = dto.ModificationDate,
+                CreatorId = dto.CreatorId,
+                CreatorName = dto.CreatorName,
+                LastModifierId = dto.LastModifierId,
+                LastModifierName = dto.LastModifierName,
+                Name = dto.Name,
+                Class = dto.Class,
+                TransmitLocation = dto.TransmitLocation,
+                ReceiveLocation = dto.ReceiveLocation,
+                Direction = (ContactDirection) dto.Direction,
+                Enabled = dto.Enabled,
+            };
+
+            return contact;
         }
     }
 }

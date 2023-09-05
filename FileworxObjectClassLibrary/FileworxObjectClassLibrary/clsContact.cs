@@ -1,14 +1,23 @@
 ﻿using Elastic.Clients.Elasticsearch;
+using Elastic.Clients.Elasticsearch.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace FileworxObjectClassLibrary
 {
-    public enum ContactDirection { Transmit= 1, Receive= 2};
+    public enum ContactDirection 
+    {
+        Transmit = 1,
+        Receive = 2
+    };
+
     public class clsContact : clsBusinessObject
     {
         // Constants
@@ -17,7 +26,8 @@ namespace FileworxObjectClassLibrary
         private ElasticsearchClient client;
 
         // Properties
-        public string Location { get; set; }
+        public string TransmitLocation { get; set; } = String.Empty;
+        public string ReceiveLocation { get; set; } = String.Empty;
         public ContactDirection Direction {get; set;} = (ContactDirection.Transmit | ContactDirection.Receive);
         public bool Enabled { get; set; } = true;
         public clsContact()
@@ -30,29 +40,37 @@ namespace FileworxObjectClassLibrary
 
         public async override Task InsertAsync()
         {
+            updateDirectories();
+
             await base.InsertAsync();
 
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 await connection.OpenAsync();
-                string query = $"INSERT INTO T_CONTACT (ID, C_LOCATION, C_CONTACTDIRECTIONID , C_ENABLED) " +
-                               $"VALUES('{Id}', '{Location}',{(int) Direction} , '{Enabled}');";
+                string query = $"INSERT INTO T_CONTACT (ID, C_TRANSMITLOCATION, C_RECEIVELOCATION, C_CONTACTDIRECTIONID , C_ENABLED) " +
+                               $"VALUES('{Id}', '{TransmitLocation}', '{ReceiveLocation}',{(int) Direction} , '{Enabled}');";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     await command.ExecuteNonQueryAsync();
                 }
             }
-            var response = await client.IndexAsync(this, EditBeforRun.ElasticContactsIndex);
+
+            var contactDto = new clsContactDto(this);
+            var response = await client.IndexAsync(contactDto, EditBeforRun.ElasticContactsIndex);
+            contactDto = null;
 
             if (!response.IsValidResponse)
             {
-                throw new Exception("Error while working with Elastic");
+                Console.WriteLine(response.DebugInformation);
             }
             client.Indices.Refresh(EditBeforRun.ElasticContactsIndex); // refresh index 
         }
 
         public override async Task DeleteAsync()
         {
+            deleteTransmitDirectory();
+            deleteReceiveDirectory();
+
             await base.DeleteAsync();
 
             var response = await client.DeleteAsync(EditBeforRun.ElasticContactsIndex, Id);
@@ -66,13 +84,15 @@ namespace FileworxObjectClassLibrary
 
         public override async Task UpdateAsync()
         {
+            updateDirectories();
+
             await base.UpdateAsync();
 
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 await connection.OpenAsync();
 
-                string query = $"UPDATE T_CONTACT SET C_LOCATION = '{Location}', C_CONTACTDIRECTIONID='{(int)Direction}',C_ENABLED= '{Enabled}' " +
+                string query = $"UPDATE T_CONTACT SET C_TRANSMITLOCATION = '{TransmitLocation}', C_RECEIVELOCATION = '{ReceiveLocation}', C_CONTACTDIRECTIONID='{(int)Direction}',C_ENABLED= '{Enabled}' " +
                                $"WHERE Id = '{Id}';";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -81,7 +101,9 @@ namespace FileworxObjectClassLibrary
                 }
             }
 
-            var response = await client.UpdateAsync<clsContact, clsContact>(EditBeforRun.ElasticContactsIndex, Id, u => u.Doc(this));
+            var contactDto = new clsContactDto(this);
+            var response = await client.UpdateAsync<clsContactDto, clsContactDto>(EditBeforRun.ElasticContactsIndex, Id, u => u.Doc(contactDto));
+            contactDto = null;
 
             if (!response.IsValidResponse)
             {
@@ -97,7 +119,7 @@ namespace FileworxObjectClassLibrary
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 connection.Open();
-                string query = $"SELECT C_LOCATION, C_CONTACTDIRECTIONID, C_ENABLED " +
+                string query = $"SELECT C_TRANSMITLOCATION, C_RECEIVELOCATION, C_CONTACTDIRECTIONID, C_ENABLED " +
                                $"FROM {tableName} " +
                                $"WHERE Id = '{Id}'";
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -109,14 +131,72 @@ namespace FileworxObjectClassLibrary
 
                             if (!String.IsNullOrEmpty(reader[1].ToString()))
                             {
-                                Location = (reader[0].ToString());
-                                int d = (int)(reader[1]);
+                                TransmitLocation = (reader[0].ToString());
+                                ReceiveLocation = (reader[1].ToString());
+                                int d = (int) reader[2];
                                 Direction = (ContactDirection) d;
-                                Enabled= (bool)reader[2];
+                                Enabled= (bool) reader[3];
                             }
                         }
                     }
                 }
+            }
+        }
+
+        private void updateDirectories()
+        {
+            if ((Direction & ContactDirection.Transmit) == ContactDirection.Transmit)
+            {
+                TransmitLocation = EditBeforRun.TransmitFolder + @"\" + Id;
+                createTransmitDirectory();
+            }
+            else
+            {
+                TransmitLocation = String.Empty;
+                deleteTransmitDirectory();
+            }
+
+            if ((Direction & ContactDirection.Receive) == ContactDirection.Receive)
+            {
+                ReceiveLocation = EditBeforRun.ReceiveFolder + @"\" + Id;
+                createReceiveDirectory();
+            }
+            else
+            {
+                ReceiveLocation = String.Empty;
+                deleteReceiveDirectory();
+            }
+        }
+
+        private void createTransmitDirectory()
+        {
+            if (!Directory.Exists(TransmitLocation))
+            {
+                Directory.CreateDirectory(TransmitLocation);
+            }
+        }
+
+        private void deleteTransmitDirectory()
+        {
+            if (Directory.Exists(TransmitLocation))
+            {
+                Directory.Delete(TransmitLocation);
+            }
+        }
+
+        private void createReceiveDirectory()
+        {
+            if (!Directory.Exists(ReceiveLocation))
+            {
+                Directory.CreateDirectory(ReceiveLocation);
+            }
+        }
+
+        private void deleteReceiveDirectory()
+        {
+            if (Directory.Exists(ReceiveLocation))
+            {
+                Directory.Delete(ReceiveLocation);
             }
         }
     }

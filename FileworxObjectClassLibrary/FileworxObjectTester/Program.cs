@@ -26,24 +26,22 @@ namespace FileworxObjectTester
             //contact.Id = new Guid("62a7b071-45f4-48f5-b494-b860da0b5c2f");
             //contact.Description = "contact";
             //contact.Name = "contact";
-            //contact.Direction = ContactDirection.Transmit;
-            //contact.Location = @"D:\skysports-novak-djokovic-tennis_6214595.jpg";
             //contact.Enabled = true;
+            //contact.Direction = ContactDirection.Transmit;
             //await contact.InsertAsync();
 
             // Read Contact
             //var unknown = new clsContact();
             //unknown.Id = new Guid("62a7b071-45f4-48f5-b494-b860da0b5c2f");
             //unknown.Read();
-            //Console.WriteLine(unknown.Location);
+            //Console.WriteLine(unknown.ReceiveLocation);
 
             //// Update Contact
             //var toupdate = new clsContact();
             //toupdate.Id = new Guid("62a7b071-45f4-48f5-b494-b860da0b5c2f");
             //toupdate.Read();
-            //toupdate.Description = "Updated photo";
-            //toupdate.Name = "Updated photo";
-            //toupdate.Location = @"D:\skysports-novak-djokovic-tennis_6214595.jpg";
+            //toupdate.Description = "Updated Contact";
+            //toupdate.Name = "Updated Contact";
             //await toupdate.UpdateAsync();
             //Console.WriteLine(toupdate.Name);
 
@@ -52,6 +50,7 @@ namespace FileworxObjectTester
             //toDelete.Id = new Guid("62a7b071-45f4-48f5-b494-b860da0b5c2f");
             //toDelete.Read();
             //await toDelete.DeleteAsync();
+
             //____________________________________________________________________________________________________
             //// Insert Photo
             //var photo = new clsPhoto();
@@ -156,13 +155,13 @@ namespace FileworxObjectTester
             //____________________________________________________________________________________________________
 
             //Contact Query
-            //var query = new clsContactQuery() { Source = QuerySource.ES };
-            ////query.QDirection = new ContactDirection[] { ContactDirection.TransmitAndReceive };
-            //var result = await query.Run();
-            //foreach (var c in result)
-            //{
-            //    Console.WriteLine(c.Name);
-            //}
+            var query = new clsContactQuery() { Source = QuerySource.ES };
+            //query.QDirection = new ContactDirection[] { ContactDirection.Receive };
+            var result = await query.Run();
+            foreach (var c in result)
+            {
+                Console.WriteLine(c.Name);
+            }
 
             //____________________________________________________________________________________________________
 

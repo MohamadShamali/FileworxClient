@@ -67,7 +67,20 @@ namespace FileworxObjectClassLibrary
             var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
             var client = new ElasticsearchClient(settings);
 
-            var response1 = await client.Indices.CreateAsync("contacts");
+            var response1 = await client.Indices.CreateAsync<clsContactDto>("contacts", c => c.Mappings(map => map.Properties(p => p.Text(t => t.Id)
+                                                                                                                                  .Text(t => t.Description)
+                                                                                                                                  .Date(d => d.CreationDate)
+                                                                                                                                  .Date(d => d.ModificationDate)
+                                                                                                                                  .Text(t => t.CreatorId)
+                                                                                                                                  .Text(t => t.CreatorName)
+                                                                                                                                  .Text(t => t.LastModifierId)
+                                                                                                                                  .Text(t => t.LastModifierName)
+                                                                                                                                  .Text(t => t.Name)
+                                                                                                                                  .Text (t => t.Class)
+                                                                                                                                  .Text(t => t.TransmitLocation)
+                                                                                                                                  .Text(t => t.ReceiveLocation)
+                                                                                                                                  .IntegerNumber(t => t.Direction) // Here
+                                                                                                                                  .Boolean(t => t.Enabled))));
 
             if (response1.IsValidResponse)
             {
