@@ -20,6 +20,7 @@ namespace Fileworx_Client
         private static List<clsFile> allFiles { get; set; }
         private static List<clsNews> allNews { get; set; }
         private static List<clsPhoto> allPhotos { get; set; }
+        private static List<clsContact> allContacts { get; set; }
         private QuerySource querySource { get; set; } = QuerySource.ES;
         private TabPage hiddenTabPage;
         private enum SortBy { RecentDate, OldestDate, Alphabetically };
@@ -54,6 +55,11 @@ namespace Fileworx_Client
             await fileworx.addDBFilesToFilesList();
             fileworx.sortFilesList(SortBy.RecentDate);
             fileworx.addFilesListItemsToListView();
+
+            // Add all contacts
+            var contactsQuery = new clsContactQuery();
+            allContacts= await contactsQuery.Run();
+
             return fileworx;
         }
 

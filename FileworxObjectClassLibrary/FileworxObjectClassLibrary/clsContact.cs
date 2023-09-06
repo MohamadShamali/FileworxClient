@@ -42,7 +42,6 @@ namespace FileworxObjectClassLibrary
 
         public async override Task InsertAsync()
         {
-            updateDirectories();
 
             // DB
             await base.InsertAsync();
@@ -70,8 +69,6 @@ namespace FileworxObjectClassLibrary
 
         public override async Task DeleteAsync()
         {
-            deleteTransmitDirectory();
-            deleteReceiveDirectory();
 
             // DB
             await base.DeleteAsync();
@@ -87,7 +84,6 @@ namespace FileworxObjectClassLibrary
 
         public override async Task UpdateAsync()
         {
-            updateDirectories();
 
             // DB
             await base.UpdateAsync();
@@ -148,10 +144,10 @@ namespace FileworxObjectClassLibrary
 
         public void TransmitFile(clsFile file)
         {
+            string filePath = TransmitLocation + @"\" + file.Id.ToString() + ".txt";
             if (file is clsNews)
             {
                 clsNews news = (clsNews) file;
-                string filePath = TransmitLocation + @"\" + news.Id.ToString() + ".txt";
 
                 FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
                 using (StreamWriter writer = new StreamWriter(fs))
@@ -164,7 +160,6 @@ namespace FileworxObjectClassLibrary
             else
             {
                 clsPhoto photo = (clsPhoto) file;
-                string filePath = TransmitLocation + @"\" + photo.Id.ToString() + ".txt";
 
                 FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
                 using (StreamWriter writer = new StreamWriter(fs))
@@ -291,63 +286,6 @@ namespace FileworxObjectClassLibrary
                    $"{photo.Class}{EditBeforRun.Separator}" +
                    $"{photo.Body}{EditBeforRun.Separator}" +
                    $"{photo.Location}";
-        }
-
-        private void updateDirectories()
-        {
-            if ((Direction & ContactDirection.Transmit) == ContactDirection.Transmit)
-            {
-                TransmitLocation = EditBeforRun.TransmitFolder + @"\" + Id;
-                createTransmitDirectory();
-            }
-            else
-            {
-                TransmitLocation = String.Empty;
-                deleteTransmitDirectory();
-            }
-
-            if ((Direction & ContactDirection.Receive) == ContactDirection.Receive)
-            {
-                ReceiveLocation = EditBeforRun.ReceiveFolder + @"\" + Id;
-                createReceiveDirectory();
-            }
-            else
-            {
-                ReceiveLocation = String.Empty;
-                deleteReceiveDirectory();
-            }
-        }
-
-        private void createTransmitDirectory()
-        {
-            if (!Directory.Exists(TransmitLocation))
-            {
-                Directory.CreateDirectory(TransmitLocation);
-            }
-        }
-
-        private void deleteTransmitDirectory()
-        {
-            if (Directory.Exists(TransmitLocation))
-            {
-                Directory.Delete(TransmitLocation);
-            }
-        }
-
-        private void createReceiveDirectory()
-        {
-            if (!Directory.Exists(ReceiveLocation))
-            {
-                Directory.CreateDirectory(ReceiveLocation);
-            }
-        }
-
-        private void deleteReceiveDirectory()
-        {
-            if (Directory.Exists(ReceiveLocation))
-            {
-                Directory.Delete(ReceiveLocation);
-            }
         }
 
     }
