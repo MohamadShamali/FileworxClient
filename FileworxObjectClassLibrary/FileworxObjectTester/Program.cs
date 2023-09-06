@@ -31,10 +31,14 @@ namespace FileworxObjectTester
             //await contact.InsertAsync();
 
             // Read Contact
-            //var unknown = new clsContact();
-            //unknown.Id = new Guid("62a7b071-45f4-48f5-b494-b860da0b5c2f");
-            //unknown.Read();
-            //Console.WriteLine(unknown.ReceiveLocation);
+            var unknown = new clsContact();
+            unknown.Id = new Guid("62a7b071-45f4-48f5-b494-b860da0b5c2f");
+            unknown.Read();
+            Console.WriteLine(unknown.ReceiveLocation);
+            var news = new clsNews();
+            news.Id = new Guid("64a7b071-45f4-48f5-b494-b860da0b5c2f");
+            news.Read();
+            unknown.TransmitFile(news);
 
             //// Update Contact
             //var toupdate = new clsContact();
@@ -155,13 +159,13 @@ namespace FileworxObjectTester
             //____________________________________________________________________________________________________
 
             //Contact Query
-            var query = new clsContactQuery() { Source = QuerySource.ES };
-            //query.QDirection = new ContactDirection[] { ContactDirection.Receive };
-            var result = await query.Run();
-            foreach (var c in result)
-            {
-                Console.WriteLine(c.Name);
-            }
+            //var query = new clsContactQuery() { Source = QuerySource.ES };
+            ////query.QDirection = new ContactDirection[] { ContactDirection.Receive };
+            //var result = await query.Run();
+            //foreach (var c in result)
+            //{
+            //    Console.WriteLine(c.Name);
+            //}
 
             //____________________________________________________________________________________________________
 
