@@ -106,6 +106,8 @@ namespace FileworxObjectClassLibrary
                 }
             }
 
+
+            // ES
             else
             {
                 var shouldQueries = new Action<QueryDescriptor<clsBusinessObject>>[QClasses.Length];

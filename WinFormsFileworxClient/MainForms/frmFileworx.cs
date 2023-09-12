@@ -47,6 +47,7 @@ namespace Fileworx_Client
             fileworx.lblName.Text = Global.LoggedInUser.Name;
             fileworx.WindowState = FormWindowState.Maximized;
             fileworx.cboDataStoreSource.SelectedIndex = 1;
+            fileworx.btnSendTo.Enabled = false;
 
             // Hide and save hidden Tab
             fileworx.hiddenTabPage = fileworx.tclPreview.TabPages[1];
@@ -539,6 +540,18 @@ namespace Fileworx_Client
             var contactsList = await frmContactsList.Create(findAllCheckedFiles());
             
             contactsList.ShowDialog();
+        }
+
+        private void lvwFiles_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            if (lvwFiles.CheckedItems.Count > 0)
+            {
+                btnSendTo.Enabled = true;
+            }
+            else
+            {
+                btnSendTo.Enabled = false;
+            }
         }
     }
 }

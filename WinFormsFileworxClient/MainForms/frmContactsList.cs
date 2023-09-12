@@ -57,6 +57,7 @@ namespace Fileworx_Client.MainForms
             contactList.pnlButtons.Visible = true;
             contactList.msiAddContact.Enabled = false;
             contactList.mnuMenuStrip.Enabled = false;
+            contactList.btnSend.Enabled = false;
 
 
             // Adding Contacts
@@ -100,6 +101,10 @@ namespace Fileworx_Client.MainForms
                     var listViewNews = new ListViewItem($"{contact.Name}");
                     if (contact.Direction == (ContactDirection.Transmit | ContactDirection.Receive)) listViewNews.SubItems.Add($"Transmit and Receive");
                     else listViewNews.SubItems.Add($"{contact.Direction.ToString()}");
+                    if (!contact.Enabled)
+                    {
+                        listViewNews.ForeColor = Color.Gray;
+                    } 
                     listViewNews.SubItems.Add($"{contact.CreationDate}");
                     lvwContacts.Items.Add(listViewNews);
                 }
@@ -120,7 +125,7 @@ namespace Fileworx_Client.MainForms
                                     (from file in allContacts
                                      where (file.CreationDate.ToString() == (lvwContacts.SelectedItems[0].SubItems[2].Text))
                                      select file).FirstOrDefault();
-
+                selectedContact.Read();
                 return selectedContact;
             }
 
@@ -144,6 +149,7 @@ namespace Fileworx_Client.MainForms
             await refreshContactsList();
             addContactsListItemsToListView();
         }
+
 
         //------------------------ Event Handlers ------------------------//
 
@@ -182,6 +188,16 @@ namespace Fileworx_Client.MainForms
                     if (selectedContact != null)
                     {
                         cmsUsersList.Show(lvwContacts, new Point(e.X, e.Y));
+
+                        if (!selectedContact.Enabled)
+                        {
+                            cmsUsersList.Items[2].Text = "Enable Contact";
+                        }
+
+                        else
+                        {
+                            cmsUsersList.Items[2].Text = "Disable Contact";
+                        }
                     }
                 }
             }
@@ -237,6 +253,50 @@ namespace Fileworx_Client.MainForms
             }
 
             this.Close();
+        }
+
+        private void lvwContacts_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            if(lvwContacts.CheckedItems.Count > 0)
+            {
+                btnSend.Enabled = true;
+            }
+            else 
+            {
+                btnSend.Enabled = false;
+            }
+            ListViewItem checkedItem = e.Item;
+            
+            if (checkedItem.ForeColor == Color.Gray)
+            {
+                e.Item.Checked = false;
+            }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private async void disableContactToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var selectedContact = findSelectedContact();
+
+            if (cmsUsersList.Items[2].Text == "Enable Contact")
+            {
+                selectedContact.Enabled = true;
+                await selectedContact.UpdateAsync();
+                await refreshContactsList();
+                addContactsListItemsToListView();
+            }
+
+            else
+            {
+                selectedContact.Enabled = false;
+                await selectedContact.UpdateAsync();
+                await refreshContactsList();
+                addContactsListItemsToListView();
+            }
         }
     }
 }

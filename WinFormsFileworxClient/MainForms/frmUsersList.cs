@@ -171,6 +171,6 @@ namespace Fileworx_Client
 
             await refreshUsersList();
             addUsersListItemsToListView();
-        }
+        } 
     }
 }

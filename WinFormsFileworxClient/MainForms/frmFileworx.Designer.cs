@@ -351,7 +351,7 @@
             // signOutButton
             // 
             this.signOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.signOutButton.Location = new System.Drawing.Point(16238, 24);
+            this.signOutButton.Location = new System.Drawing.Point(18572, 24);
             this.signOutButton.Name = "signOutButton";
             this.signOutButton.Size = new System.Drawing.Size(75, 23);
             this.signOutButton.TabIndex = 84;
@@ -532,6 +532,7 @@
             this.lvwFiles.TabIndex = 86;
             this.lvwFiles.UseCompatibleStateImageBehavior = false;
             this.lvwFiles.View = System.Windows.Forms.View.Details;
+            this.lvwFiles.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvwFiles_ItemChecked);
             this.lvwFiles.MouseClick += new System.Windows.Forms.MouseEventHandler(this.newsListView_MouseClick);
             // 
             // cmsFiles

@@ -40,6 +40,22 @@ namespace Fileworx_Client.AddWindows
             this.Text = "Edit Contact";
         }
 
+        private bool validateDate()
+        {
+            if (!String.IsNullOrEmpty(txtName.Text))
+            {
+                if(!String.IsNullOrEmpty(txtTransmitLoction.Text) | (!txtTransmitLoction.Enabled)) 
+                {
+                    if (!String.IsNullOrEmpty(txtReceiveLocation.Text) | (!txtReceiveLocation.Enabled))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+                return false;
+        }
+
         private void cboDirection_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtReceiveLocation.Enabled = true;
@@ -93,51 +109,59 @@ namespace Fileworx_Client.AddWindows
 
         private async void btnCreate_Click(object sender, EventArgs e)
         {
-            // Add Case
-            if (String.IsNullOrEmpty(contactToEdit.Name))
+            if (validateDate()) 
             {
-                var newContact = new clsContact()
+                // Add Case
+                if (String.IsNullOrEmpty(contactToEdit.Name))
                 {
-                    Id = Guid.NewGuid(),
-                    Name = txtName.Text,
-                    Description = String.Empty,
-                    CreatorId = Global.LoggedInUser.Id,
-                    CreatorName = Global.LoggedInUser.Name,
-                    Direction = (cboDirection.SelectedIndex == 0) ? (ContactDirection.Transmit | ContactDirection.Receive) :
-                                (cboDirection.SelectedIndex == 1) ? ContactDirection.Transmit :
-                                                                    ContactDirection.Receive,
-                    TransmitLocation = txtTransmitLoction.Text,
-                    ReceiveLocation = txtReceiveLocation.Text,
-                    Enabled = true
-                };
+                    var newContact = new clsContact()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = txtName.Text,
+                        Description = String.Empty,
+                        CreatorId = Global.LoggedInUser.Id,
+                        CreatorName = Global.LoggedInUser.Name,
+                        Direction = (cboDirection.SelectedIndex == 0) ? (ContactDirection.Transmit | ContactDirection.Receive) :
+                                    (cboDirection.SelectedIndex == 1) ? ContactDirection.Transmit :
+                                                                        ContactDirection.Receive,
+                        TransmitLocation = txtTransmitLoction.Text,
+                        ReceiveLocation = txtReceiveLocation.Text,
+                        Enabled = true
+                    };
 
-                await newContact.InsertAsync();
+                    await newContact.InsertAsync();
+                }
+
+                // Edit Case
+                else
+                {
+                    contactToEdit.Read();
+
+                    contactToEdit.Name = txtName.Text;
+                    contactToEdit.LastModifierId = Global.LoggedInUser.Id;
+                    contactToEdit.LastModifierName = Global.LoggedInUser.Name;
+                    contactToEdit.Direction = (cboDirection.SelectedIndex == 0) ? (ContactDirection.Transmit | ContactDirection.Receive) :
+                                              (cboDirection.SelectedIndex == 1) ? ContactDirection.Transmit :
+                                              ContactDirection.Receive;
+                    contactToEdit.TransmitLocation = txtTransmitLoction.Text;
+                    contactToEdit.ReceiveLocation = txtReceiveLocation.Text;
+
+                    await contactToEdit.UpdateAsync();
+                }
+
+
+                if (OnFormClose != null)
+                {
+                    await OnFormClose();
+                }
+
+                this.Close();
             }
 
-            // Edit Case
             else
             {
-                contactToEdit.Read();
-
-                contactToEdit.Name = txtName.Text;
-                contactToEdit.LastModifierId = Global.LoggedInUser.Id;
-                contactToEdit.LastModifierName = Global.LoggedInUser.Name;
-                contactToEdit.Direction = (cboDirection.SelectedIndex == 0) ? (ContactDirection.Transmit | ContactDirection.Receive) :
-                                          (cboDirection.SelectedIndex == 1) ? ContactDirection.Transmit :
-                                          ContactDirection.Receive;
-                contactToEdit.TransmitLocation = txtTransmitLoction.Text;
-                contactToEdit.ReceiveLocation = txtReceiveLocation.Text;
-
-                await contactToEdit.UpdateAsync();
+                MessageBox.Show("Empty fields");
             }
-
-
-            if (OnFormClose != null)
-            {
-                await OnFormClose();
-            }
-
-            this.Close();
         }
     }
 }

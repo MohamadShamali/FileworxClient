@@ -50,6 +50,7 @@
             this.cmsUsersList = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmiEditContact = new System.Windows.Forms.ToolStripMenuItem();
             this.cmiRemoveContact = new System.Windows.Forms.ToolStripMenuItem();
+            this.disableContactToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
@@ -76,6 +77,7 @@
             this.lvwContacts.TabIndex = 90;
             this.lvwContacts.UseCompatibleStateImageBehavior = false;
             this.lvwContacts.View = System.Windows.Forms.View.Details;
+            this.lvwContacts.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvwContacts_ItemChecked);
             this.lvwContacts.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvwContacts_MouseClick);
             // 
             // colutmnHeader1
@@ -164,7 +166,7 @@
             // signOutButton
             // 
             this.signOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.signOutButton.Location = new System.Drawing.Point(15071, 24);
+            this.signOutButton.Location = new System.Drawing.Point(17405, 24);
             this.signOutButton.Name = "signOutButton";
             this.signOutButton.Size = new System.Drawing.Size(75, 23);
             this.signOutButton.TabIndex = 84;
@@ -192,7 +194,7 @@
             // msiAddContact
             // 
             this.msiAddContact.Name = "msiAddContact";
-            this.msiAddContact.Size = new System.Drawing.Size(180, 22);
+            this.msiAddContact.Size = new System.Drawing.Size(141, 22);
             this.msiAddContact.Text = "&Add Contact";
             this.msiAddContact.Click += new System.EventHandler(this.msiAddContact_Click);
             // 
@@ -217,6 +219,7 @@
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnSend
             // 
@@ -232,9 +235,10 @@
             // 
             this.cmsUsersList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmiEditContact,
-            this.cmiRemoveContact});
+            this.cmiRemoveContact,
+            this.disableContactToolStripMenuItem});
             this.cmsUsersList.Name = "contextMenuStrip1";
-            this.cmsUsersList.Size = new System.Drawing.Size(163, 48);
+            this.cmsUsersList.Size = new System.Drawing.Size(181, 92);
             // 
             // cmiEditContact
             // 
@@ -249,6 +253,13 @@
             this.cmiRemoveContact.Size = new System.Drawing.Size(162, 22);
             this.cmiRemoveContact.Text = "Remove Contact";
             this.cmiRemoveContact.Click += new System.EventHandler(this.cmiRemoveContact_Click);
+            // 
+            // disableContactToolStripMenuItem
+            // 
+            this.disableContactToolStripMenuItem.Name = "disableContactToolStripMenuItem";
+            this.disableContactToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.disableContactToolStripMenuItem.Text = "Disable Contact";
+            this.disableContactToolStripMenuItem.Click += new System.EventHandler(this.disableContactToolStripMenuItem_Click);
             // 
             // frmContactsList
             // 
@@ -297,5 +308,6 @@
         private System.Windows.Forms.ContextMenuStrip cmsUsersList;
         private System.Windows.Forms.ToolStripMenuItem cmiEditContact;
         private System.Windows.Forms.ToolStripMenuItem cmiRemoveContact;
+        private System.Windows.Forms.ToolStripMenuItem disableContactToolStripMenuItem;
     }
 }
