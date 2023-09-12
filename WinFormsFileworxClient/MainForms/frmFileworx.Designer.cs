@@ -34,6 +34,7 @@
             this.tpgPreview = new System.Windows.Forms.TabPage();
             this.tclPreview = new System.Windows.Forms.TabControl();
             this.tpgImage = new System.Windows.Forms.TabPage();
+            this.picImagePreview = new System.Windows.Forms.PictureBox();
             this.lblCategory = new System.Windows.Forms.Label();
             this.lblDate = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
@@ -46,9 +47,13 @@
             this.colutmnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.btnCancelSending = new System.Windows.Forms.Button();
+            this.btnSendTo = new System.Windows.Forms.Button();
+            this.pnlDataSourceSelection = new System.Windows.Forms.Panel();
             this.lblDataStoreSourceTitle = new System.Windows.Forms.Label();
             this.cboDataStoreSource = new System.Windows.Forms.ComboBox();
             this.btnRefresh = new System.Windows.Forms.Button();
+            this.picLogo = new System.Windows.Forms.PictureBox();
             this.signOutButton = new System.Windows.Forms.Button();
             this.lblWelcome = new System.Windows.Forms.Label();
             this.lblName = new System.Windows.Forms.Label();
@@ -58,9 +63,11 @@
             this.msiSortByRecent = new System.Windows.Forms.ToolStripMenuItem();
             this.msiSortBy = new System.Windows.Forms.ToolStripMenuItem();
             this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contactsListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.msiAddNews = new System.Windows.Forms.ToolStripMenuItem();
             this.msiAddImage = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sendFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMenuStrip = new System.Windows.Forms.MenuStrip();
             this.userToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.msiSignOut = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,22 +76,21 @@
             this.cmsFiles = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmiEditFile = new System.Windows.Forms.ToolStripMenuItem();
             this.cmiRemoveFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.picLogo = new System.Windows.Forms.PictureBox();
-            this.picImagePreview = new System.Windows.Forms.PictureBox();
             this.tpgPreview.SuspendLayout();
             this.tclPreview.SuspendLayout();
             this.tpgImage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picImagePreview)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.pnlDataSourceSelection.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.mnuMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.cmsFiles.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picImagePreview)).BeginInit();
             this.SuspendLayout();
             // 
             // txtBody
@@ -129,6 +135,15 @@
             this.tpgImage.Size = new System.Drawing.Size(1159, 114);
             this.tpgImage.TabIndex = 1;
             this.tpgImage.Text = "Image";
+            // 
+            // picImagePreview
+            // 
+            this.picImagePreview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picImagePreview.Location = new System.Drawing.Point(3, 3);
+            this.picImagePreview.Name = "picImagePreview";
+            this.picImagePreview.Size = new System.Drawing.Size(1153, 108);
+            this.picImagePreview.TabIndex = 0;
+            this.picImagePreview.TabStop = false;
             // 
             // lblCategory
             // 
@@ -231,6 +246,7 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.panel3);
+            this.panel1.Controls.Add(this.pnlDataSourceSelection);
             this.panel1.Controls.Add(this.picLogo);
             this.panel1.Controls.Add(this.signOutButton);
             this.panel1.Controls.Add(this.lblWelcome);
@@ -245,22 +261,54 @@
             // 
             // panel3
             // 
-            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3.Controls.Add(this.lblDataStoreSourceTitle);
-            this.panel3.Controls.Add(this.cboDataStoreSource);
-            this.panel3.Controls.Add(this.btnRefresh);
-            this.panel3.Location = new System.Drawing.Point(938, 10);
+            this.panel3.BackColor = System.Drawing.Color.Transparent;
+            this.panel3.Controls.Add(this.btnCancelSending);
+            this.panel3.Controls.Add(this.btnSendTo);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel3.Enabled = false;
+            this.panel3.Location = new System.Drawing.Point(757, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1371, 50);
-            this.panel3.TabIndex = 87;
+            this.panel3.Size = new System.Drawing.Size(180, 60);
+            this.panel3.TabIndex = 88;
+            this.panel3.Visible = false;
+            // 
+            // btnCancelSending
+            // 
+            this.btnCancelSending.Location = new System.Drawing.Point(8, 30);
+            this.btnCancelSending.Name = "btnCancelSending";
+            this.btnCancelSending.Size = new System.Drawing.Size(75, 23);
+            this.btnCancelSending.TabIndex = 1;
+            this.btnCancelSending.Text = "Cancel";
+            this.btnCancelSending.UseVisualStyleBackColor = true;
+            this.btnCancelSending.Click += new System.EventHandler(this.btnCancelSending_Click);
+            // 
+            // btnSendTo
+            // 
+            this.btnSendTo.Location = new System.Drawing.Point(89, 30);
+            this.btnSendTo.Name = "btnSendTo";
+            this.btnSendTo.Size = new System.Drawing.Size(75, 23);
+            this.btnSendTo.TabIndex = 0;
+            this.btnSendTo.Text = "Send To";
+            this.btnSendTo.UseVisualStyleBackColor = true;
+            this.btnSendTo.Click += new System.EventHandler(this.btnSendTo_Click);
+            // 
+            // pnlDataSourceSelection
+            // 
+            this.pnlDataSourceSelection.BackColor = System.Drawing.Color.Transparent;
+            this.pnlDataSourceSelection.Controls.Add(this.lblDataStoreSourceTitle);
+            this.pnlDataSourceSelection.Controls.Add(this.cboDataStoreSource);
+            this.pnlDataSourceSelection.Controls.Add(this.btnRefresh);
+            this.pnlDataSourceSelection.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pnlDataSourceSelection.Location = new System.Drawing.Point(937, 0);
+            this.pnlDataSourceSelection.Name = "pnlDataSourceSelection";
+            this.pnlDataSourceSelection.Size = new System.Drawing.Size(230, 60);
+            this.pnlDataSourceSelection.TabIndex = 87;
             // 
             // lblDataStoreSourceTitle
             // 
-            this.lblDataStoreSourceTitle.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDataStoreSourceTitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDataStoreSourceTitle.AutoSize = true;
-            this.lblDataStoreSourceTitle.Location = new System.Drawing.Point(1184, 6);
+            this.lblDataStoreSourceTitle.Location = new System.Drawing.Point(17, 12);
             this.lblDataStoreSourceTitle.Name = "lblDataStoreSourceTitle";
             this.lblDataStoreSourceTitle.Size = new System.Drawing.Size(95, 13);
             this.lblDataStoreSourceTitle.TabIndex = 87;
@@ -268,21 +316,21 @@
             // 
             // cboDataStoreSource
             // 
-            this.cboDataStoreSource.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cboDataStoreSource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboDataStoreSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboDataStoreSource.FormattingEnabled = true;
             this.cboDataStoreSource.Items.AddRange(new object[] {
             "Database",
             "Elasticsearch"});
-            this.cboDataStoreSource.Location = new System.Drawing.Point(1182, 24);
+            this.cboDataStoreSource.Location = new System.Drawing.Point(15, 30);
             this.cboDataStoreSource.Name = "cboDataStoreSource";
             this.cboDataStoreSource.Size = new System.Drawing.Size(103, 21);
             this.cboDataStoreSource.TabIndex = 86;
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnRefresh.Location = new System.Drawing.Point(1291, 22);
+            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRefresh.Location = new System.Drawing.Point(124, 28);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 23);
             this.btnRefresh.TabIndex = 85;
@@ -290,10 +338,20 @@
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
+            // picLogo
+            // 
+            this.picLogo.Image = ((System.Drawing.Image)(resources.GetObject("picLogo.Image")));
+            this.picLogo.Location = new System.Drawing.Point(25, 7);
+            this.picLogo.Name = "picLogo";
+            this.picLogo.Size = new System.Drawing.Size(198, 41);
+            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picLogo.TabIndex = 80;
+            this.picLogo.TabStop = false;
+            // 
             // signOutButton
             // 
             this.signOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.signOutButton.Location = new System.Drawing.Point(9236, 24);
+            this.signOutButton.Location = new System.Drawing.Point(16238, 24);
             this.signOutButton.Name = "signOutButton";
             this.signOutButton.Size = new System.Drawing.Size(75, 23);
             this.signOutButton.TabIndex = 84;
@@ -321,7 +379,7 @@
             // msiUsersList
             // 
             this.msiUsersList.Name = "msiUsersList";
-            this.msiUsersList.Size = new System.Drawing.Size(123, 22);
+            this.msiUsersList.Size = new System.Drawing.Size(142, 22);
             this.msiUsersList.Text = "Users List";
             this.msiUsersList.Click += new System.EventHandler(this.usersListToolStripMenuItem_Click);
             // 
@@ -355,17 +413,25 @@
             this.msiSortByOldest,
             this.msiSortByAlphabetically});
             this.msiSortBy.Name = "msiSortBy";
-            this.msiSortBy.Size = new System.Drawing.Size(123, 22);
+            this.msiSortBy.Size = new System.Drawing.Size(142, 22);
             this.msiSortBy.Text = "Sort By..";
             // 
             // showToolStripMenuItem
             // 
             this.showToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.msiSortBy,
-            this.msiUsersList});
+            this.msiUsersList,
+            this.contactsListToolStripMenuItem});
             this.showToolStripMenuItem.Name = "showToolStripMenuItem";
             this.showToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.showToolStripMenuItem.Text = "Show";
+            // 
+            // contactsListToolStripMenuItem
+            // 
+            this.contactsListToolStripMenuItem.Name = "contactsListToolStripMenuItem";
+            this.contactsListToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.contactsListToolStripMenuItem.Text = "Contacts List";
+            this.contactsListToolStripMenuItem.Click += new System.EventHandler(this.contactsListToolStripMenuItem_Click);
             // 
             // msiAddNews
             // 
@@ -385,10 +451,18 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.msiAddImage,
-            this.msiAddNews});
+            this.msiAddNews,
+            this.sendFilesToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
+            // 
+            // sendFilesToolStripMenuItem
+            // 
+            this.sendFilesToolStripMenuItem.Name = "sendFilesToolStripMenuItem";
+            this.sendFilesToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.sendFilesToolStripMenuItem.Text = "Send Files";
+            this.sendFilesToolStripMenuItem.Click += new System.EventHandler(this.sendFilesToolStripMenuItem_Click);
             // 
             // mnuMenuStrip
             // 
@@ -482,25 +556,6 @@
             this.cmiRemoveFile.Text = "Remove File";
             this.cmiRemoveFile.Click += new System.EventHandler(this.removeFileToolStripMenuItem_Click);
             // 
-            // picLogo
-            // 
-            this.picLogo.Image = ((System.Drawing.Image)(resources.GetObject("picLogo.Image")));
-            this.picLogo.Location = new System.Drawing.Point(25, 7);
-            this.picLogo.Name = "picLogo";
-            this.picLogo.Size = new System.Drawing.Size(198, 41);
-            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picLogo.TabIndex = 80;
-            this.picLogo.TabStop = false;
-            // 
-            // picImagePreview
-            // 
-            this.picImagePreview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.picImagePreview.Location = new System.Drawing.Point(3, 3);
-            this.picImagePreview.Name = "picImagePreview";
-            this.picImagePreview.Size = new System.Drawing.Size(1153, 108);
-            this.picImagePreview.TabIndex = 0;
-            this.picImagePreview.TabStop = false;
-            // 
             // frmFileworx
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -510,18 +565,21 @@
             this.Controls.Add(this.splitContainer1);
             this.MinimumSize = new System.Drawing.Size(1183, 713);
             this.Name = "frmFileworx";
-            this.Text = "FileWorx";
+            this.Text = "Fileworx";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FileWorx_FormClosed);
             this.Resize += new System.EventHandler(this.FileWorx_Resize);
             this.tpgPreview.ResumeLayout(false);
             this.tclPreview.ResumeLayout(false);
             this.tpgImage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picImagePreview)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
+            this.pnlDataSourceSelection.ResumeLayout(false);
+            this.pnlDataSourceSelection.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.mnuMenuStrip.ResumeLayout(false);
             this.mnuMenuStrip.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -530,8 +588,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.cmsFiles.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picImagePreview)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -577,7 +633,12 @@
         private System.Windows.Forms.ToolStripMenuItem cmiRemoveFile;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.ComboBox cboDataStoreSource;
-        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel pnlDataSourceSelection;
         private System.Windows.Forms.Label lblDataStoreSourceTitle;
+        private System.Windows.Forms.ToolStripMenuItem sendFilesToolStripMenuItem;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Button btnCancelSending;
+        private System.Windows.Forms.Button btnSendTo;
+        private System.Windows.Forms.ToolStripMenuItem contactsListToolStripMenuItem;
     }
 }

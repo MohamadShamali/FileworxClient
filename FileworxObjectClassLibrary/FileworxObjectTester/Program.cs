@@ -27,18 +27,25 @@ namespace FileworxObjectTester
             //contact.Description = "contact";
             //contact.Name = "contact";
             //contact.Enabled = true;
-            //contact.Direction = ContactDirection.Transmit;
+            //contact.Direction = (ContactDirection.Transmit | ContactDirection.Receive);
+            //contact.ReceiveLocation = @"C:\Users\M.AL-Shamali\Desktop\Demo Projects\FileworxClient\FileworxObjectClassLibrary\Contacts\Receive";
+            //contact.TransmitLocation = @"C:\Users\M.AL-Shamali\Desktop\Demo Projects\FileworxClient\FileworxObjectClassLibrary\Contacts\Transmit";
             //await contact.InsertAsync();
 
+            //var news = new clsNews();
+            //news.Id = new Guid("64a7b071-45f4-48f5-b494-b860da0b5c2f");
+            //news.Read();
+            //contact.TransmitFile(news);
+
             // Read Contact
-            var unknown = new clsContact();
-            unknown.Id = new Guid("62a7b071-45f4-48f5-b494-b860da0b5c2f");
-            unknown.Read();
-            Console.WriteLine(unknown.ReceiveLocation);
-            var news = new clsNews();
-            news.Id = new Guid("64a7b071-45f4-48f5-b494-b860da0b5c2f");
-            news.Read();
-            unknown.TransmitFile(news);
+            //var unknown = new clsContact();
+            //unknown.Id = new Guid("62a7b071-45f4-48f5-b494-b860da0b5c2f");
+            //unknown.Read();
+            //Console.WriteLine(unknown.ReceiveLocation);
+            //var news = new clsNews();
+            //news.Id = new Guid("64a7b071-45f4-48f5-b494-b860da0b5c2f");
+            //news.Read();
+            //unknown.TransmitFile(news);
 
             //// Update Contact
             //var toupdate = new clsContact();
@@ -159,7 +166,7 @@ namespace FileworxObjectTester
             //____________________________________________________________________________________________________
 
             //Contact Query
-            //var query = new clsContactQuery() { Source = QuerySource.ES };
+            //var query = new clsContactQuery() { Source = QuerySource.DB};
             ////query.QDirection = new ContactDirection[] { ContactDirection.Receive };
             //var result = await query.Run();
             //foreach (var c in result)

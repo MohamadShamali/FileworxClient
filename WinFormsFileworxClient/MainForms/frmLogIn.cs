@@ -21,12 +21,8 @@ namespace Fileworx_Client
         public LogIn()
         {
             InitializeComponent();
-        }
-
-        private void logInClearTextboxes()
-        {
-            txtUsername.Text = String.Empty;
-            txtPassword.Text = String.Empty;
+            txtUsername.Text = "admin";
+            txtPassword.Text = "admin";
         }
 
         private async void logInButton_Click(object sender, EventArgs e)

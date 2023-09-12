@@ -19,11 +19,8 @@ namespace FileworxObjectClassLibrary
 
         // Properties
         public QuerySource Source { get; set; }
-        public ContactDirection[] QDirection { get; set; } = {ContactDirection.Transmit, ContactDirection.Receive };
-        public clsContactQuery()
-        {
-            
-        }
+        public ContactDirection[] QDirection { get; set; } = {ContactDirection.Transmit, ContactDirection.Receive, (ContactDirection.Transmit | ContactDirection.Receive) };
+
         public async Task<List<clsContact>> Run()
         {
             List<clsContact> allContacts = new List<clsContact>();
@@ -43,7 +40,7 @@ namespace FileworxObjectClassLibrary
                     connection.Open();
 
                     string query = $"SELECT b1.ID, b1.C_DESCRIPTION, b1.C_CREATIONDATE, b1.C_MODIFICATIONDATE, b1.C_CREATORID, b2.C_NAME AS CREATORNAME , " +
-                                   $"b1.C_LASTMODIFIERID, b3.C_NAME AS LASTMODIFIERNAME, b1.C_NAME , b1.C_CLASSID, {tableName}.C_TRANSMITLOCATION , {tableName}.C_RECEIVELOCATION,  {tableName}.C_CONTACTDIRECTIONID , {tableName}.C_ENABLED " +
+                                   $"b1.C_LASTMODIFIERID, b3.C_NAME AS LASTMODIFIERNAME, b1.C_NAME , b1.C_CLASSID, {tableName}.C_TRANSMITLOCATION , {tableName}.C_RECEIVELOCATION,  {tableName}.C_CONTACTDIRECTIONID ,{tableName}.C_LASTRECEIVEDATE ,{tableName}.C_ENABLED " +
                                    $"FROM {tableName} " +
                                    $"INNER JOIN T_BUSINESSOBJECT b1 ON {tableName}.ID = b1.ID " +
                                    $"Left JOIN T_BUSINESSOBJECT b2 ON b1.C_CREATORID = b2.ID " +
@@ -109,7 +106,9 @@ namespace FileworxObjectClassLibrary
                                 int d = (int)(reader[12]);
                                 contact.Direction = (ContactDirection)d;
 
-                                contact.Enabled = (bool) reader[13];
+                                contact.LastReceiveDate = DateTime.Parse(reader[13].ToString());
+
+                                contact.Enabled = (bool) reader[14];
 
                                 allContacts.Add(contact);
                             }

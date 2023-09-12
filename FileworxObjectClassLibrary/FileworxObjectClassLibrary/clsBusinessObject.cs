@@ -37,6 +37,7 @@ namespace FileworxObjectClassLibrary
             if (Description != null) 
             Description = Description.Replace("'", "''");
             Name = Name.Replace("'", "''");
+            if(CreationDate == DateTime.MinValue)
             CreationDate = DateTime.Now;
 
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))

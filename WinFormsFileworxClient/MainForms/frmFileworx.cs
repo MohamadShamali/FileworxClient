@@ -1,4 +1,5 @@
-﻿using FileworxObjectClassLibrary;
+﻿using Fileworx_Client.MainForms;
+using FileworxObjectClassLibrary;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Fileworx_Client.frmFileworx;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Fileworx_Client
 {
@@ -22,6 +24,8 @@ namespace Fileworx_Client
         private static List<clsPhoto> allPhotos { get; set; }
         private static List<clsContact> allContacts { get; set; }
         private QuerySource querySource { get; set; } = QuerySource.ES;
+
+
         private TabPage hiddenTabPage;
         private enum SortBy { RecentDate, OldestDate, Alphabetically };
 
@@ -33,6 +37,7 @@ namespace Fileworx_Client
         public static async Task<frmFileworx> Create()
         {
             var fileworx = new frmFileworx();
+
             // UI 
             int desiredHeight = (int)((fileworx.Height * 2 / 3));
             if (fileworx.splitContainer1.Panel1MinSize <= desiredHeight && desiredHeight <= fileworx.splitContainer1.Height - fileworx.splitContainer1.Panel2MinSize)
@@ -51,16 +56,30 @@ namespace Fileworx_Client
             if (Global.LoggedInUser.IsAdmin) fileworx.msiUsersList.Enabled = true;
             else fileworx.msiUsersList.Enabled = false;
 
+            // Add all contacts
+            await fileworx.addDBContactsToContactsList();
+
+            // Receive Files From Contacts and store them in the DB
+            await fileworx.addContactsReceivedFilesToDB(); 
+
+            // Add DB files to files list
+            await fileworx.addDBFilesToFilesList(); 
+
             // Add files to listView
-            await fileworx.addDBFilesToFilesList();
             fileworx.sortFilesList(SortBy.RecentDate);
             fileworx.addFilesListItemsToListView();
 
-            // Add all contacts
-            var contactsQuery = new clsContactQuery();
-            allContacts= await contactsQuery.Run();
+            // Add Watcher system
+            fileworx.addWatcherSystem();
 
             return fileworx;
+        }
+
+        private async Task addDBContactsToContactsList()
+        {
+            var contactsQuery = new clsContactQuery();
+            contactsQuery.Source= QuerySource.DB;
+            allContacts = await contactsQuery.Run();
         }
 
         private async Task addDBFilesToFilesList()
@@ -79,20 +98,68 @@ namespace Fileworx_Client
             allFiles.AddRange(allNews);
         }
 
-        private void addFilesListItemsToListView()
+        private async Task addContactsReceivedFilesToDB()
         {
-            if(lvwFiles.Items.Count > 0)
+            foreach (var contact in allContacts)
             {
-                lvwFiles.Items.Clear();
-            }
-            foreach (clsFile file in allFiles)
-            {
-                var listViewNews = new ListViewItem($"{file.Name}");
-                listViewNews.SubItems.Add($"{file.CreationDate}");
-                listViewNews.SubItems.Add($"{file.Description}");
-                lvwFiles.Items.Add(listViewNews);
+                if((contact.Direction&ContactDirection.Receive) == ContactDirection.Receive)
+                {
+                    await contact.ReceiveAllFiles();
+                }
             }
         }
+
+        private void addWatcherSystem()
+        {
+            foreach (var contact in allContacts)
+            {
+                if((contact.Direction & (ContactDirection.Receive)) == ContactDirection.Receive)
+                {
+                    FileSystemWatcher watcher = new FileSystemWatcher(contact.ReceiveLocation);
+                    watcher.Created += OnFileCreated;
+                    watcher.EnableRaisingEvents = true;
+                }
+            }
+        }
+
+        private async void OnFileCreated(object sender, FileSystemEventArgs e)
+        {
+            clsContact contact = (from cntct in allContacts
+                                  where (cntct.ReceiveLocation == Path.GetDirectoryName(e.FullPath))
+                                  select cntct).FirstOrDefault();
+            if (contact != null)
+            {
+                await contact.ReceiveFileIfItsNew(e.FullPath);
+                await refreshFilesList();
+                autoSortFilesList();
+                addFilesListItemsToListView();
+            }
+        }
+
+        private void addFilesListItemsToListView()
+        {
+            if (lvwFiles.InvokeRequired)
+            {
+                // Use Invoke to marshal the operation to the UI thread
+                lvwFiles.Invoke(new Action(() => addFilesListItemsToListView()));
+            }
+            else
+            {
+                if (lvwFiles.Items.Count > 0)
+                {
+                    lvwFiles.Items.Clear();
+                }
+
+                foreach (clsFile file in allFiles)
+                {
+                    var listViewNews = new ListViewItem($"{file.Name}");
+                    listViewNews.SubItems.Add($"{file.CreationDate}");
+                    listViewNews.SubItems.Add($"{file.Description}");
+                    lvwFiles.Items.Add(listViewNews);
+                }
+            }
+        }
+
 
         private async Task refreshFilesList()
         {
@@ -160,60 +227,84 @@ namespace Fileworx_Client
 
         private clsFile findSelectedFile()
         {
-            clsFile selectedFile =
-                (from file in allFiles
-                 where ((file.Name == lvwFiles.SelectedItems[0].Text) && (file.CreationDate.ToString() == (lvwFiles.SelectedItems[0].SubItems[1].Text)))
-                 select file).FirstOrDefault();
+            if(lvwFiles.SelectedItems.Count > 0)
+            {
+                clsFile selectedFile =
+                                    (from file in allFiles
+                                     where (file.CreationDate.ToString() == (lvwFiles.SelectedItems[0].SubItems[1].Text))
+                                     select file).FirstOrDefault();
 
-            return selectedFile;
+                return selectedFile;
+            }
+
+            else { return null; }
+        }
+
+        private List<clsFile> findAllCheckedFiles()
+        {
+            List<clsFile> selectedFiles = new List<clsFile>();
+
+            if (lvwFiles.CheckedItems.Count > 0)
+            {
+                selectedFiles =
+                     (from file in allFiles
+                      where lvwFiles.CheckedItems.Cast<ListViewItem>()
+                            .Any(checkedItem => file.CreationDate.ToString() == checkedItem.SubItems[1].Text)
+                      select file).ToList();
+            }
+
+            return selectedFiles;
         }
 
         private void displaySelectedFile (clsFile selectedFile)
         {
-            lblTitle.Text = selectedFile.Name;
-            lblDate.Text = selectedFile.CreationDate.ToString();
-            txtBody.Text = selectedFile.Body;
-            picImagePreview.SizeMode = PictureBoxSizeMode.Zoom;
-
-            if (selectedFile is clsPhoto)
+            if(selectedFile != null)
             {
-                clsPhoto selectedPhoto = (clsPhoto)selectedFile;
+                lblTitle.Text = selectedFile.Name;
+                lblDate.Text = selectedFile.CreationDate.ToString();
+                txtBody.Text = selectedFile.Body;
+                picImagePreview.SizeMode = PictureBoxSizeMode.Zoom;
 
-                lblCategoryTitle.Text = String.Empty;
-                lblCategory.Text = String.Empty;
-
-                if (File.Exists(selectedPhoto.Location))
+                if (selectedFile is clsPhoto)
                 {
-                    if (tclPreview.TabPages.Count == 1)
-                    {
-                        tclPreview.TabPages.Add(hiddenTabPage);
-                    }
+                    clsPhoto selectedPhoto = (clsPhoto)selectedFile;
 
-                    using (var img = new Bitmap(selectedPhoto.Location))
+                    lblCategoryTitle.Text = String.Empty;
+                    lblCategory.Text = String.Empty;
+
+                    if (File.Exists(selectedPhoto.Location))
                     {
-                        picImagePreview.Image = new Bitmap(img);
+                        if (tclPreview.TabPages.Count == 1)
+                        {
+                            tclPreview.TabPages.Add(hiddenTabPage);
+                        }
+
+                        using (var img = new Bitmap(selectedPhoto.Location))
+                        {
+                            picImagePreview.Image = new Bitmap(img);
+                        }
                     }
                 }
-            }
 
-            else
-            {
-                clsNews selectedNews = (clsNews)selectedFile;
-
-                lblCategoryTitle.Text = "Category:";
-                lblCategory.Text = selectedNews.Category;
-
-                try
+                else
                 {
-                    if (tclPreview.TabPages.Count == 2)
-                    {
-                        hiddenTabPage = tclPreview.TabPages[1];
-                        tclPreview.TabPages.RemoveAt(1);
-                    }
-                }
-                catch 
-                { 
+                    clsNews selectedNews = (clsNews)selectedFile;
 
+                    lblCategoryTitle.Text = "Category:";
+                    lblCategory.Text = selectedNews.Category;
+
+                    try
+                    {
+                        if (tclPreview.TabPages.Count == 2)
+                        {
+                            hiddenTabPage = tclPreview.TabPages[1];
+                            tclPreview.TabPages.RemoveAt(1);
+                        }
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
         }
@@ -280,13 +371,13 @@ namespace Fileworx_Client
 
             if (e.Button == MouseButtons.Right)
             {
-                if(selectedFile != null)
+                if (selectedFile != null)
                 {
-                    cmsFiles.Show(lvwFiles,new Point(e.X,e.Y));
+                    cmsFiles.Show(lvwFiles, new Point(e.X, e.Y));
                 }
             }
 
-          displaySelectedFile(selectedFile);  
+            displaySelectedFile(selectedFile);
         }
 
         private void FileWorx_Resize(object sender, EventArgs e)
@@ -410,6 +501,44 @@ namespace Fileworx_Client
             await refreshFilesList();
             autoSortFilesList();
             addFilesListItemsToListView();
+        }
+
+        private void sendFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lvwFiles.CheckBoxes = true;
+            lvwFiles.MultiSelect = true;
+            pnlDataSourceSelection.Enabled = false;
+            pnlDataSourceSelection.Visible = false;
+            panel3.Enabled = true;
+            panel3.Visible = true;
+
+            mnuMenuStrip.Enabled = false;
+        }
+
+        private void btnCancelSending_Click(object sender, EventArgs e)
+        {
+            lvwFiles.CheckBoxes = false;
+            lvwFiles.MultiSelect = false;
+            pnlDataSourceSelection.Enabled = true;
+            pnlDataSourceSelection.Visible = true;
+            panel3.Enabled = false;
+            panel3.Visible = false;
+
+            mnuMenuStrip.Enabled = true;
+        }
+
+        private async void contactsListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var contactsList = await frmContactsList.Create();
+
+            contactsList.Show();
+        }
+
+        private async void btnSendTo_Click(object sender, EventArgs e)
+        {
+            var contactsList = await frmContactsList.Create(findAllCheckedFiles());
+            
+            contactsList.ShowDialog();
         }
     }
 }

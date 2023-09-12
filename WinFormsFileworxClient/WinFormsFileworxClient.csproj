@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddWindows\frmAddContactWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddWindows\frmAddContactWindow.Designer.cs">
+      <DependentUpon>frmAddContactWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="AddWindows\frmAddUserWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,6 +70,12 @@
     <Compile Include="AddWindows\frmAddNewsWindow.Designer.cs">
       <DependentUpon>frmAddNewsWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainForms\frmContactsList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForms\frmContactsList.Designer.cs">
+      <DependentUpon>frmContactsList.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForms\frmFileworx.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,12 +88,6 @@
     </Compile>
     <Compile Include="MainForms\frmLogIn.Designer.cs">
       <DependentUpon>frmLogIn.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainForms\frmReceivedFiles.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForms\frmReceivedFiles.Designer.cs">
-      <DependentUpon>frmReceivedFiles.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,6 +102,9 @@
     <Compile Include="MainForms\frmUsersList.Designer.cs">
       <DependentUpon>frmUsersList.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AddWindows\frmAddContactWindow.resx">
+      <DependentUpon>frmAddContactWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AddWindows\frmAddUserWindow.resx">
       <DependentUpon>frmAddUserWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -105,14 +114,14 @@
     <EmbeddedResource Include="AddWindows\frmAddNewsWindow.resx">
       <DependentUpon>frmAddNewsWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MainForms\frmContactsList.resx">
+      <DependentUpon>frmContactsList.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForms\frmFileworx.resx">
       <DependentUpon>frmFileworx.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForms\frmLogIn.resx">
       <DependentUpon>frmLogIn.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MainForms\frmReceivedFiles.resx">
-      <DependentUpon>frmReceivedFiles.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

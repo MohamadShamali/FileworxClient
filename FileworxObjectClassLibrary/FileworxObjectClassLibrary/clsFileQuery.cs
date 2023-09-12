@@ -1,4 +1,5 @@
 ﻿using Elastic.Clients.Elasticsearch;
+using Elastic.Clients.Elasticsearch.Mapping;
 using Elastic.Clients.Elasticsearch.QueryDsl;
 using System;
 using System.Collections.Generic;
@@ -148,6 +149,14 @@ namespace FileworxObjectClassLibrary
             return allFiles;
         }
 
+        public static bool checkIfThisIsANewFile(clsFile fileToCheck, List<clsFile> allFiles)
+        {
+            clsFile similarFile = (from file in allFiles
+                                   where (file.CreationDate == fileToCheck.CreationDate)
+                                   select file).FirstOrDefault();
 
+            if (similarFile is null) return true;
+            else return false;
+        }
     }
 }
