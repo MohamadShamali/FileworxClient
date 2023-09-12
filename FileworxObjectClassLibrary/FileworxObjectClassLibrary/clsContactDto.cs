@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FileworxObjectClassLibrary
 {
-    public class clsContactDto : clsBusinessObject , IDisposable
+    public class clsContactDto : clsBusinessObject 
     {
         // Properties
         public string TransmitLocation { get; set; } = String.Empty;
@@ -14,13 +14,17 @@ namespace FileworxObjectClassLibrary
         public int Direction { get; set; }
         public bool Enabled { get; set; } = true;
 
+
+        // For Reading from Elastic
         public clsContactDto()
         {
              
         }
+
+        // For writing to Elastic
         public clsContactDto(clsContact contact)
         {
-             Id = contact.Id;
+            Id = contact.Id;
             Description = contact.Description;
             CreationDate = contact.CreationDate;
             ModificationDate = contact.ModificationDate;
@@ -36,8 +40,6 @@ namespace FileworxObjectClassLibrary
             Enabled = contact.Enabled;
         }
 
-        public void Dispose()
-        {
-        }
+
     }
 }

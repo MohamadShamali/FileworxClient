@@ -19,13 +19,13 @@ namespace Fileworx_Client.MainForms
         List<clsFile> filesToSend = new List<clsFile>();
         List<clsContact> selectedContacts = new List<clsContact>();
         private QuerySource querySource { get; set; } = QuerySource.ES;
+
         public frmContactsList()
         {
             InitializeComponent();
         }
 
-
-
+        // Contact List
         public static async Task<frmContactsList> Create()
         {
             var contactList = new frmContactsList();
@@ -39,8 +39,9 @@ namespace Fileworx_Client.MainForms
             contactList.addContactsListItemsToListView();
 
             return contactList;
-        }
+        } 
 
+        // Send Files
         public static async Task<frmContactsList> Create(List<clsFile> files)
         {
             var contactList = new frmContactsList();
@@ -138,6 +139,14 @@ namespace Fileworx_Client.MainForms
             }
         }
 
+        private async Task onFormClose()
+        {
+            await refreshContactsList();
+            addContactsListItemsToListView();
+        }
+
+        //------------------------ Event Handlers ------------------------//
+
         private void msiAddContact_Click(object sender, EventArgs e)
         {
             var addContactWindow = new frmAddContactWindow();
@@ -145,12 +154,6 @@ namespace Fileworx_Client.MainForms
             addContactWindow.OnFormClose += onFormClose;
 
             addContactWindow.Show();
-        }
-
-        private async Task onFormClose()
-        {
-            await refreshContactsList();
-            addContactsListItemsToListView();
         }
 
         private async void btnRefresh_Click(object sender, EventArgs e)

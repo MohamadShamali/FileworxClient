@@ -33,6 +33,7 @@ namespace FileworxObjectClassLibrary
         public ContactDirection Direction {get; set;} = (ContactDirection.Transmit | ContactDirection.Receive);
         public DateTime LastReceiveDate { get; set; }
         public bool Enabled { get; set; } = true;
+
         public clsContact()
         {
             Class = Type.Contact;
@@ -40,6 +41,7 @@ namespace FileworxObjectClassLibrary
             settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
             client = new ElasticsearchClient(settings);
         }
+
 
         public async override Task InsertAsync()
         {
@@ -177,8 +179,6 @@ namespace FileworxObjectClassLibrary
         public async Task ReceiveFileIfItsNew(string filePath)
         {
             string record;
-            string format = "M/d/yyyy h:mm:ss tt";
-
             FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             using (StreamReader reader = new StreamReader(fs))
             {
@@ -186,7 +186,9 @@ namespace FileworxObjectClassLibrary
             }
             string[] content = record.Split(new string[] { EditBeforRun.Separator }, StringSplitOptions.None);
 
+            string format = "M/d/yyyy h:mm:ss tt";
 
+            // News
             if (content[0] == "N")
             {
                 clsNews news = new clsNews()
@@ -200,9 +202,8 @@ namespace FileworxObjectClassLibrary
                     Body = content[4],
                     Category = content[5]
                 };
-                DateTime fileLastWriteTime = news.CreationDate;
 
-                if (fileLastWriteTime > LastReceiveDate)
+                if (news.CreationDate > LastReceiveDate)
                 {
                     await news.InsertAsync();
                     LastReceiveDate = news.CreationDate;
@@ -210,6 +211,8 @@ namespace FileworxObjectClassLibrary
                 }
             }
 
+
+            // Photo
             else
             {
                 clsPhoto photo = new clsPhoto()
@@ -223,9 +226,8 @@ namespace FileworxObjectClassLibrary
                     Body = content[4],
                     Location = content[5]
                 };
-                DateTime fileLastWriteTime2 = photo.CreationDate;
 
-                if (fileLastWriteTime2 > LastReceiveDate)
+                if (photo.CreationDate > LastReceiveDate)
                 {
                     await photo.InsertAsync();
                     LastReceiveDate = photo.CreationDate;

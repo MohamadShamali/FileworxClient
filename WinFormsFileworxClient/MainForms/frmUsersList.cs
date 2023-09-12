@@ -99,6 +99,8 @@ namespace Fileworx_Client
             lblIsAdmin.Text = selectedUser.IsAdmin ? "Yes" : "No";
         }
 
+        //------------------------ Event Handlers ------------------------//
+
         private void addUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmAddUserWindow addUserWindow = new frmAddUserWindow();

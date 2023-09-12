@@ -22,6 +22,8 @@ namespace FileworxObjectClassLibrary
         {
             List<clsBusinessObject> allBusinessObjects = new List<clsBusinessObject>();
 
+
+            // DB
             if(Source == QuerySource.DB)
             {
                 string[] conditions = new string[QClasses.Length];
