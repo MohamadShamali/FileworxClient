@@ -19,6 +19,7 @@ namespace Fileworx_Client.MainForms
         List<clsFile> filesToSend = new List<clsFile>();
         List<clsContact> selectedContacts = new List<clsContact>();
         private QuerySource querySource { get; set; } = QuerySource.ES;
+        public event Action OnCloseAfterSend;
 
         public frmContactsList()
         {
@@ -245,14 +246,19 @@ namespace Fileworx_Client.MainForms
                 }
 
                 MessageBox.Show("Files Sent successfully");
+
+                if (OnCloseAfterSend != null)
+                {
+                    OnCloseAfterSend();
+                }
+
+                this.Close();
             }
 
             catch
             {
                 MessageBox.Show("An Error Occurred While Sending Files");
             }
-
-            this.Close();
         }
 
         private void lvwContacts_ItemChecked(object sender, ItemCheckedEventArgs e)
@@ -275,6 +281,7 @@ namespace Fileworx_Client.MainForms
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
+
             this.Close();
         }
 

@@ -40,6 +40,8 @@ namespace FileworxObjectClassLibrary
             if(CreationDate == DateTime.MinValue)
             CreationDate = DateTime.Now;
 
+            ModificationDate = CreationDate;
+
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 await connection.OpenAsync();

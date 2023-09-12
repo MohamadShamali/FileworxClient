@@ -149,7 +149,8 @@ namespace FileworxObjectClassLibrary
 
         public void TransmitFile(clsFile file)
         {
-            string filePath = TransmitLocation + @"\" + file.Id + ".txt";
+            Guid TxGuid = Guid.NewGuid();
+            string filePath = TransmitLocation + @"\" + TxGuid + ".txt";
             if (file is clsNews)
             {
                 clsNews news = (clsNews) file;
@@ -166,11 +167,14 @@ namespace FileworxObjectClassLibrary
             {
                 clsPhoto photo = (clsPhoto) file;
 
+                File.Copy(photo.Location, TransmitLocation + @"\" + TxGuid + Path.GetExtension(photo.Location));
+
                 FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
                 using (StreamWriter writer = new StreamWriter(fs))
                 {
-                    writer.Write(txtFileContent(photo));
+                    writer.Write(txtFileContent(photo, TxGuid));
                 }
+
                 fs.Close();
             }
 
@@ -178,63 +182,59 @@ namespace FileworxObjectClassLibrary
 
         public async Task ReceiveFileIfItsNew(string filePath)
         {
-            string record;
-            FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-            using (StreamReader reader = new StreamReader(fs))
+            DateTime fileLastModification = File.GetLastWriteTime(filePath);
+            fileLastModification = new DateTime(fileLastModification.Ticks / TimeSpan.TicksPerSecond * TimeSpan.TicksPerSecond);
+            if (fileLastModification > LastReceiveDate)
             {
-                record = reader.ReadLine();
-            }
-            string[] content = record.Split(new string[] { EditBeforRun.Separator }, StringSplitOptions.None);
-
-            string format = "M/d/yyyy h:mm:ss tt";
-
-            // News
-            if (content[0] == "N")
-            {
-                clsNews news = new clsNews()
+                string record;
+                FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                using (StreamReader reader = new StreamReader(fs))
                 {
-                    Id = Guid.NewGuid(),
-                    Description = content[1],
-                    CreationDate = DateTime.ParseExact(content[2], format, System.Globalization.CultureInfo.InvariantCulture),
-                    CreatorId = new Guid("ffd7c672-aa84-47b1-a9a3-c7875a503708"),
-                    CreatorName = "admin",
-                    Name = content[3],
-                    Body = content[4],
-                    Category = content[5]
-                };
+                    record = reader.ReadLine();
+                }
+                string[] content = record.Split(new string[] { EditBeforRun.Separator }, StringSplitOptions.None);
 
-                if (news.CreationDate > LastReceiveDate)
+                string format = "M/d/yyyy h:mm:ss tt";
+
+                // News
+                if (content[0] == "N")
                 {
+                    clsNews news = new clsNews()
+                    {
+                        Id = Guid.NewGuid(),
+                        Description = content[1],
+                        CreationDate = DateTime.ParseExact(content[2], format, System.Globalization.CultureInfo.InvariantCulture),
+                        CreatorId = new Guid("ffd7c672-aa84-47b1-a9a3-c7875a503708"),
+                        CreatorName = "admin",
+                        Name = content[3],
+                        Body = content[4],
+                        Category = content[5]
+                    };
+
                     await news.InsertAsync();
-                    LastReceiveDate = news.CreationDate;
-                    await this.UpdateAsync();
                 }
-            }
 
-
-            // Photo
-            else
-            {
-                clsPhoto photo = new clsPhoto()
+                // Photo
+                else
                 {
-                    Id = Guid.NewGuid(),
-                    Description = content[1],
-                    CreationDate = DateTime.ParseExact(content[2], format, System.Globalization.CultureInfo.InvariantCulture),
-                    CreatorId = new Guid("ffd7c672-aa84-47b1-a9a3-c7875a503708"),
-                    CreatorName = "admin",
-                    Name = content[3],
-                    Body = content[4],
-                    Location = content[5]
-                };
+                    clsPhoto photo = new clsPhoto()
+                    {
+                        Id = Guid.NewGuid(),
+                        Description = content[1],
+                        CreationDate = DateTime.ParseExact(content[2], format, System.Globalization.CultureInfo.InvariantCulture),
+                        CreatorId = new Guid("ffd7c672-aa84-47b1-a9a3-c7875a503708"),
+                        CreatorName = "admin",
+                        Name = content[3],
+                        Body = content[4],
+                        Location = content[5]
+                    };
 
-                if (photo.CreationDate > LastReceiveDate)
-                {
                     await photo.InsertAsync();
-                    LastReceiveDate = photo.CreationDate;
-                    await this.UpdateAsync();
                 }
-            }
 
+                LastReceiveDate = fileLastModification;
+                await this.UpdateAsync();
+            }
         }
 
         public async Task ReceiveAllFiles()
@@ -254,20 +254,20 @@ namespace FileworxObjectClassLibrary
         {
             return $"N{EditBeforRun.Separator}" +
                    $"{news.Description}{EditBeforRun.Separator}" +
-                   $"{DateTime.Now}{EditBeforRun.Separator}" +
+                   $"{news.CreationDate}{EditBeforRun.Separator}" +
                    $"{news.Name}{EditBeforRun.Separator}" + 
                    $"{news.Body}{EditBeforRun.Separator}" + 
                    $"{news.Category}";
         }
 
-        private string txtFileContent(clsPhoto photo)
+        private string txtFileContent(clsPhoto photo , Guid TxGuid)
         {
             return $"P{EditBeforRun.Separator}" +
                    $"{photo.Description}{EditBeforRun.Separator}" +
-                   $"{DateTime.Now}{EditBeforRun.Separator}" +
+                   $"{photo.CreationDate}{EditBeforRun.Separator}" +
                    $"{photo.Name}{EditBeforRun.Separator}" +
                    $"{photo.Body}{EditBeforRun.Separator}" +
-                   $"{photo.Location}";
+                   $"{TransmitLocation + @"\" + TxGuid + Path.GetExtension(photo.Location)}";
         }
 
     }

@@ -128,14 +128,43 @@ namespace Fileworx_Client
             clsContact contact = (from cntct in allContacts
                                   where (cntct.ReceiveLocation == Path.GetDirectoryName(e.FullPath))
                                   select cntct).FirstOrDefault();
+
             if (contact != null)
             {
-                await contact.ReceiveFileIfItsNew(e.FullPath);
-                await refreshFilesList();
-                autoSortFilesList();
-                addFilesListItemsToListView();
+                int maxAttempts = 3; 
+                int delayMilliseconds = 200; // Adjust the delay as needed
+
+                for (int attempt = 1; attempt <= maxAttempts; attempt++)
+                {
+                    try
+                    {
+                        // Try to access the file
+                        using (FileStream fs = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        {
+                            // File is accessible, proceed with processing
+                            await contact.ReceiveFileIfItsNew(e.FullPath);
+                            await refreshFilesList();
+                            autoSortFilesList();
+                            addFilesListItemsToListView();
+                            break; // Exit the loop on success
+                        }
+                    }
+                    catch (IOException)
+                    {
+                        // File is not accessible yet, wait and then retry
+                        if (attempt < maxAttempts)
+                        {
+                            await Task.Delay(delayMilliseconds);
+                        }
+                        else
+                        {
+                            throw new Exception("Error while Receiving File");
+                        }
+                    }
+                }
             }
         }
+
 
         private void addFilesListItemsToListView()
         {
@@ -360,6 +389,18 @@ namespace Fileworx_Client
             displaySelectedFile(selectedFile);
         }
 
+        private void disableSendingMode()
+        {
+            lvwFiles.CheckBoxes = false;
+            lvwFiles.MultiSelect = false;
+            pnlDataSourceSelection.Enabled = true;
+            pnlDataSourceSelection.Visible = true;
+            panel3.Enabled = false;
+            panel3.Visible = false;
+
+            mnuMenuStrip.Enabled = true;
+        }
+
         //------------------------ Event Handlers ------------------------//
         private void signOutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -518,14 +559,7 @@ namespace Fileworx_Client
 
         private void btnCancelSending_Click(object sender, EventArgs e)
         {
-            lvwFiles.CheckBoxes = false;
-            lvwFiles.MultiSelect = false;
-            pnlDataSourceSelection.Enabled = true;
-            pnlDataSourceSelection.Visible = true;
-            panel3.Enabled = false;
-            panel3.Visible = false;
-
-            mnuMenuStrip.Enabled = true;
+            disableSendingMode();
         }
 
         private async void contactsListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -538,7 +572,7 @@ namespace Fileworx_Client
         private async void btnSendTo_Click(object sender, EventArgs e)
         {
             var contactsList = await frmContactsList.Create(findAllCheckedFiles());
-            
+            contactsList.OnCloseAfterSend += disableSendingMode;
             contactsList.ShowDialog();
         }
 
