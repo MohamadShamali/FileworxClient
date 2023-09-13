@@ -1,0 +1,206 @@
+﻿@inject ContactsServices contactsServices
+@inject UsersServices usersServices
+
+<div class="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-10">
+    <div class=" bg-white border-0 border-solid border-gray-50 rounded-md shadow-md min-w-[1000px]">
+        <div class="bg-fw-blue p-4">
+            @if(contactToEdit is null)
+            {
+                <h2 class="text-4xl font-bold text-gray-50 ml-1.5">Add Contact</h2>
+                <p class="text-l font-semibold text-gray-50 ml-1.5">Fill the folwing data to create a new contact</p>
+            }
+            else
+            {
+                <h2 class="text-4xl font-bold text-gray-50 ml-1.5">Edit Contact</h2>
+                <p class="text-l font-semibold text-gray-50 ml-1.5">Edit the folwing data to edit this existing contact</p>
+            }
+        </div>
+
+        <div class="p-4 bg-gray-50"> 
+            <div>
+                <label class="font-semibold" for="name">Name:</label>
+                <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=name type="text" id="title" maxlength="255" />
+            </div>
+            <div class="mt-1.5">
+                <label class="font-semibold" for="isadmin">Direction:</label>
+                <select @bind="direction" class="p-2.5 border-solid border-gray-300 w-full border-2">
+                    <option value="Transmit and Receive">Transmit and Receive</option>
+                    <option value="Transmit">Transmit</option>
+                    <option value="Receive">Receive</option>
+                </select>
+
+            </div>
+            <div class="mt-1.5">
+                <label class="font-semibold w-full" for="location">Transmit Location:</label>
+                @if (enableTransmitLocation)
+                {
+                    <div class="flex">
+                        <input class="p-2.5 flex-1 border-solid border-gray-300 border-2 mr-2.5 a" @bind=transmitLocation type="text" id="description" maxlength="255" />
+                        <button class=" w-1/6 text-xl bg-gray-200 hover:bg-fw-blue-hover hover:text-gray-50 text-gray-500 font-semiboldbold py-2 px-2"><b>Browse</b></button>
+                    </div>
+                }
+                else
+                {
+                    <input class="p-2.5 w-3/4 border-solid border-gray-300 border-2" @bind=transmitLocation type="text" id="description" maxlength="255" disabled />
+                }
+            </div>
+            <div class="mt-1.5">
+                <label class="font-semibold" for="location">Receive Location:</label>
+                @if (enableReceiveLocation)
+                {
+                    <div class="flex">
+                        <input class="p-2.5 flex-1 border-solid border-gray-300 border-2 mr-2.5 a" @bind=receiveLocation type="text" id="description" maxlength="255" />
+                        <button class="w-1/6 text-xl bg-gray-200 hover:bg-fw-blue-hover hover:text-gray-50 text-gray-500 font-semiboldbold py-2 px-2"><b>Browse</b></button>
+                    </div>
+                }
+                else
+                {
+                    <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=receiveLocation type="text" id="description" maxlength="255" disabled />
+                }
+
+            </div>
+        </div>
+        <div class="flex justify-end gap-2 bg-gray-50 pr-6 pb-2.5">
+            <button class="h-full text-xl bg-gray-200 hover:bg-fw-blue-hover hover:text-gray-50 text-gray-500 font-semiboldbold py-2 px-2" @onclick=saveRequest><b>Save</b></button>
+            <button class="h-full text-xl bg-gray-200 hover:bg-rid hover:text-gray-50 text-gray-500 font-semiboldbold py-2 px-2" @onclick=cancelRequest><b>Cancel</b></button>
+        </div>
+    </div>
+</div>
+
+@if (showInvalidInfo)
+{
+    <InvalidInfoWindow Title="Empty Fields" OnClose="hideInvalidInfo" />
+}
+
+@code {
+    [Parameter]
+    public EventCallback<clsContact> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    [Parameter]
+    public clsContact contactToEdit { get { return _contactToEdit; } set { _contactToEdit = value; setEditBoxes(); } }
+
+    private clsContact _contactToEdit;
+
+    // Binded
+    private string name;
+    private string transmitLocation;
+    private string receiveLocation;
+    private string _direction = "Transmit and Receive";
+
+    public string direction
+    {
+        get => _direction;
+        set
+        {
+            if (_direction != value)
+            {
+                _direction = value;
+                onDirectionChange(); // Call your method here
+            }
+        }
+    }
+
+    // Display
+    private bool showInvalidInfo = false;
+    private bool enableTransmitLocation = true;
+    private bool enableReceiveLocation = true;
+
+    private void setEditBoxes()
+    {
+        name = _contactToEdit.Name;
+        transmitLocation = _contactToEdit.TransmitLocation;
+        receiveLocation = _contactToEdit.ReceiveLocation;
+        _direction = (_contactToEdit.Direction == (ContactDirection.Transmit | ContactDirection.Receive)) ? "Transmit and Receive" :
+                                        (_contactToEdit.Direction == ContactDirection.Transmit) ? "Transmit" :
+                                                                       "Receive";
+    }
+
+    private async Task cancelRequest()
+    {
+        await OnCancel.InvokeAsync();
+    }
+
+    private void onDirectionChange()
+    {
+        if (direction == "Transmit and Receive")
+        {
+            enableTransmitLocation = true;
+            enableReceiveLocation = true;
+        }
+        if (direction == "Transmit")
+        {
+            enableTransmitLocation = true;
+            enableReceiveLocation = false;
+        }
+        if (direction == "Receive")
+        {
+            enableTransmitLocation = false;
+            enableReceiveLocation = true;
+        }
+
+    }
+
+    private bool validateDate()
+    {
+        if (!String.IsNullOrEmpty(name))
+        {
+            if (!String.IsNullOrEmpty(transmitLocation) | (!enableTransmitLocation))
+            {
+                if (!String.IsNullOrEmpty(receiveLocation) | (!enableReceiveLocation))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private async Task saveRequest()
+    {
+        if (!validateDate())
+        {
+            showInvalidInfo = true;
+        }
+
+        else
+        {
+            if(contactToEdit is null)
+            {
+                clsContact addedContact = new clsContact()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = name,
+                        Description = String.Empty,
+                        CreatorId = usersServices.LoggedInUser.Id,
+                        CreatorName = usersServices.LoggedInUser.Name,
+                        Direction = (direction == "Transmit and Receive") ? (ContactDirection.Transmit | ContactDirection.Receive) :
+                                            (direction == "Transmit") ? ContactDirection.Transmit :
+                                                                            ContactDirection.Receive,
+                        TransmitLocation = transmitLocation,
+                        ReceiveLocation = receiveLocation,
+                        Enabled = true
+                    };
+
+                await OnSave.InvokeAsync(addedContact);
+            }
+            else
+            {
+                _contactToEdit.Name = name;
+                _contactToEdit.Direction = (direction == "Transmit and Receive") ? (ContactDirection.Transmit | ContactDirection.Receive) :
+                    (direction == "Transmit") ? ContactDirection.Transmit :
+                                                    ContactDirection.Receive;
+                _contactToEdit.TransmitLocation = transmitLocation;
+                _contactToEdit.ReceiveLocation = receiveLocation;
+
+                await OnSave.InvokeAsync(_contactToEdit);
+            }
+        }
+    }
+
+    private void hideInvalidInfo() { showInvalidInfo = false; }
+
+}

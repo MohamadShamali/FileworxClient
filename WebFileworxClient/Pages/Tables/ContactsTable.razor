@@ -1,0 +1,36 @@
+﻿@inject ContactsServices contactsServices
+
+<div class="table-container">
+    <table class="w-full mt-2">
+        <thead class="cursor-default">
+            <tr>
+                <th class="p-2 border border-gray-300 bg-fw-blue text-white">Name</th>
+                <th class="p-2 border border-gray-300 bg-fw-blue text-white">Direction</th>
+                <th class="p-2 border border-gray-300 bg-fw-blue text-white max-w-xs">Creation Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var contact in contactsServices.AllContacts)
+            {
+                <ContactItem RowClick="OnRowClick" IsSelected="@IsContactSelected(contact)" contact="contact" />
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private bool IsContactSelected(clsContact contact)
+    {
+        return contactsServices.SelectedContact == contact;
+    }
+
+    [Parameter]
+    public EventCallback<clsContact> OnRowClick { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await contactsServices.AddDBContactsToContactsList();
+    }
+
+}

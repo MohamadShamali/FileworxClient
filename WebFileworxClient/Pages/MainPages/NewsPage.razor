@@ -2,7 +2,8 @@
 @inject NewsServices newsServices
 
 @layout _Layout
-@page "/f"
+@attribute [Authorize]
+@page "/news"
 
 <PageTitle>Fileworx: News Page</PageTitle>
 

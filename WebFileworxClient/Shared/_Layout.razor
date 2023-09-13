@@ -6,24 +6,32 @@
 <!-- _Layout.razor -->
 <div class="flex flex-col min-h-screen">
         <!-- _Layout.razor -->
-        <div class="flex bg-gray-50 rounded-lg shadow-md">
+        <div class="flex flex-row justify-end bg-gray-50 rounded-lg shadow-md">
             <!-- Left side with image and vertical separator -->
-            <div class="w-1/6 p-2 relative">
+            <div class="w-[300px] p-3 flex flex-col justify-center items-center relative ml-2">
                 <img src="images/download.png" alt="download" class="w-full rounded-lg ml-1 mr-1.5" />
-                <div class="absolute top-0 right-0 h-full bg-gray-300 w-0.5 ml-3.5"></div> <!-- Vertical separator -->
+                <!-- Your other content here -->
             </div>
 
             <!-- Right side with navigation -->
-            <div class="w-3/4 p-2 flex items-center justify-start space-x-4">
-            @if (usersServices.LoggedInUser.IsAdmin)
-            {
-                <button @onclick="openAdminTab" class="h-full text-xl bg-gray-50 hover:text-fw-blue text-gray-500 font-bold py-2 px-2">
-                    Admin Page
+            <div class="flex-1 flex items-center justify-end space-x-4 pr-2">
+                @if (usersServices.LoggedInUser.IsAdmin)
+                {
+                bool isAdminPage = navnManager.Uri.EndsWith("/admin", StringComparison.OrdinalIgnoreCase);
+                <button @onclick="openAdminTab" class="@adminPageClass()" disabled="@isAdminPage">
+                        Admin Page
+                    </button>
+                }
+            @{bool isNewsPage = navnManager.Uri.EndsWith("/news", StringComparison.OrdinalIgnoreCase);}
+            <button @onclick="openNewsTab" class="@newsPageClass()" disabled="@isNewsPage">
+                    News
                 </button>
+            @{
+                bool isContactsPage = navnManager.Uri.EndsWith("/contacts", StringComparison.OrdinalIgnoreCase);
             }
-                <button @onclick="openNewsTab" class="h-full text-xl bg-gray-50 hover:text-fw-blue text-gray-500 font-bold py-2 px-2">
-                    News Page
-                </button>
+            <button @onclick="openContactsTab" class="@contactsPageClass()" disabled="@isContactsPage">
+                Contacts
+            </button>
                 <button class="h-full text-xl bg-gray-50 hover:text-fw-blue text-gray-500 font-bold py-2 px-2 ml-auto">
                     About
                 </button>
@@ -59,7 +67,55 @@
 
     private void openNewsTab()
     {
-        string url = navnManager.BaseUri + "f";
+        string url = navnManager.BaseUri + "news";
         JSRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
+
+    private void openContactsTab()
+    {
+        string url = navnManager.BaseUri + "contacts";
+        JSRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
+
+    private string adminPageClass()
+    {
+        bool isAdminPage = navnManager.Uri.EndsWith("/admin", StringComparison.OrdinalIgnoreCase);
+        if (isAdminPage)
+        {
+            return "h-full text-xl bg-fw-blue text-gray-50 font-bold py-2 px-2";
+        }
+
+        else
+        {
+            return "h-full text-xl bg-gray-50 hover:text-fw-blue text-gray-500 font-bold py-2 px-2";
+        }
+    }
+
+    private string newsPageClass()
+    {
+        bool isAdminPage = navnManager.Uri.EndsWith("/news", StringComparison.OrdinalIgnoreCase);
+        if (isAdminPage)
+        {
+            return "h-full text-xl bg-fw-blue text-gray-50 font-bold py-2 px-2";
+        }
+
+        else
+        {
+            return "h-full text-xl bg-gray-50 hover:text-fw-blue text-gray-500 font-bold py-2 px-2";
+        }
+    }
+
+    private string contactsPageClass()
+    {
+        bool isAdminPage = navnManager.Uri.EndsWith("/contacts", StringComparison.OrdinalIgnoreCase);
+        if (isAdminPage)
+        {
+            return "h-full text-xl bg-fw-blue text-gray-50 font-bold py-2 px-2";
+        }
+
+        else
+        {
+            return "h-full text-xl bg-gray-50 hover:text-fw-blue text-gray-500 font-bold py-2 px-2";
+        }
     }
 }

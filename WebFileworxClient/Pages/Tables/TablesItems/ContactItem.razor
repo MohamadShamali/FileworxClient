@@ -1,0 +1,32 @@
+﻿@inject ContactsServices contactsServices
+
+<tr @onclick="() => RowClick.InvokeAsync(contact)" class=@GetRowClass()>
+    <td class="p-2 border border-gray-300">@contact.Name</td>
+    <td class="p-2 border border-gray-300">@contact.Direction.ToString()</td>
+    <td class="p-2 border border-gray-300">@contact.CreationDate</td>
+</tr>
+
+@code {
+    [Parameter]
+    public clsContact contact { get; set; }
+
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<clsContact> RowClick { get; set; }
+
+
+    private string GetRowClass()
+    {
+        if (IsSelected)
+        {
+            return "bg-fw-blue-hover text-white cursor-pointer";
+        }
+
+        else
+        {
+            return "hover:bg-blue-300 cursor-pointer";
+        }
+    }
+}

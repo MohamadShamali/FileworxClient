@@ -1,0 +1,183 @@
+﻿@inject ContactsServices contactsServices
+@inject NavigationManager navnManager
+@layout _Layout
+@page "/contacts"
+
+<PageTitle>Fileworx: Contacts</PageTitle>
+
+<div class="flex mt-1">
+    <div>
+        <button @onclick="addContactRequest" class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer"><b>Add Contact</b></button>
+        <button @onclick="editEditRequest" class="@editButtonClass()" disabled="@removeAndEditDisable()"><b>Edit Contact</b></button>
+        <button @onclick="deleteContactRequest" class="@removeButtonClass()" disabled="@removeAndEditDisable()"><b>Remove Contact</b></button>
+    </div>
+
+    <div class="ml-auto">
+        <select @bind="querySource" class="p-2.5 border-solid border-gray-300 border-2 rounded-3xl">
+            <option value="Elasticsearch">Elasticsearch</option>
+            <option value="Database">Database</option>
+        </select>
+        <button @onclick="changeQuerySource" class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer ml-1 justify-end">
+            <b>Refresh</b>
+        </button>
+    </div>
+</div>
+
+<div class="t">
+    <ContactsTable OnRowClick="OnRowClick" />
+</div>
+
+@if (showAddContactWindow)
+{
+    <AddContactWindow OnSave="onAddContact" OnCancel="onCancel"></AddContactWindow>
+}
+@if (showDeleteContactConfirmation)
+{
+    <UserDeleteConfirmationWindow OnDelete="onRemoveContact" OnCancel="onCancel"></UserDeleteConfirmationWindow>
+}
+@if (showEditContactWindow)
+{
+    <AddContactWindow OnSave="onEditContact" OnCancel="onCancel" contactToEdit="contactsServices.SelectedContact"></AddContactWindow>
+}
+
+@if (showFileErrorWindow)
+{
+    <Error Title="Error" Message="an Error Ocured during process, make sure not to use sprcial characters" OnClose="onCloseError"></Error>
+}
+
+@code {
+
+    private string querySource { get; set; } = "Elasticsearch";
+
+    // Display
+    private bool showAddContactWindow = false;
+    private bool showEditContactWindow = false;
+    private bool showDeleteContactConfirmation = false;
+    private bool showFileErrorWindow = false;
+
+    private async Task changeQuerySource()
+    {
+        contactsServices.QuerySource = (querySource == "Elasticsearch") ? QuerySource.ES : QuerySource.DB;
+        await contactsServices.RefreshContactsList();
+    }
+
+    private async Task onRemoveContact()
+    {
+        if (contactsServices.SelectedContact != null)
+        {
+            await contactsServices.SelectedContact.DeleteAsync();
+            contactsServices.SelectedContact = null;
+
+            await contactsServices.RefreshContactsList();
+        }
+
+        showDeleteContactConfirmation = false;
+    }
+
+    private void editEditRequest()
+    {
+        showEditContactWindow = true;
+    }
+
+    private void deleteContactRequest()
+    {
+        showDeleteContactConfirmation = true;
+    }
+
+    private void addContactRequest()
+    {
+        showAddContactWindow = true;
+    }
+
+    private void onCancel()
+    {
+        showAddContactWindow = false;
+        showDeleteContactConfirmation = false;
+        showEditContactWindow = false;
+    }
+
+    private async Task onAddContact(clsContact contact)
+    {
+        try
+        {
+            await contact.InsertAsync();
+            await contactsServices.RefreshContactsList();
+
+            showAddContactWindow = false;
+        }
+        catch (Exception ex)
+        {
+                showFileErrorWindow = true;
+        }
+    }
+
+    private async Task onEditContact(clsContact contactToEdit)
+    {
+        try
+        {
+            await contactToEdit.UpdateAsync();
+            await contactsServices.RefreshContactsList();
+
+            showEditContactWindow = false;
+        }
+        catch (Exception ex)
+        {
+                showFileErrorWindow = true;
+        }
+
+    }
+
+    private void onCloseError()
+    {
+        showFileErrorWindow = false;
+    }
+
+    private string editButtonClass()
+    {
+        if (contactsServices.SelectedContact != null)
+        {
+            return "bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer";
+        }
+        else
+        {
+            return "bg-disable rounded-md mr-2 text-white p-1 cursor-default";
+        }
+    }
+
+    private bool removeAndEditDisable()
+    {
+        if (contactsServices.SelectedContact != null)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    private string removeButtonClass()
+    {
+        if (contactsServices.SelectedContact != null)
+        {
+            return "bg-rid hover:bg-rid-hover rounded-md mr-2 text-white p-1 cursor-pointer";
+        }
+        else
+        {
+            return "bg-disable rounded-md mr-2 text-white p-1 cursor-default";
+        }
+    }
+
+    private void OnRowClick(clsContact contact)
+    {
+        if (contactsServices.SelectedContact == contact)
+        {
+            contactsServices.SelectedContact = null; // Deselect the row if it's already selected
+        }
+
+        else
+        {
+            contactsServices.SelectedContact = contact; // Select the clicked row
+        }
+    }
+}
