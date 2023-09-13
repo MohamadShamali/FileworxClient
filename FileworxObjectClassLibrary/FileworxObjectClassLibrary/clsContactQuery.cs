@@ -171,6 +171,7 @@ namespace FileworxObjectClassLibrary
                 TransmitLocation = dto.TransmitLocation,
                 ReceiveLocation = dto.ReceiveLocation,
                 Direction = (ContactDirection) dto.Direction,
+                LastReceiveDate = dto.LastReceiveDate,
                 Enabled = dto.Enabled,
             };
 

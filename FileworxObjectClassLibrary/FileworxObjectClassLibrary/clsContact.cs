@@ -53,7 +53,7 @@ namespace FileworxObjectClassLibrary
             {
                 await connection.OpenAsync();
                 string query = $"INSERT INTO T_CONTACT (ID, C_TRANSMITLOCATION, C_RECEIVELOCATION, C_CONTACTDIRECTIONID, C_LASTRECEIVEDATE, C_ENABLED) " +
-                               $"VALUES('{Id}', '{TransmitLocation}', '{ReceiveLocation}',{(int) Direction}, '{LastReceiveDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{Enabled}');";
+                               $"VALUES('{Id}', '{TransmitLocation}', '{ReceiveLocation}',{(int) Direction}, '{LastReceiveDate.ToString("yyyy-MM-dd HH:mm:ss.fffffff")}', '{Enabled}');";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     await command.ExecuteNonQueryAsync();
@@ -96,7 +96,7 @@ namespace FileworxObjectClassLibrary
                 await connection.OpenAsync();
 
                 string query = $"UPDATE T_CONTACT SET C_TRANSMITLOCATION = '{TransmitLocation}', C_RECEIVELOCATION = '{ReceiveLocation}', " +
-                               $"C_CONTACTDIRECTIONID= '{(int)Direction}', C_LASTRECEIVEDATE= '{LastReceiveDate.ToString("yyyy-MM-dd HH:mm:ss")}', " +
+                               $"C_CONTACTDIRECTIONID= '{(int)Direction}', C_LASTRECEIVEDATE= '{LastReceiveDate.ToString("yyyy-MM-dd HH:mm:ss.fffffff")}', " +
                                $"C_ENABLED= '{Enabled}' " +
                                $"WHERE Id = '{Id}';";
 
@@ -183,7 +183,7 @@ namespace FileworxObjectClassLibrary
         public async Task ReceiveFileIfItsNew(string filePath)
         {
             DateTime fileLastModification = File.GetLastWriteTime(filePath);
-            fileLastModification = new DateTime(fileLastModification.Ticks / TimeSpan.TicksPerSecond * TimeSpan.TicksPerSecond);
+            //fileLastModification = new DateTime(fileLastModification.Ticks / TimeSpan.TicksPerSecond * TimeSpan.TicksPerSecond);
             if (fileLastModification > LastReceiveDate)
             {
                 string record;

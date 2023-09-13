@@ -12,6 +12,7 @@ namespace FileworxObjectClassLibrary
         public string TransmitLocation { get; set; } = String.Empty;
         public string ReceiveLocation { get; set; } = String.Empty;
         public int Direction { get; set; }
+        public DateTime LastReceiveDate { get; set; }
         public bool Enabled { get; set; } = true;
 
 
@@ -37,6 +38,7 @@ namespace FileworxObjectClassLibrary
             TransmitLocation= contact.TransmitLocation;
             ReceiveLocation= contact.ReceiveLocation;
             Direction = (int) contact.Direction;
+            LastReceiveDate = contact.LastReceiveDate;
             Enabled = contact.Enabled;
         }
 

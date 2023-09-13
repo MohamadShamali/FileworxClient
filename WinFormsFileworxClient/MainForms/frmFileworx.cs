@@ -23,6 +23,7 @@ namespace Fileworx_Client
         private static List<clsNews> allNews { get; set; }
         private static List<clsPhoto> allPhotos { get; set; }
         private static List<clsContact> allContacts { get; set; }
+        private List<FileSystemWatcher> fileWatchers = new List<FileSystemWatcher>();
         private QuerySource querySource { get; set; } = QuerySource.ES;
 
 
@@ -79,7 +80,7 @@ namespace Fileworx_Client
         private async Task addDBContactsToContactsList()
         {
             var contactsQuery = new clsContactQuery();
-            contactsQuery.Source= QuerySource.DB;
+            contactsQuery.Source= QuerySource.ES;
             allContacts = await contactsQuery.Run();
         }
 
@@ -119,8 +120,30 @@ namespace Fileworx_Client
                     FileSystemWatcher watcher = new FileSystemWatcher(contact.ReceiveLocation);
                     watcher.Created += OnFileCreated;
                     watcher.EnableRaisingEvents = true;
+
+                    fileWatchers.Add(watcher);
                 }
             }
+        }
+
+        private void refreshWatcherSystem()
+        {
+            foreach (var watcher in fileWatchers)
+            {
+                watcher.EnableRaisingEvents = false;
+                watcher.Created -= OnFileCreated;
+                watcher.Dispose();
+            }
+            // Clear the list of watchers
+            fileWatchers.Clear();
+
+            addWatcherSystem();
+        }
+
+        private async Task afterAddingContact()
+        {
+            await addDBContactsToContactsList();
+            refreshWatcherSystem();
         }
 
         private async void OnFileCreated(object sender, FileSystemEventArgs e)
@@ -565,7 +588,7 @@ namespace Fileworx_Client
         private async void contactsListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var contactsList = await frmContactsList.Create();
-
+            contactsList.AfterAddingContact += afterAddingContact;
             contactsList.Show();
         }
 
@@ -573,6 +596,7 @@ namespace Fileworx_Client
         {
             var contactsList = await frmContactsList.Create(findAllCheckedFiles());
             contactsList.OnCloseAfterSend += disableSendingMode;
+            contactsList.AfterAddingContact += afterAddingContact;
             contactsList.ShowDialog();
         }
 

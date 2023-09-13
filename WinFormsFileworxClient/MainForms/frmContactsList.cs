@@ -20,6 +20,7 @@ namespace Fileworx_Client.MainForms
         List<clsContact> selectedContacts = new List<clsContact>();
         private QuerySource querySource { get; set; } = QuerySource.ES;
         public event Action OnCloseAfterSend;
+        public event OnFormCloseHandler AfterAddingContact;
 
         public frmContactsList()
         {
@@ -149,6 +150,11 @@ namespace Fileworx_Client.MainForms
         {
             await refreshContactsList();
             addContactsListItemsToListView();
+
+            if(AfterAddingContact != null)
+            {
+                await AfterAddingContact();
+            }
         }
 
 
