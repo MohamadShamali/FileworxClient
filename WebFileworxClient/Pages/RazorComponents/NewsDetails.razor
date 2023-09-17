@@ -1,11 +1,19 @@
 ﻿@inject NewsServices newsServices
 
-<div class="w-44 inline">
+
+
+<div class=" inline">
     @if (selectedFile != null)
     {
+        <div class="bg-fw-blue p-4">
+
+            <h2 class="text-4xl font-bold text-gray-50 ml-1.5"> @selectedFile.Name</h2>
+            <p class="text-l font-semibold text-gray-50 ml-1.5">@selectedFile.Description</p>
+
+        </div>
         <div class="bg-gray-50 p-2 mt-2 rounded-2xl">
-            <p><strong class="mb-2">Title:</strong> <span>@selectedFile.Name</span></p>
-            <p><strong class="mb-2">Creation Date:</strong> <span>@selectedFile.CreationDate</span></p>
+            <p><strong class="mb-2">Date:</strong> <span>@selectedFile.CreationDate.DayOfWeek @selectedFile.CreationDate.ToString("dd MMM yyyy")</span></p>
+            <p><strong class="mb-2">Time:</strong> <span> @selectedFile.CreationDate.ToString("h:mm:ss tt")</span></p>
 
             @if (selectedFile is not clsPhoto)
             {
@@ -31,10 +39,13 @@
 <div class="bg-gray-50 p-2 mt-2 rounded-2xl">
     @if ((selectedFile != null) && showBodySection)
     {
-        <div class="blue-box">
             <p class="mb-2"><strong class="details-label">Body:</strong></p>
-            <p class="whitespace-pre-line ">@selectedFile.Body</p>
+
+        <div class="max-w-full overflow-x-auto">
+            @newsServices.SelectedFile.Body
         </div>
+
+
     }
 
     @if ((selectedFile != null) && showImageSection)

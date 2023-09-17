@@ -4,7 +4,10 @@
     <table class="w-full mt-2">
         <thead class="cursor-default">
         <tr>
-                <th class=" border border-gray-300 bg-fw-blue text-white">Send?</th>
+                @if (newsServices.SendingMode)
+                {
+                    <th class=" p-1 w-[50px] border border-gray-300 bg-fw-blue text-white">Select</th>
+                }
                 <th class="p-2 border border-gray-300 bg-fw-blue text-white">Title</th>
                 <th class="p-2 border border-gray-300 bg-fw-blue text-white">Description</th>
                 <th class="p-2 border border-gray-300 bg-fw-blue text-white w-25">Date</th>

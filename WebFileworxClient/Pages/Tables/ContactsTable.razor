@@ -1,9 +1,15 @@
 ﻿@inject ContactsServices contactsServices
+@inject NewsServices newsServices
+
 
 <div class="table-container">
     <table class="w-full mt-2">
         <thead class="cursor-default">
             <tr>
+                @if (newsServices.SendingMode)
+                {
+                    <th class="p-2 border border-gray-300 bg-fw-blue text-white">Select</th>
+                }
                 <th class="p-2 border border-gray-300 bg-fw-blue text-white">Name</th>
                 <th class="p-2 border border-gray-300 bg-fw-blue text-white">Direction</th>
                 <th class="p-2 border border-gray-300 bg-fw-blue text-white max-w-xs">Creation Date</th>

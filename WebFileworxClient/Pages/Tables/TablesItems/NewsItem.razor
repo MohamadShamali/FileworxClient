@@ -1,7 +1,13 @@
 ﻿@inject NewsServices newsServices
 
 <tr @onclick="() => RowClick.InvokeAsync(File)" class="@GetRowClass()">
-    <td class="p-2 border border-gray-300"><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
+    @if (newsServices.SendingMode)
+    {
+        <td class="border border-gray-300 text-center align-middle">
+            <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+        </td>
+
+    }
     <td class="p-2 border border-gray-300">@File.Name</td>
     <td class="p-2 border border-gray-300">@File.Description</td>
     <td class="p-2 border border-gray-300">@File.CreationDate.ToString()</td>

@@ -1,35 +1,48 @@
 ﻿@inject UsersServices usersServices
 
 <div class="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-10">
-    <div class="p-4 bg-white border-3 border-solid border-fw-blue rounded-md shadow-md min-w-[1000px]">
-        <div>
-            <h2 class="text-3xl font-semibold">Add User</h2>
+    <div class=" bg-white border-0 border-solid border-gray-50 rounded-md shadow-md min-w-[1000px]">
+        <div class="bg-fw-blue p-4">
+            @if (_userToEdit is null)
+            {
+                <h2 class="text-4xl font-bold text-gray-50 ml-1.5">Add User</h2>
+                <p class="text-l font-semibold text-gray-50 ml-1.5">Fill the folwing data to create a new user</p>
+            }
+            else
+            {
+                <h2 class="text-4xl font-bold text-gray-50 ml-1.5">Edit Contact</h2>
+                <p class="text-l font-semibold text-gray-50 ml-1.5">Edit the folwing data to edit this selected user</p>
+            }
         </div>
-        <div>
-            <label class="font-semibold" for="name">Name:</label>
-            <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=name type="text" id="title" maxlength="255" />
+
+        <div class="p-4 bg-gray-50">
+            <div>
+                <label class="font-semibold" for="name">Name:</label>
+                <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=name type="text" id="title" maxlength="255" />
+            </div>
+            <div>
+                <label class="font-semibold" for="name">Username:</label>
+                <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=username type="text" id="title" maxlength="255" disabled="@isSelectedUserAdmin" />
+            </div>
+            <div>
+                <label class="font-semibold" for="password">Password:</label>
+                <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=password type="password" id="title" maxlength="255" />
+            </div>
+            <div>
+                <label class="font-semibold" for="isadmin">Is Admin:</label>
+                <select @bind=isAdmin class="p-2.5 border-solid border-gray-300 w-full border-2" disabled="@isSelectedUserAdmin">
+                    <option value="False">No</option>
+                    <option value="True">Yes</option>
+                </select>
+            </div>
         </div>
-        <div>
-            <label class="font-semibold" for="username">Username:</label>
-            <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=username type="text" id="description" maxlength="255" />
-        </div>
-        <div>
-            <label class="font-semibold" for="password">Passsword:</label>
-            <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=password type="password" id="description" maxlength="255"></input>
-        </div>
-        <div>
-            <label class="font-semibold" for="isadmin">Is Admin:</label>
-            <select @bind=isAdmin class="p-2.5 border-solid border-gray-300 w-full border-2">
-                <option value="False">No</option>
-                <option value="True">Yes</option>
-            </select>
-        </div>
-        <div class="flex justify-end gap-x-2 mt-4">
-            <button class="bg-fw-blue hover:bg-fw-blue-hover rounded-md text-white p-2 cursor-pointer" @onclick=saveRequest><b>Save</b></button>
-            <button class="bg-rid hover:bg-rid-hover rounded-md text-white p-2 cursor-pointer" @onclick=cancelRequest><b>Cancel</b></button>
+        <div class="flex justify-end gap-2 bg-gray-50 pr-6 pb-2.5">
+            <button class="h-full text-xl bg-gray-200 hover:bg-fw-blue-hover hover:text-gray-50 text-gray-500 font-semiboldbold py-2 px-2" @onclick=saveRequest><b>Save</b></button>
+            <button class="h-full text-xl bg-gray-200 hover:bg-rid hover:text-gray-50 text-gray-500 font-semiboldbold py-2 px-2" @onclick=cancelRequest><b>Cancel</b></button>
         </div>
     </div>
 </div>
+
 
 @if (showInvalidInfo)
 {
@@ -43,6 +56,13 @@
     [Parameter]
     public EventCallback OnCancel { get; set; }
 
+    [Parameter]
+    public clsUser UserToEdit { get { return _userToEdit; } set { value.Read(); _userToEdit = value; setEditBoxes(); } }
+
+    private clsUser _userToEdit;
+
+    private bool isSelectedUserAdmin = false;
+
     // Binded
     private string name;
     private string username;
@@ -51,6 +71,23 @@
 
     // Display
     private bool showInvalidInfo = false;
+
+    protected override void OnInitialized()
+    {
+        if (usersServices.SelectedUser.Username == "admin")
+        {
+            isSelectedUserAdmin = true;
+        }
+        base.OnInitialized();
+    }
+
+    private void setEditBoxes()
+    {
+        name = _userToEdit.Name;
+        username = _userToEdit.Username;
+        password = _userToEdit.Password;
+        isAdmin = (_userToEdit.IsAdmin) ? "True" : "False";
+    }
 
     private async Task cancelRequest()
     {

@@ -1,37 +1,52 @@
 ﻿@inject UsersServices usersServices
 
+
 <div class="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-10">
-    <div class=" w-[1000px] p-4 bg-white border-3 border-solid border-fw-blue rounded-md shadow-md">
-        <div>
-            <h1 class="text-3xl font-semibold">Add News</h1>
+    <div class=" bg-white border-0 border-solid border-gray-50 rounded-md shadow-md min-w-[1000px]">
+        <div class="bg-fw-blue p-4">
+            @if(NewsToEdit is null)
+            {
+                <h2 class="text-4xl font-bold text-gray-50 ml-1.5">Add News</h2>
+                <p class="text-l font-semibold text-gray-50 ml-1.5">Fill the folwing data to create news</p>
+            }
+            else
+            {
+                <h2 class="text-4xl font-bold text-gray-50 ml-1.5">Edit News</h2>
+                <p class="text-l font-semibold text-gray-50 ml-1.5">Edit the folwing data to edit the selected news</p>
+            }
+
         </div>
-        <div>
-            <label class="font-semibold" for="title">Title:</label>
-            <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=title type="text" id="title" maxlength="255" />
+
+        <div class="p-4 bg-gray-50">
+            <div>
+                <label class="font-semibold" for="name">Title:</label>
+                <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=title type="text" id="title" maxlength="255" />
+            </div>
+            <div>
+                <label class="font-semibold" for="description">Description:</label>
+                <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=description type="text" id="title" maxlength="255" />
+            </div>
+            <div>
+                <label class="font-semibold" for="catagory">Catagory:</label>
+                <select @bind=catagory class="p-2.5 border-solid border-gray-300 w-full border-2">
+                    <option value="General">General</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Health">Health</option>
+                    <option value="Politics">Politics</option>
+                </select>
+            </div>
+            <div>
+                <label class="font-semibold" for="body">Body:</label>
+                <textarea @bind=body class="w-full border-solid border-gray-300 border-2 min-h-[400px]" maxlength="10000"></textarea>
+            </div>
         </div>
-        <div>
-            <label class="font-semibold" for="description">Description:</label>
-            <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=description type="text" id="description" maxlength="255" />
-        </div>
-        <div>
-            <label class="font-semibold" for="catagory">Catagory:</label>
-            <select @bind=catagory class="p-2.5 border-solid border-gray-300 w-full border-2">
-                <option value="General">General</option>
-                <option value="Sports">Sports</option>
-                <option value="Health">Health</option>
-                <option value="Politics">Politics</option>
-            </select>
-        </div>
-        <div>
-            <label class="font-semibold" for="body">Body:</label>
-            <textarea @bind=body class="w-full border-solid border-gray-300 border-2 min-h-[400px]" maxlength="10000"></textarea>
-        </div>
-        <div class="flex justify-end gap-x-2">
-            <button class="bg-fw-blue hover:bg-fw-blue-hover rounded-md text-white p-2 cursor-pointer" @onclick=saveRequest><b>Save</b></button>
-            <button class="bg-rid hover:bg-rid-hover rounded-md text-white p-2 cursor-pointer" @onclick=cancelRequest><b>Cancel</b></button>
+        <div class="flex justify-end gap-2 bg-gray-50 pr-6 pb-2.5">
+            <button class="h-full text-xl bg-gray-200 hover:bg-fw-blue-hover hover:text-gray-50 text-gray-500 font-semiboldbold py-2 px-2" @onclick=saveRequest><b>Save</b></button>
+            <button class="h-full text-xl bg-gray-200 hover:bg-rid hover:text-gray-50 text-gray-500 font-semiboldbold py-2 px-2" @onclick=cancelRequest><b>Cancel</b></button>
         </div>
     </div>
 </div>
+
 
 @if(showInvalidInfo)
 {
@@ -46,6 +61,11 @@
     [Parameter]
     public EventCallback OnCancel { get; set; }
 
+    [Parameter]
+    public clsNews NewsToEdit { get { return _newsToEdit; } set { value.Read(); _newsToEdit = value; setEditBoxes(); } }
+
+    private clsNews _newsToEdit;
+
     // Binded
     private string title;
     private string description;
@@ -55,6 +75,14 @@
     // Display
     private bool showInvalidInfo = false;
 
+    private void setEditBoxes()
+    {
+        title = _newsToEdit.Name;
+        description = _newsToEdit.Description;
+        catagory = _newsToEdit.Category;
+        body = _newsToEdit.Body;
+    }
+
     private async Task cancelRequest()
     {
         title = String.Empty; description = String.Empty; catagory = String.Empty; body = String.Empty;
@@ -63,23 +91,50 @@
 
     private async Task saveRequest()
     {
-        if ((title == String.Empty) || (title == null) || (description == String.Empty) || (description == null) || (catagory == String.Empty) || (catagory == null) || (body == String.Empty) || (body == null))
+        if (!validateData())
         {
             showInvalidInfo = true;
         }
 
         else
         {
-            clsNews addedNews = new clsNews()
+            if(NewsToEdit is null)
             {
-                    Id = Guid.NewGuid(),
-                    Class = FileworxObjectClassLibrary.Type.News,
-                    Name = title, Description = description, Category = catagory, Body = body, 
-                    CreatorId = usersServices.LoggedInUser.Id, 
-                    CreatorName=usersServices.LoggedInUser.CreatorName
-                };
-            addedNews.Read();
-            await OnSave.InvokeAsync(addedNews);
+                clsNews addedNews = new clsNews()
+                    {
+                        Id = Guid.NewGuid(),
+                        Class = FileworxObjectClassLibrary.Type.News,
+                        Name = title,
+                        Description = description,
+                        Category = catagory,
+                        Body = body,
+                        CreatorId = usersServices.LoggedInUser.Id,
+                        CreatorName = usersServices.LoggedInUser.CreatorName
+                    };
+                addedNews.Read();
+                await OnSave.InvokeAsync(addedNews);
+            }
+            else
+            {
+                _newsToEdit.Name = title;
+                _newsToEdit.Description = description;
+                _newsToEdit.Category = catagory;
+                _newsToEdit.Body = body;
+
+                await OnSave.InvokeAsync(_newsToEdit);
+            }
+        }
+    }
+
+    private bool validateData()
+    {
+        if ((title == String.Empty) || (title == null) || (description == String.Empty) || (description == null) || (catagory == String.Empty) || (catagory == null) || (body == String.Empty) || (body == null))
+        {
+            return false;
+        }
+        else
+        {
+            return true;   
         }
     }
 

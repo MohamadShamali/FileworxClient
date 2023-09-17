@@ -10,7 +10,9 @@ namespace Web_Fileworx_Client.Models
     public class ContactsServices
     {
         public List<clsContact> AllContacts = new List<clsContact>();
+        public List<clsContact> CheckedContacts = new List<clsContact>();
         public clsContact? SelectedContact { get; set; }
+        public List<FileSystemWatcher> fileWatchers = new List<FileSystemWatcher>();
         public QuerySource QuerySource { get; set; } = QuerySource.ES;
 
         public async Task AddDBContactsToContactsList()
@@ -24,6 +26,21 @@ namespace Web_Fileworx_Client.Models
         public async Task RefreshContactsList()
         {
             await AddDBContactsToContactsList();
+        }
+
+        public void addWatcherSystem(Action<object, FileSystemEventArgs> createdHandler)
+        {
+            foreach (var contact in AllContacts)
+            {
+                if ((contact.Direction & (ContactDirection.Receive)) == ContactDirection.Receive)
+                {
+                    FileSystemWatcher watcher = new FileSystemWatcher(contact.ReceiveLocation);
+                    watcher.Created += new FileSystemEventHandler(createdHandler);
+                    watcher.EnableRaisingEvents = true;
+
+                    fileWatchers.Add(watcher);
+                }
+            }
         }
 
     }

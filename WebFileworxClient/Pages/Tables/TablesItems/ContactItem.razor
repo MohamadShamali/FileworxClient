@@ -1,8 +1,24 @@
 ﻿@inject ContactsServices contactsServices
+@inject NewsServices newsServices
 
 <tr @onclick="() => RowClick.InvokeAsync(contact)" class=@GetRowClass()>
-    <td class="p-2 border border-gray-300">@contact.Name</td>
-    <td class="p-2 border border-gray-300">@contact.Direction.ToString()</td>
+    @if (newsServices.SendingMode)
+    {
+    <td class="p-2 border border-gray-300">
+            <input @onchange="onCheange" type="checkbox">
+    </td>
+    }
+    <td class="p-2 border border-gray-300">
+        @contact.Name
+    </td>
+    @if(contact.Direction == (ContactDirection.Transmit | ContactDirection.Receive))
+    {
+        <td class="p-2 border border-gray-300">Transmit & Receive</td>
+    }
+    else
+    {
+        <td class="p-2 border border-gray-300">@contact.Direction.ToString()</td>
+    }
     <td class="p-2 border border-gray-300">@contact.CreationDate</td>
 </tr>
 
@@ -27,6 +43,19 @@
         else
         {
             return "hover:bg-blue-300 cursor-pointer";
+        }
+    }
+
+    private void onCheange()
+    {
+        if (contactsServices.CheckedContacts.Contains(contact))
+        {
+            contactsServices.CheckedContacts.Remove(contact);
+        }
+
+        else
+        {
+            contactsServices.CheckedContacts.Add(contact);
         }
     }
 }

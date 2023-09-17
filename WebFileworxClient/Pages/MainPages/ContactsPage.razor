@@ -4,46 +4,47 @@
 @page "/contacts"
 
 <PageTitle>Fileworx: Contacts</PageTitle>
+<div class="pt-[40px]">
+    <div class="flex justify-start bg-gray-50 border-gray-200 border-1 align-items-stretch mb-1.5 mt-1">
+        <div class="flex-1 flex align-middle align-items-stretch ml-3 ">
+            <button @onclick="addContactRequest" class="bg-transparent hover:text-fw-blue-hover text-xl rounded-md mr-2 text-fw-blue py-1.5 px-2 cursor-pointer"><b>Add Contact</b></button>
+            <button @onclick="editEditRequest" class="@editButtonClass()" disabled="@removeAndEditDisable()"><b>Edit Contact</b></button>
+            <button @onclick="deleteContactRequest" class="@removeButtonClass()" disabled="@removeAndEditDisable()"><b>Remove Contact</b></button>
+        </div>
 
-<div class="flex mt-1">
-    <div>
-        <button @onclick="addContactRequest" class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer"><b>Add Contact</b></button>
-        <button @onclick="editEditRequest" class="@editButtonClass()" disabled="@removeAndEditDisable()"><b>Edit Contact</b></button>
-        <button @onclick="deleteContactRequest" class="@removeButtonClass()" disabled="@removeAndEditDisable()"><b>Remove Contact</b></button>
+        <div class="ml-auto">
+            <select @bind="querySource" class="p-2.5 border-solid border-gray-300 border-2 rounded-3xl">
+                <option value="Elasticsearch">Elasticsearch</option>
+                <option value="Database">Database</option>
+            </select>
+            <button @onclick="changeQuerySource" class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer ml-1 justify-end">
+                <b>Refresh</b>
+            </button>
+        </div>
     </div>
 
-    <div class="ml-auto">
-        <select @bind="querySource" class="p-2.5 border-solid border-gray-300 border-2 rounded-3xl">
-            <option value="Elasticsearch">Elasticsearch</option>
-            <option value="Database">Database</option>
-        </select>
-        <button @onclick="changeQuerySource" class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer ml-1 justify-end">
-            <b>Refresh</b>
-        </button>
+    <div class="t">
+        <ContactsTable OnRowClick="OnRowClick" />
     </div>
+
+    @if (showAddContactWindow)
+    {
+        <AddContactWindow OnSave="onAddContact" OnCancel="onCancel"></AddContactWindow>
+    }
+    @if (showDeleteContactConfirmation)
+    {
+        <UserDeleteConfirmationWindow OnDelete="onRemoveContact" OnCancel="onCancel"></UserDeleteConfirmationWindow>
+    }
+    @if (showEditContactWindow)
+    {
+        <AddContactWindow OnSave="onEditContact" OnCancel="onCancel" contactToEdit="contactsServices.SelectedContact"></AddContactWindow>
+    }
+
+    @if (showFileErrorWindow)
+    {
+        <Error Title="Error" Message="an Error Ocured during process, make sure not to use sprcial characters" OnClose="onCloseError"></Error>
+    }
 </div>
-
-<div class="t">
-    <ContactsTable OnRowClick="OnRowClick" />
-</div>
-
-@if (showAddContactWindow)
-{
-    <AddContactWindow OnSave="onAddContact" OnCancel="onCancel"></AddContactWindow>
-}
-@if (showDeleteContactConfirmation)
-{
-    <UserDeleteConfirmationWindow OnDelete="onRemoveContact" OnCancel="onCancel"></UserDeleteConfirmationWindow>
-}
-@if (showEditContactWindow)
-{
-    <AddContactWindow OnSave="onEditContact" OnCancel="onCancel" contactToEdit="contactsServices.SelectedContact"></AddContactWindow>
-}
-
-@if (showFileErrorWindow)
-{
-    <Error Title="Error" Message="an Error Ocured during process, make sure not to use sprcial characters" OnClose="onCloseError"></Error>
-}
 
 @code {
 
@@ -136,11 +137,11 @@
     {
         if (contactsServices.SelectedContact != null)
         {
-            return "bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer";
+            return "bg-transparent hover:text-fw-blue-hover text-xl rounded-md mr-2 text-fw-blue py-1.5 px-2 cursor-pointer";
         }
         else
         {
-            return "bg-disable rounded-md mr-2 text-white p-1 cursor-default";
+            return "bg-transparent text-xl rounded-md mr-2 text-disable py-1.5 px-2 cursor-pointer";
         }
     }
 
@@ -160,11 +161,11 @@
     {
         if (contactsServices.SelectedContact != null)
         {
-            return "bg-rid hover:bg-rid-hover rounded-md mr-2 text-white p-1 cursor-pointer";
+            return "bg-transparent hover:text-rid-hover text-xl rounded-md mr-2 text-rid py-1.5 px-2 cursor-pointer";
         }
         else
         {
-            return "bg-disable rounded-md mr-2 text-white p-1 cursor-default";
+            return "bg-transparent text-xl rounded-md mr-2 text-disable py-1.5 px-2 cursor-pointer";
         }
     }
 

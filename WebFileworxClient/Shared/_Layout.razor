@@ -5,58 +5,60 @@
 
 <!-- _Layout.razor -->
 <div class="flex flex-col min-h-screen">
-        <!-- _Layout.razor -->
-        <div class="flex flex-row justify-end bg-gray-50 rounded-lg shadow-md">
-            <!-- Left side with image and vertical separator -->
-            <div class="w-[300px] p-3 flex flex-col justify-center items-center relative ml-2">
-                <img src="images/download.png" alt="download" class="w-full rounded-lg ml-1 mr-1.5" />
-                <!-- Your other content here -->
-            </div>
+    <!-- _Layout.razor -->
+    <div class="flex flex-row justify-end bg-gray-50 rounded-lg shadow-md fixed right-0 left-0">
+        <!-- Left side with image and vertical separator -->
+        <div class="w-[300px] p-3 flex flex-col justify-center items-center relative ml-2">
+            <img src="images/download.png" alt="download" class="w-full rounded-lg ml-1 mr-1.5" />
+            <!-- Your other content here -->
+        </div>
 
-            <!-- Right side with navigation -->
-            <div class="flex-1 flex items-center justify-end space-x-4 pr-2">
-                @if (usersServices.LoggedInUser.IsAdmin)
-                {
+        <!-- Right side with navigation -->
+        <div class="flex-1 flex items-center justify-end space-x-4 pr-2">
+            @if (usersServices.LoggedInUser.IsAdmin)
+            {
                 bool isAdminPage = navnManager.Uri.EndsWith("/admin", StringComparison.OrdinalIgnoreCase);
                 <button @onclick="openAdminTab" class="@adminPageClass()" disabled="@isAdminPage">
-                        Admin Page
-                    </button>
-                }
-            @{bool isNewsPage = navnManager.Uri.EndsWith("/news", StringComparison.OrdinalIgnoreCase);}
-            <button @onclick="openNewsTab" class="@newsPageClass()" disabled="@isNewsPage">
-                    News
+                    Admin Page
                 </button>
+            }
+            @{
+                bool isNewsPage = navnManager.Uri.EndsWith("/news", StringComparison.OrdinalIgnoreCase);
+            }
+            <button @onclick="openNewsTab" class="@newsPageClass()" disabled="@isNewsPage">
+                News
+            </button>
             @{
                 bool isContactsPage = navnManager.Uri.EndsWith("/contacts", StringComparison.OrdinalIgnoreCase);
             }
             <button @onclick="openContactsTab" class="@contactsPageClass()" disabled="@isContactsPage">
                 Contacts
             </button>
-                <button class="h-full text-xl bg-gray-50 hover:text-fw-blue text-gray-500 font-bold py-2 px-2 ml-auto">
-                    About
-                </button>
-            </div>
+            <button class="h-full text-xl bg-gray-50 hover:text-fw-blue text-gray-500 font-bold py-2 px-2 ml-auto">
+                About
+            </button>
         </div>
+    </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-50 text-gray-800 py-4 drop-shadow-xl fixed bottom-0 w-full">
+    <!-- Content -->
+    <main class="flex-grow">
+        <!-- Page content -->
+        <div class="p-10">
+            @Body
+        </div>
+    </main>
+
+@*    <!-- Footer -->
+    <footer class="bg-gray-50 text-gray-800 py-4 drop-shadow-xl sticky bottom-0 w-full">
         <img src="images/sedco-logo.png" alt="download" class="w-48 rounded-lg ml-1 mr-1.5" />
         <div class="container mx-auto text-center">
             <!-- Footer content goes here -->
             &copy; 2023 Systems and Electronics Development FZCO. All Rights Reserved.
         </div>
-    </footer>
-
-    <!-- Content -->
-    <main class="flex-grow">
-
-
-        <!-- Page content -->
-        <div class="p-3">
-            @Body
-        </div>
-    </main>
+    </footer>*@
 </div>
+
+
 
 @code{
     private void openAdminTab()

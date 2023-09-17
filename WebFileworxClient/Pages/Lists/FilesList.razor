@@ -1,0 +1,35 @@
+﻿@inject NewsServices newsServices
+
+    <div class="table-container">
+        @foreach (var file in newsServices.AllFiles)
+        {
+            <FileListItem File="file" IsSelected="@isFileSelected(file)" RowClick="OnRowClick" />
+
+            <hr class="border-t border-gray-300">
+
+        }
+    </div>
+
+
+
+@code {
+
+    private bool isFileSelected(clsFile file)
+    {
+        return newsServices.SelectedFile == file;
+    }
+
+    [Parameter]
+    public EventCallback<clsFile> OnRowClick { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Perform your async initialization here
+        await newsServices.AddDBFilesToFilesList();
+    }
+
+
+
+}

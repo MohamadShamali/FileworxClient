@@ -2,17 +2,36 @@
 @inject UsersServices usersServices
 
 <div class="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-10">
-    <div class=" w-[1000px] p-4 bg-white border-3 border-solid border-fw-blue rounded-md shadow-md min-h-[650px] relative">
-        <div>
-            <h2 class="text-3xl font-semibold mb-2.5">Edit Image</h2>
+    <div class=" bg-white border-0 border-solid border-gray-50 rounded-md shadow-md min-w-[1000px] min-h-[750px] flex flex-col">
+        <div class="bg-fw-blue p-4">
+            <h2 class="text-4xl font-bold text-gray-50 ml-1.5">Edit Image</h2>
+            <p class="text-l font-semibold text-gray-50 ml-1.5">Edit the folwing data to edit the selected image</p>
         </div>
-        <div class="mb-2">
+        <div class="p-2">
             <button @onclick=ToggleBodySection class="@getClass(showBodySection)"><b>File Description</b></button>
             <button @onclick=ToggleImageSection class="@getClass(showImageSection)"><b>Image</b></button>
         </div>
+        @if (showBodySection)
+        {
+
+            <div class="p-4 bg-gray-50">
+                <div>
+                    <label class="font-semibold" for="name">Title:</label>
+                    <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=title type="text" id="title" maxlength="255" />
+                </div>
+                <div>
+                    <label class="font-semibold" for="description">Description:</label>
+                    <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=description type="text" id="title" maxlength="255" />
+                </div>
+                <div>
+                    <label class="font-semibold" for="body">Body:</label>
+                    <textarea @bind=body class="w-full border-solid border-gray-300 border-2 min-h-[400px]" maxlength="10000"></textarea>
+                </div>
+            </div>
+        }
         @if (showImageSection)
         {
-            <div>
+            <div class="flex-1 p-4">
                 <InputFile class="input-file" OnChange="loadFiles" accept=".jpg,.jpeg,.png,.gif,.bmp" />
                 @if (errors.Count > 0)
                 {
@@ -26,27 +45,14 @@
                 }
             </div>
         }
-        @if (showBodySection)
-        {
-            <div>
-                <label class="font-semibold" for="title">Title:</label>
-                <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=title type="text" id="title" maxlength="255" />
-            </div>
-            <div>
-                <label class="font-semibold" for="description">Description:</label>
-                <input class="p-2.5 w-full border-solid border-gray-300 border-2" @bind=description type="text" id="description" maxlength="255" />
-            </div>
-            <div class="mb-10">
-                <label class="font-semibold" for="body">Body:</label>
-                <textarea @bind=body class="w-full border-solid border-gray-300 border-2 min-h-[400px]" maxlength="10000"></textarea>
-            </div>
-        }
-        <div class="flex justify-end gap-x-2 absolute right-2 bottom-4 inline-flex">
-            <button class="bg-fw-blue hover:bg-fw-blue-hover rounded-md text-white p-2 cursor-pointer" @onclick=saveRequest><b>Save</b></button>
-            <button class="bg-rid hover:bg-rid-hover rounded-md text-white p-2 cursor-pointer" @onclick=cancelRequest><b>Cancel</b></button>
+
+        <div class="flex justify-end gap-2 bg-gray-50 pr-6 pb-2.5">
+            <button class="h-full text-xl bg-gray-200 hover:bg-fw-blue-hover hover:text-gray-50 text-gray-500 font-semiboldbold py-2 px-2" @onclick=saveRequest><b>Save</b></button>
+            <button class="h-full text-xl bg-gray-200 hover:bg-rid hover:text-gray-50 text-gray-500 font-semiboldbold py-2 px-2" @onclick=cancelRequest><b>Cancel</b></button>
         </div>
     </div>
 </div>
+
 
 @if (showInvalidInfo)
 {

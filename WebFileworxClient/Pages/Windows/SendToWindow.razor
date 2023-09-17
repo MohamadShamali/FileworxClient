@@ -1,0 +1,35 @@
+﻿@inject ContactsServices contactsServices
+
+<div class="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-10">
+    <div class=" bg-gray-50 border-solid border-gray-50 rounded-md shadow-md min-w-[1000px]">
+        <div class="bg-fw-blue p-4">
+
+            <h2 class="text-4xl font-bold text-gray-50 ml-1.5">Select Contacts</h2>
+                <p class="text-l font-semibold text-gray-50 ml-1.5">Fill the folwing data to create a new contact</p>
+
+        </div>
+
+        <div class="p-2">
+            <ContactsTable OnRowClick="onRowClick"> </ContactsTable>
+        </div>
+
+        <div class="flex justify-end gap-2 bg-gray-50 pr-6 pb-2.5">
+            <button @onclick="() => OnSend.InvokeAsync()" class="h-full text-xl bg-gray-200 hover:bg-fw-blue-hover hover:text-gray-50 text-gray-500 font-semiboldbold py-2 px-2"><b>Send</b></button>
+            <button @onclick="() => OnCancel.InvokeAsync()" class="h-full text-xl bg-gray-200 hover:bg-rid hover:text-gray-50 text-gray-500 font-semiboldbold py-2 px-2"><b>Cancel</b></button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnCancel{ get; set; }
+
+    [Parameter]
+    public EventCallback OnSend { get; set; }
+
+    private void onRowClick()
+    {
+        
+    }
+
+}

@@ -1,73 +1,103 @@
 ﻿@inject UsersServices usersServices
 @inject NewsServices newsServices
+@inject ContactsServices contactsServices
 
 @layout _Layout
-@attribute [Authorize]
 @page "/news"
 
 <PageTitle>Fileworx: News Page</PageTitle>
 
-<div class="flex justify-start">
-    <div>
-        <button @onclick=addNewsRequest class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white py-1.5 px-2 cursor-pointer"><b>Add News</b></button>
-        <button @onclick=addImageRequest class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white py-1.5 px-2 cursor-pointer"><b>Add Image</b></button>
-        <button @onclick="editRequest" class="@editButtonClass()" disabled="@removeAndEditDisable()"><b>Edit Image/News</b></button>
-        <button @onclick="removeRequest" class="@removeButtonClass()" disabled="@removeAndEditDisable()"><b>Remove </b></button>
-    </div>
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+
+     <body>
+         <div class="pt-[40px]">
+        <div class="flex justify-start bg-gray-50 border-gray-200 border-1 align-items-stretch mb-1.5">
+
+            @if (!newsServices.SendingMode)
+            {
+                <div class="flex align-middle align-items-stretch ml-3">
+                    <button @onclick=sendFilesRequest class="bg-transparent hover:text-fw-blue-hover text-xl rounded-md mr-2 text-fw-blue py-1.5 px-2 cursor-pointer"><b>Send Files</b></button>
+                    <button @onclick=addNewsRequest class="bg-transparent hover:text-fw-blue-hover text-xl rounded-md mr-2 text-fw-blue py-1.5 px-2 cursor-pointer"><b>Add News</b></button>
+                    <button @onclick=addImageRequest class="bg-transparent hover:text-fw-blue-hover text-xl rounded-md mr-2 text-fw-blue py-1.5 px-2 cursor-pointer"><b>Add Image</b></button>
+                    <button @onclick="editRequest" class="@editButtonClass()" disabled="@removeAndEditDisable()"><b>Edit Image/News</b></button>
+                    <button @onclick="removeRequest" class="@removeButtonClass()" disabled="@removeAndEditDisable()"><b>Remove </b></button>
+                </div>
 
 
-    <div class="ml-auto">
-        <select @bind="querySource" class="p-2.5 border-solid border-gray-300 border-2 rounded-3xl">
-            <option value="Elasticsearch">Elasticsearch</option>
-            <option value="Database">Database</option>
-        </select>
-        <button @onclick="changeQuerySource" class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer ml-1 justify-end">
-            <b>Refresh</b>
-        </button>
-    </div>
+                <div class="ml-auto">
+                    <select @bind="querySource" class="p-2.5 border-solid border-gray-300 border-2 rounded-3xl">
+                        <option value="Elasticsearch">Elasticsearch</option>
+                        <option value="Database">Database</option>
+                    </select>
+                    <button @onclick="changeQuerySourceRequest" class="bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white p-1 cursor-pointer ml-1 justify-end">
+                        <b>Refresh</b>
+                    </button>
+                </div>
+            }
 
-    
+            else
+            {
+                <div class="flex align-middle align-items-stretch ml-3">
+                    <button @onclick=cancelSendingRequest class="bg-transparent hover:text-fw-blue-hover text-xl rounded-md mr-2 text-fw-blue py-1.5 px-2 cursor-pointer"><b>Cancel</b></button>
 
-</div>
+                    <button @onclick=sendToRequest class="bg-transparent hover:text-fw-blue-hover text-xl rounded-md mr-2 text-fw-blue py-1.5 px-2 cursor-pointer"><b>Send To</b></button>
+                </div>
+            }
 
-<div class="flex justify-between">
-
-    <div class="flex-grow w-1/2 mr-10">
-        <NewsTable OnRowClick="OnRowClick"/>
-    </div>
+        </div>
 
 
-    <div class="flex-grow w-1/2 ">
-        @if(showdetails){
-            <NewsDetails selectedFile="newsServices.SelectedFile"/>
+        <div class="flex justify-between">
+            <div class="flex-grow w-[500px] mr-10 max-h-[700px] overflow-y-auto">
+                <FilesList OnRowClick="OnRowClick"> </FilesList>
+            </div>
+
+
+            <div class="flex-grow w-full ">
+                @if (showdetails)
+                {
+                    <NewsDetails selectedFile="newsServices.SelectedFile" />
+                }
+            </div>
+
+        </div>
+
+        @if (showAddNewsWindow)
+        {
+            <NewNewsWindow OnSave="onAddNews" OnCancel="onCancel"> </NewNewsWindow>
+        }
+        @if (showAddImageWindow)
+        {
+            <NewImageWindow OnSave="onAddImage" OnCancel="onCancel"> </NewImageWindow>
+        }
+        @if (showDeleteConfirmationWindow)
+        {
+            <DeleteConfirmationWindow OnDelete="onConfirmDelete" OnCancel="onCancel"></DeleteConfirmationWindow>
+        }
+        @if (showEditNewsWindow)
+        {
+            <NewNewsWindow OnSave="onEditNews" OnCancel="onCancel" NewsToEdit="(clsNews) newsServices.SelectedFile"> </NewNewsWindow>
+        }
+        @if (showEditImageWindow)
+        {
+            <EditImageWindow OnSave="onEditImage" OnCancel="onCancel"> </EditImageWindow>
+        }
+        @if (showFileErrorWindow)
+        {
+            <Error Title="Error" Message="an Error Ocured during process, make sure not to use sprcial characters" OnClose="onCloseErrorRequest"></Error>
+        }
+        @if (showSendToWindow)
+        {
+            <SendToWindow OnCancel="onCancel" OnSend="onSend"></SendToWindow>
         }
     </div>
-</div>
+    </body>
+</html>
 
-@if (showAddNewsWindow)
-{
-    <NewNewsWindow OnSave="onAddNews" OnCancel="onCancel"> </NewNewsWindow>
-}
-@if (showAddImageWindow)
-{
-    <NewImageWindow OnSave="onAddImage" OnCancel="onCancel"> </NewImageWindow>
-}
-@if (showDeleteConfirmationWindow)
-{
-    <DeleteConfirmationWindow OnDelete="onConfirmDelete" OnCancel="onCancel"></DeleteConfirmationWindow>
-}
-@if (showEditNewsWindow)
-{
-    <EditNewsWindow OnSave="onEditNews" OnCancel="onCancel"></EditNewsWindow>
-}
-@if (showEditImageWindow)
-{
-    <EditImageWindow OnSave="onEditImage" OnCancel="onCancel"> </EditImageWindow>
-}
-@if (showFileErrorWindow)
-{
-    <Error Title="Error" Message="an Error Ocured during process, make sure not to use sprcial characters" OnClose="onCloseError"></Error>
-}
 @code {
 
     private string querySource { get; set; } = "Elasticsearch";
@@ -79,6 +109,9 @@
     private bool showEditNewsWindow = false;
     private bool showEditImageWindow = false;
     private bool showFileErrorWindow = false;
+    private bool showSendToWindow = false;
+
+    private bool disableSendToButton = true;
 
     // Details Appearance
     private bool showdetails = true;
@@ -86,28 +119,49 @@
     //Delete Confirmation
     private bool confirmDelete = false;
 
-    private async Task changeQuerySource()
+
+    protected async override Task OnInitializedAsync()
     {
-        newsServices.QuerySource = (querySource == "Elasticsearch") ? QuerySource.ES : QuerySource.DB;
-        await newsServices.RefreshFilesList();
+        // Add all contacts to the service
+        await contactsServices.AddDBContactsToContactsList();
+
+        // Receive Files From Contacts and store them in the DB
+        await addContactsReceivedFilesToDB();
+
+        // Add DB Files to AllFiles List
+        await newsServices.AddDBFilesToFilesList();
+
+        // Refresh list
+        await refreshFilesList();
+
+        // Add watcher system
+        contactsServices.addWatcherSystem(OnFileCreated);
+
+        // UI
+        newsServices.SelectedFile = newsServices.AllFiles[0];
     }
 
-    private void OnRowClick(clsFile selectedFile)
-    {
-        if (newsServices.SelectedFile == selectedFile)
-        {
-            newsServices.SelectedFile = null; // Deselect the row if it's already selected
-        }
+    //------------------------ Buttons Requests ------------------------//
 
-        else
-        {
-            newsServices.SelectedFile = selectedFile; // Select the clicked row
-        }
+    private void sendToRequest()
+    {
+        showSendToWindow = true;
     }
 
     private void removeRequest()
     {
         showDeleteConfirmationWindow = true;
+    }
+
+    private void sendFilesRequest()
+    {
+        newsServices.SendingMode = true;
+    }
+
+    private void cancelSendingRequest()
+    {
+        newsServices.SendingMode = false;
+        newsServices.CheckedFiles.Clear();
     }
 
     private void addNewsRequest()
@@ -133,6 +187,32 @@
         }
     }
 
+    private void onCloseErrorRequest()
+    {
+        showFileErrorWindow = false;
+    }
+
+    private async Task changeQuerySourceRequest()
+    {
+        newsServices.QuerySource = (querySource == "Elasticsearch") ? QuerySource.ES : QuerySource.DB;
+        await newsServices.RefreshFilesList();
+    }
+
+    //------------------------ Passed EventCallBacks ------------------------//
+
+    private void OnRowClick(clsFile selectedFile)
+    {
+        if (newsServices.SelectedFile == selectedFile)
+        {
+            newsServices.SelectedFile = null; // Deselect the row if it's already selected
+        }
+
+        else
+        {
+            newsServices.SelectedFile = selectedFile; // Select the clicked row
+        }
+    }
+
     private void onCancel()
     {
         showAddNewsWindow = false;
@@ -143,15 +223,29 @@
 
         showEditNewsWindow = false;
         showEditImageWindow = false;
+
+        showSendToWindow = false;
     }
 
-    private void onCloseError()
+    private void onSend()
     {
-        showFileErrorWindow = false;
+        foreach (var contact in contactsServices.CheckedContacts)
+        {
+            foreach (var file in newsServices.CheckedFiles)
+            {
+                contact.TransmitFile(file);
+            }
+        }
+
+        contactsServices.CheckedContacts.Clear();
+        newsServices.CheckedFiles.Clear();
+
+        showSendToWindow = false;
+        newsServices.SendingMode = false;
     }
 
     private async Task onConfirmDelete()
-     {
+    {
         confirmDelete = true;
 
         if (newsServices.SelectedFile != null)
@@ -167,10 +261,10 @@
             {
                 clsNews selectedNews = (clsNews)newsServices.SelectedFile;
 
-              await selectedNews.DeleteAsync();
+                await selectedNews.DeleteAsync();
             }
             newsServices.SelectedFile = null;
-            newsServices.RefreshFilesList();
+            await newsServices.RefreshFilesList();
         }
 
         confirmDelete = false;
@@ -182,7 +276,7 @@
         try
         {
             await addedNews.InsertAsync();
-            newsServices.RefreshFilesList();
+            await newsServices.RefreshFilesList();
 
             showAddNewsWindow = false;
         }
@@ -198,7 +292,7 @@
         try
         {
             await editedNews.UpdateAsync();
-            newsServices.RefreshFilesList();
+            await newsServices.RefreshFilesList();
 
             showEditNewsWindow = false;
         }
@@ -213,7 +307,7 @@
         try
         {
             await addedPhoto.InsertAsync();
-            newsServices.RefreshFilesList();
+            await newsServices.RefreshFilesList();
 
             showAddImageWindow = false;
         }
@@ -230,7 +324,7 @@
         try
         {
             await editedPhoto.UpdateAsync();
-            newsServices.RefreshFilesList();
+            await newsServices.RefreshFilesList();
 
             showEditImageWindow = false;
         }
@@ -241,15 +335,77 @@
         }
     }
 
+    private async void OnFileCreated(object sender, FileSystemEventArgs e)
+    {
+        clsContact? contact = (from cntct in contactsServices.AllContacts
+                               where (cntct.ReceiveLocation == Path.GetDirectoryName(e.FullPath))
+                               select cntct).FirstOrDefault();
+
+        if (contact != null)
+        {
+            int maxAttempts = 3;
+            int delayMilliseconds = 200; // Adjust the delay as needed
+
+            for (int attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                try
+                {
+                    // Try to access the file
+                    using (FileStream fs = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        // File is accessible, proceed with processing
+                        await contact.ReceiveFileIfItsNew(e.FullPath);
+                        await newsServices.RefreshFilesList();
+                        await refreshFilesList();
+                        break; // Exit the loop on success
+                    }
+                }
+                catch (IOException)
+                {
+                    // File is not accessible yet, wait and then retry
+                    if (attempt < maxAttempts)
+                    {
+                        await Task.Delay(delayMilliseconds);
+                    }
+                    else
+                    {
+                        throw new Exception("Error while Receiving File");
+                    }
+                }
+            }
+        }
+    }
+
+    //------------------------ Other Methods ------------------------//
+
+    private async Task refreshFilesList()
+    {
+        // Notify Blazor to re-render the component on the UI thread
+        await InvokeAsync(new Action(() => StateHasChanged()));
+    }
+
+    private async Task addContactsReceivedFilesToDB()
+    {
+        foreach (var contact in contactsServices.AllContacts)
+        {
+            if ((contact.Direction & ContactDirection.Receive) == ContactDirection.Receive)
+            {
+                await contact.ReceiveAllFiles();
+            }
+        }
+    }
+
+    //------------------------ Classes and Disable ------------------------//
+
     private string removeButtonClass()
     {
         if (newsServices.SelectedFile != null)
         {
-            return "bg-rid hover:bg-rid-hover rounded-md mr-2 text-white py-1.5 px-2 cursor-pointer";
+            return "bg-transparent hover:text-rid-hover text-xl rounded-md mr-2 text-rid py-1.5 px-2 cursor-pointer";
         }
         else
         {
-            return "bg-disable rounded-md mr-2 text-white py-1.5 px-2 cursor-default";
+            return "bg-transparent text-xl rounded-md mr-2 text-disable py-1.5 px-2 cursor-pointer";
         }
     }
 
@@ -257,17 +413,29 @@
     {
         if (newsServices.SelectedFile != null)
         {
-            return "bg-fw-blue hover:bg-fw-blue-hover rounded-md mr-2 text-white py-1.5 px-2 cursor-pointer";
+            return "bg-transparent hover:text-fw-blue-hover text-xl rounded-md mr-2 text-fw-blue py-1.5 px-2 cursor-pointer";
         }
         else
         {
-            return "bg-disable rounded-md mr-2 text-white py-1.5 px-2 cursor-default";
+            return "bg-transparent text-xl rounded-md mr-2 text-disable py-1.5 px-2 cursor-pointer";
         }
     }
 
     private bool removeAndEditDisable()
     {
         if (newsServices.SelectedFile != null)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    private bool sendToDisable()
+    {
+        if (contactsServices.CheckedContacts.Count > 0)
         {
             return false;
         }

@@ -1,0 +1,111 @@
+﻿@inject NewsServices newsServices
+
+<div class="">
+    <div class="relative">
+        @if (newsServices.SendingMode)
+        {
+            <input @onchange="onCheck" class="absolute top-2.5 left-2.5" type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+        }
+        <!-- Your div content goes here -->
+        <div class="w-1 h-full bg-fw-blue absolute top-0 left-0 opacity-70 group-hover:bg-amber-50"></div>
+        <div class="@GetItemClass()" @onclick="() => RowClick.InvokeAsync(File)">
+
+            <div class="w-2/3 flex flex-col">
+
+                <div class="overflow-hidden overflow-ellipsis whitespace-nowrap mr-1.5">
+                    <p class="@GetTitleClass()">@File.Name</p>
+                </div>
+
+                <div class="overflow-hidden overflow-ellipsis whitespace-nowrap">
+                    <p class="@GetDescClass()">@File.Description</p>
+                </div>
+
+            </div>
+
+            <div class="flex flex-col w-1/3 ml-2.5 justify-end">
+                @*            <p class="overflow-hidden overflow-ellipsis whitespace-nowrap text-sm font-semibold text-gray-500">@File.CreationDate.DayOfWeek</p>*@
+                <p class="@GetDateClass()">@File.CreationDate.ToString("dd MMM yyyy")</p>
+                <p class="@GetDateClass()">@File.CreationDate.ToString("h:mm:ss tt")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+
+    [Parameter]
+    public clsFile File { get; set; }
+
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<clsFile> RowClick { get; set; }
+
+    private void onCheck()
+    {
+        if (newsServices.CheckedFiles.Contains(File))
+        {
+            newsServices.CheckedFiles.Remove(File);
+        }
+        else
+        {
+            newsServices.CheckedFiles.Add(File);
+        }       
+    }
+
+    private string GetItemClass()
+    {
+        if (IsSelected)
+        {
+            return "flex bg-fw-blue cursor-pointer text-white h-[100px] p-6";
+        }
+
+        else
+        {
+            return "flex bg-gray-50 hover:bg-blue-100 cursor-pointer h-[100px] p-6";
+        }
+    }
+
+    private string GetTitleClass()
+    {
+        if (IsSelected)
+        {
+            return "overflow-hidden overflow-ellipsis whitespace-nowrap text-l text-gray-50 font-semibold";
+        }
+
+        else
+        {
+            return "overflow-hidden overflow-ellipsis whitespace-nowrap text-l text-gray-500 font-semibold";
+        }
+    }
+
+    private string GetDescClass()
+    {
+        if (IsSelected)
+        {
+            return "overflow-hidden overflow-ellipsis whitespace-nowrap text-l text-gray-50";
+        }
+
+        else
+        {
+            return "overflow-hidden overflow-ellipsis whitespace-nowrap text-l text-gray-500";
+        }
+    }
+
+    private string GetDateClass()
+    {
+        if (IsSelected)
+        {
+            return "text-gray-50 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm font-semibold opacity-90";
+        }
+
+        else
+        {
+            return "overflow-hidden overflow-ellipsis whitespace-nowrap text-sm font-semibold text-gray-400";
+        }
+    }
+
+}
