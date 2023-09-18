@@ -117,19 +117,19 @@ namespace FileworxObjectClassLibrary
             client.Indices.Refresh(EditBeforRun.ElasticContactsIndex);
         }
 
-        public override void Read()
+        public override async Task ReadAsync()
         {
             // DB
-            base.Read();
+            await base.ReadAsync();
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 string query = $"SELECT C_TRANSMITLOCATION, C_RECEIVELOCATION, C_CONTACTDIRECTIONID, C_LASTRECEIVEDATE, C_ENABLED " +
                                $"FROM {tableName} " +
                                $"WHERE Id = '{Id}'";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
                         if (reader.Read())
                         {
@@ -168,7 +168,7 @@ namespace FileworxObjectClassLibrary
                 clsPhoto photo = (clsPhoto) file;
 
                 File.Copy(photo.Location, TransmitLocation + @"\" + TxGuid + Path.GetExtension(photo.Location));
-
+                photo.Location = TransmitLocation + @"\" + TxGuid + Path.GetExtension(photo.Location);
                 FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
                 using (StreamWriter writer = new StreamWriter(fs))
                 {

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsFileworxClient", "W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebFileworxClient", "WebFileworxClient\WebFileworxClient.csproj", "{F9D8209F-69E1-4863-8E22-8F6434146008}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileworxAPI", "FileworxAPI\FileworxAPI.csproj", "{9F51DCBE-B09C-4D1C-9018-EBCF06669168}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{F9D8209F-69E1-4863-8E22-8F6434146008}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9D8209F-69E1-4863-8E22-8F6434146008}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9D8209F-69E1-4863-8E22-8F6434146008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F51DCBE-B09C-4D1C-9018-EBCF06669168}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F51DCBE-B09C-4D1C-9018-EBCF06669168}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F51DCBE-B09C-4D1C-9018-EBCF06669168}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F51DCBE-B09C-4D1C-9018-EBCF06669168}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

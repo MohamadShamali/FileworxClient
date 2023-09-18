@@ -129,17 +129,17 @@ namespace FileworxObjectClassLibrary
             client.Indices.Refresh(EditBeforRun.ElasticUsersIndex);
         }
 
-        public override void Read()
+        public override async Task ReadAsync()
         {
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 string query = $"SELECT ID, C_USERNAME, C_PASSWORD, ISADMIN " +
                                $"FROM {tableName} " +
                                $"WHERE ID = '{Id}' OR C_USERNAME = '{Username}'";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
                         if (reader.Read())
                         {
@@ -151,7 +151,7 @@ namespace FileworxObjectClassLibrary
                     }
                 }
             }
-            base.Read();
+            await base.ReadAsync();
         }
 
         public LogInValidationResult ValidateLogin()

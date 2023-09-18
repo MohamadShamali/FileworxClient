@@ -89,11 +89,11 @@ namespace FileworxObjectClassLibrary
             }
         }
 
-        public virtual void Read()
+        public virtual async Task ReadAsync()
         {
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
                                         //0
                 string query = $"SELECT b1.C_DESCRIPTION, b1.C_CREATIONDATE, b1.C_MODIFICATIONDATE, b1.C_CREATORID, b2.C_NAME AS CREATORNAME , " +
                                $"b1.C_LASTMODIFIERID, b3.C_NAME AS LASTMODIFIERNAME, b1.C_NAME , b1.C_CLASSID " +
@@ -104,7 +104,7 @@ namespace FileworxObjectClassLibrary
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
                         if (reader.Read())
                         {

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FileworxObjectClassLibrary;
 using Type = FileworxObjectClassLibrary.Type;
+using Newtonsoft.Json;
 
 namespace FileworxObjectTester
 {
@@ -71,6 +72,11 @@ namespace FileworxObjectTester
             //photo.Body = "photo";
             //photo.Location = @"D:\skysports-trent-alexander-arnold_6214990.jpg";
             //await photo.InsertAsync();
+
+            //string json = JsonConvert.SerializeObject(photo);
+            //Console.WriteLine(json);
+            //clsPhoto file = JsonConvert.DeserializeObject<clsPhoto>(json);
+            //Console.WriteLine(file.Class);
 
             // Read Photo
             //var unknown = new clsPhoto();

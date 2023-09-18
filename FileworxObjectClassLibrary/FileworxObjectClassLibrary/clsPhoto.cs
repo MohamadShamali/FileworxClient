@@ -128,12 +128,12 @@ namespace FileworxObjectClassLibrary
             client.Indices.Refresh(EditBeforRun.ElasticFilesIndex);
         }
 
-        public override void Read()
+        public override async Task ReadAsync()
         {
-            base.Read();
+            await base.ReadAsync();
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
-                connection.Open();
+                await connection.OpenAsync();
 
                 string query = $"SELECT ID, C_LOCATION " +
                                $"FROM {tableName} " +
@@ -141,7 +141,7 @@ namespace FileworxObjectClassLibrary
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
                         if (reader.Read())
                         {
