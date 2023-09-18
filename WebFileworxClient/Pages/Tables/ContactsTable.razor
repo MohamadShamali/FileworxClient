@@ -18,7 +18,17 @@
         <tbody>
             @foreach (var contact in contactsServices.AllContacts)
             {
-                <ContactItem RowClick="OnRowClick" IsSelected="@IsContactSelected(contact)" contact="contact" />
+                @if (newsServices.SendingMode)
+                {
+                    @if ((contact.Direction & ContactDirection.Transmit) == ContactDirection.Transmit)
+                    {
+                        <ContactItem RowClick="OnRowClick" IsSelected="@IsContactSelected(contact)" contact="contact" />
+                    }
+                }
+                else
+                {
+                    <ContactItem RowClick="OnRowClick" IsSelected="@IsContactSelected(contact)" contact="contact" />
+                }
             }
         </tbody>
     </table>

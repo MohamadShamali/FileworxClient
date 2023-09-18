@@ -189,6 +189,17 @@
             }
             else
             {
+                // Use LINQ to find the FileSystemWatcher with the specified path
+                FileSystemWatcher? foundWatcher = contactsServices.fileWatchers.FirstOrDefault(watcher => watcher.Path == contactToEdit.ReceiveLocation);
+
+                // Disposing the old Watcher
+                if (foundWatcher != null)
+                {
+                    foundWatcher.EnableRaisingEvents = false;
+                    foundWatcher.Dispose();
+                }
+
+
                 _contactToEdit.Name = name;
                 _contactToEdit.Direction = (direction == "Transmit and Receive") ? (ContactDirection.Transmit | ContactDirection.Receive) :
                     (direction == "Transmit") ? ContactDirection.Transmit :

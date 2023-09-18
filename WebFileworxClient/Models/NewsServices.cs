@@ -17,6 +17,17 @@ namespace Web_Fileworx_Client.Models
         public bool SendingMode { get; set; } = false;
         public QuerySource QuerySource { get; set; } = QuerySource.ES;
 
+        public delegate Task RefreshFilesListDelegate();
+
+        public event RefreshFilesListDelegate? RefreshFilesListRequested;
+
+        public async Task RequestRefreshListview()
+        {
+
+            // Raise the event to notify subscribers that a refresh is requested
+            await RefreshFilesListRequested?.Invoke();
+        }
+
         public async Task AddDBFilesToFilesList()
         {
             clsNewsQuery allNewsQuery = new clsNewsQuery();

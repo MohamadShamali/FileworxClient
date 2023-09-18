@@ -1,4 +1,5 @@
 ﻿@inject ContactsServices contactsServices
+@inject NewsServices newsServices
 @inject NavigationManager navnManager
 @layout _Layout
 @page "/contacts"
@@ -70,6 +71,16 @@
             contactsServices.SelectedContact = null;
 
             await contactsServices.RefreshContactsList();
+
+            // Use LINQ to find the FileSystemWatcher with the specified path
+            FileSystemWatcher? foundWatcher = contactsServices.fileWatchers.FirstOrDefault(watcher => watcher.Path == contactsServices.SelectedContact.ReceiveLocation);
+
+            // Disposing the Watcher
+            if (foundWatcher != null)
+            {
+                foundWatcher.EnableRaisingEvents = false;
+                foundWatcher.Dispose();
+            }
         }
 
         showDeleteContactConfirmation = false;
@@ -104,11 +115,21 @@
             await contact.InsertAsync();
             await contactsServices.RefreshContactsList();
 
+            // Adding a watcher for the new contact
+            if((contact.Direction & ContactDirection.Receive) == ContactDirection.Receive)
+            {
+                FileSystemWatcher watcher = new FileSystemWatcher(contact.ReceiveLocation);
+                watcher.Created += OnFileCreated;
+                watcher.EnableRaisingEvents = true;
+
+                contactsServices.fileWatchers.Add(watcher);
+            }
+
             showAddContactWindow = false;
         }
         catch (Exception ex)
         {
-                showFileErrorWindow = true;
+            showFileErrorWindow = true;
         }
     }
 
@@ -119,6 +140,15 @@
             await contactToEdit.UpdateAsync();
             await contactsServices.RefreshContactsList();
 
+            if ((contactToEdit.Direction & ContactDirection.Receive) == ContactDirection.Receive)
+            {
+                FileSystemWatcher watcher = new FileSystemWatcher(contactToEdit.ReceiveLocation);
+                watcher.Created += OnFileCreated;
+                watcher.EnableRaisingEvents = true;
+
+                contactsServices.fileWatchers.Add(watcher);
+            }
+
             showEditContactWindow = false;
         }
         catch (Exception ex)
@@ -126,6 +156,48 @@
                 showFileErrorWindow = true;
         }
 
+    }
+
+    private async void OnFileCreated(object sender, FileSystemEventArgs e)
+    {
+        clsContact? contact = (from cntct in contactsServices.AllContacts
+                               where (cntct.ReceiveLocation == Path.GetDirectoryName(e.FullPath))
+                               select cntct).FirstOrDefault();
+
+        if (contact != null)
+        {
+            int maxAttempts = 3;
+            int delayMilliseconds = 200; // Adjust the delay as needed
+
+            for (int attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                try
+                {
+                    // Try to access the file
+                    using (FileStream fs = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        // File is accessible, proceed with processing
+                        await contact.ReceiveFileIfItsNew(e.FullPath);
+                        await newsServices.RefreshFilesList();
+
+                        await newsServices.RequestRefreshListview(); // Refresh Listview
+                        break; // Exit the loop on success
+                    }
+                }
+                catch (IOException)
+                {
+                    // File is not accessible yet, wait and then retry
+                    if (attempt < maxAttempts)
+                    {
+                        await Task.Delay(delayMilliseconds);
+                    }
+                    else
+                    {
+                        throw new Exception("Error while Receiving File");
+                    }
+                }
+            }
+        }
     }
 
     private void onCloseError()

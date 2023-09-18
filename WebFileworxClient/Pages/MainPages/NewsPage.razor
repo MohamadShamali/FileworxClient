@@ -68,11 +68,11 @@
 
         @if (showAddNewsWindow)
         {
-            <NewNewsWindow OnSave="onAddNews" OnCancel="onCancel"> </NewNewsWindow>
+            <AddNewsWindow OnSave="onAddNews" OnCancel="onCancel"> </AddNewsWindow>
         }
         @if (showAddImageWindow)
         {
-            <NewImageWindow OnSave="onAddImage" OnCancel="onCancel"> </NewImageWindow>
+            <AddImageWindow OnSave="onAddImage" OnCancel="onCancel"> </AddImageWindow>
         }
         @if (showDeleteConfirmationWindow)
         {
@@ -80,7 +80,7 @@
         }
         @if (showEditNewsWindow)
         {
-            <NewNewsWindow OnSave="onEditNews" OnCancel="onCancel" NewsToEdit="(clsNews) newsServices.SelectedFile"> </NewNewsWindow>
+            <AddNewsWindow OnSave="onEditNews" OnCancel="onCancel" NewsToEdit="(clsNews) newsServices.SelectedFile"> </AddNewsWindow>
         }
         @if (showEditImageWindow)
         {
@@ -137,7 +137,10 @@
         // Add watcher system
         contactsServices.addWatcherSystem(OnFileCreated);
 
-        // UI
+        // Pass refresh ListView to the serviece
+        newsServices.RefreshFilesListRequested += refreshFilesList;
+
+    // UI
         newsServices.SelectedFile = newsServices.AllFiles[0];
     }
 

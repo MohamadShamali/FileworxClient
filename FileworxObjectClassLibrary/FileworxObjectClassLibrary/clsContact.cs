@@ -183,7 +183,7 @@ namespace FileworxObjectClassLibrary
         public async Task ReceiveFileIfItsNew(string filePath)
         {
             DateTime fileLastModification = File.GetLastWriteTime(filePath);
-            //fileLastModification = new DateTime(fileLastModification.Ticks / TimeSpan.TicksPerSecond * TimeSpan.TicksPerSecond);
+            
             if (fileLastModification > LastReceiveDate)
             {
                 string record;
