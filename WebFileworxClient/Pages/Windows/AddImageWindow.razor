@@ -165,7 +165,7 @@
                     CreatorName = usersServices.LoggedInUser.CreatorName,
                     Class = FileworxObjectClassLibrary.Type.Photo
                 };
-            addedPhoto.Read();
+            await addedPhoto.ReadAsync();
             await OnSave.InvokeAsync(addedPhoto);
         }
     }

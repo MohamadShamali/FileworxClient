@@ -81,5 +81,32 @@ namespace FileworxObjectClassLibrary
                 }
             }
         }
+
+        public override void Read()
+        {
+            base.Read();
+
+            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            {
+                connection.Open();
+                string query = $"SELECT ID, C_BODY " +
+                               $"FROM {tableName} " +
+                               $"WHERE Id = '{Id}'";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+
+                            if (!String.IsNullOrEmpty(reader[1].ToString()))
+                            {
+                                Body = (reader[1].ToString());
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

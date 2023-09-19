@@ -135,7 +135,7 @@ namespace Fileworx_Client.AddWindows
                 // Edit Case
                 else
                 {
-                    contactToEdit.Read();
+                    await contactToEdit.ReadAsync();
 
                     contactToEdit.Name = txtName.Text;
                     contactToEdit.LastModifierId = Global.LoggedInUser.Id;

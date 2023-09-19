@@ -62,7 +62,7 @@
     public EventCallback OnCancel { get; set; }
 
     [Parameter]
-    public clsNews NewsToEdit { get { return _newsToEdit; } set { value.Read(); _newsToEdit = value; setEditBoxes(); } }
+    public clsNews NewsToEdit { get { return _newsToEdit; } set { value.ReadAsync(); _newsToEdit = value; setEditBoxes(); } }
 
     private clsNews _newsToEdit;
 
@@ -111,7 +111,7 @@
                         CreatorId = usersServices.LoggedInUser.Id,
                         CreatorName = usersServices.LoggedInUser.CreatorName
                     };
-                addedNews.Read();
+                await addedNews.ReadAsync();
                 await OnSave.InvokeAsync(addedNews);
             }
             else

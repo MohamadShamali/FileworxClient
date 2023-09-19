@@ -18,7 +18,7 @@ namespace FileworxObjectClassLibrary
         public Type[] QClasses { get; set; } = { Type.User, Type.News, Type.Photo, Type.Contact };
         public QuerySource Source { get; set; }
 
-        public async Task<List<clsBusinessObject>> Run()
+        public async Task<List<clsBusinessObject>> RunAsync()
         {
             List<clsBusinessObject> allBusinessObjects = new List<clsBusinessObject>();
 

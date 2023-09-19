@@ -81,18 +81,18 @@ namespace Fileworx_Client
         {
             var contactsQuery = new clsContactQuery();
             contactsQuery.Source= QuerySource.ES;
-            allContacts = await contactsQuery.Run();
+            allContacts = await contactsQuery.RunAsync();
         }
 
         private async Task addDBFilesToFilesList()
         {
             clsNewsQuery allNewsQuery = new clsNewsQuery();
             allNewsQuery.Source = querySource;
-            allNews = await allNewsQuery.Run();
+            allNews = await allNewsQuery.RunAsync();
 
             clsPhotoQuery allPhotosQuery = new clsPhotoQuery();
             allPhotosQuery.Source = querySource;
-            allPhotos = await allPhotosQuery.Run();
+            allPhotos = await allPhotosQuery.RunAsync();
 
 
             allFiles = new List<clsFile>();

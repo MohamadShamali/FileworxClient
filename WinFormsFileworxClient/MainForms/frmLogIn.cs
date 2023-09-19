@@ -32,7 +32,7 @@ namespace Fileworx_Client
 
             if(validateResult == LogInValidationResult.Valid)
             {
-                tryingToLogIn.Read();
+                await tryingToLogIn.ReadAsync();
 
                 Global.LoggedInUser = tryingToLogIn;
 

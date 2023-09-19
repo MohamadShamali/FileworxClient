@@ -91,6 +91,10 @@ namespace FileworxObjectClassLibrary
 
         public virtual async Task ReadAsync()
         {
+            if(Id == null)
+            {
+                throw new Exception("No ID was specified");
+            }
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 await connection.OpenAsync();
@@ -105,6 +109,79 @@ namespace FileworxObjectClassLibrary
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.Read())
+                        {
+
+                            if (!String.IsNullOrEmpty(reader[0].ToString()))
+                            {
+                                Description = (reader[0].ToString());
+                            }
+
+                            if (!String.IsNullOrEmpty(reader[1].ToString()))
+                            {
+                                CreationDate = DateTime.Parse(reader[1].ToString());
+                            }
+
+                            if (!String.IsNullOrEmpty(reader[2].ToString()))
+                            {
+                                ModificationDate = DateTime.Parse(reader[2].ToString());
+                            }
+
+                            if (!String.IsNullOrEmpty(reader[3].ToString()))
+                            {
+                                CreatorId = new Guid(reader[3].ToString());
+                            }
+
+                            if (!String.IsNullOrEmpty(reader[4].ToString()))
+                            {
+                                CreatorName = reader[4].ToString();
+                            }
+
+                            if (!String.IsNullOrEmpty(reader[5].ToString()))
+                            {
+                                LastModifierId = new Guid(reader[5].ToString());
+                            }
+
+
+                            if (!String.IsNullOrEmpty(reader[6].ToString()))
+                            {
+                                LastModifierName = reader[6].ToString();
+                            }
+
+                            if (!String.IsNullOrEmpty(reader[7].ToString()))
+                            {
+                                Name = reader[7].ToString();
+                            }
+
+                            int c = (int)(reader[8]);
+                            Class = (Type)c;
+                        }
+                    }
+                }
+            }
+        }
+
+        public virtual void Read()
+        {
+            if (Id == null)
+            {
+                throw new Exception("No ID was specified");
+            }
+            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            {
+                connection.Open();
+                //0
+                string query = $"SELECT b1.C_DESCRIPTION, b1.C_CREATIONDATE, b1.C_MODIFICATIONDATE, b1.C_CREATORID, b2.C_NAME AS CREATORNAME , " +
+                               $"b1.C_LASTMODIFIERID, b3.C_NAME AS LASTMODIFIERNAME, b1.C_NAME , b1.C_CLASSID " +
+                               $"FROM {tableName} b1 " +
+                               $"Left JOIN {tableName} b2 ON b1.C_CREATORID = b2.ID " +
+                               $"Left JOIN {tableName} b3 ON b1.C_LASTMODIFIERID = b3.ID " +
+                               $"WHERE b1.ID= '{Id}';";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
                         {

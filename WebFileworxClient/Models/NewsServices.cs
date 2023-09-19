@@ -32,11 +32,11 @@ namespace Web_Fileworx_Client.Models
         {
             clsNewsQuery allNewsQuery = new clsNewsQuery();
             allNewsQuery.Source = QuerySource;
-            AllNews = await allNewsQuery.Run();
+            AllNews = await allNewsQuery.RunAsync();
 
             clsPhotoQuery allPhotosQuery = new clsPhotoQuery();
             allPhotosQuery.Source = QuerySource;
-            AllPhotos = await allPhotosQuery.Run();
+            AllPhotos = await allPhotosQuery.RunAsync();
 
 
             AllFiles = new List<clsFile>();

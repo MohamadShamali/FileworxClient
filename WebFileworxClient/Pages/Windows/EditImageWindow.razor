@@ -165,7 +165,7 @@
                     Id = newsServices.SelectedFile.Id
                 };
 
-            editedPhoto.Read();
+            await editedPhoto.ReadAsync();
 
             Guid oldguid = newsServices.SelectedFile.Id;
             Guid newGuid = Guid.NewGuid();

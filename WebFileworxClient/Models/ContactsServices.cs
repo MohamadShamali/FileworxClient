@@ -20,7 +20,7 @@ namespace Web_Fileworx_Client.Models
 
             clsContactQuery query = new clsContactQuery();
             query.Source = QuerySource.ES;
-            AllContacts = await query.Run();
+            AllContacts = await query.RunAsync();
         }
 
         public async Task RefreshContactsList()

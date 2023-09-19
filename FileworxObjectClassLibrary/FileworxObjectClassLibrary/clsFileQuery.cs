@@ -21,7 +21,7 @@ namespace FileworxObjectClassLibrary
         public Type[] QClasses { get; set; } = { Type.News, Type.Photo };
         public QuerySource Source { get; set; }
 
-        public async Task<List<clsFile>> Run()
+        public async Task<List<clsFile>> RunAsync()
         {
             List<clsFile> allFiles = new List<clsFile>();
 

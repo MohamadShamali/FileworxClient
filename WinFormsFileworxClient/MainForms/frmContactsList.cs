@@ -73,7 +73,7 @@ namespace Fileworx_Client.MainForms
         {
             var contactsQuery = new clsContactQuery();
             contactsQuery.Source = querySource;
-            allContacts = await contactsQuery.Run();
+            allContacts = await contactsQuery.RunAsync();
         }
 
         private async Task addTransmitDBContactsToContactsList()
@@ -81,7 +81,7 @@ namespace Fileworx_Client.MainForms
             var contactsQuery = new clsContactQuery();
             contactsQuery.Source = querySource;
             contactsQuery.QDirection = new ContactDirection[] { ContactDirection.Transmit, (ContactDirection.Transmit|ContactDirection.Receive) };
-            allContacts = await contactsQuery.Run();
+            allContacts = await contactsQuery.RunAsync();
         }
 
         private void addContactsListItemsToListView()
@@ -119,7 +119,7 @@ namespace Fileworx_Client.MainForms
             await addAllDBContactsToContactsList();
         }
 
-        private clsContact findSelectedContact()
+        private async Task<clsContact> findSelectedContact()
         {
             if (lvwContacts.SelectedItems.Count > 0)
             {
@@ -127,7 +127,7 @@ namespace Fileworx_Client.MainForms
                                     (from file in allContacts
                                      where (file.CreationDate.ToString() == (lvwContacts.SelectedItems[0].SubItems[2].Text))
                                      select file).FirstOrDefault();
-                selectedContact.Read();
+                await selectedContact.ReadAsync();
                 return selectedContact;
             }
 
@@ -184,11 +184,11 @@ namespace Fileworx_Client.MainForms
             addContactsListItemsToListView();
         }
 
-        private void lvwContacts_MouseClick(object sender, MouseEventArgs e)
+        private async void lvwContacts_MouseClick(object sender, MouseEventArgs e)
         {
             if (enableEventHandlers)
             {
-                clsContact selectedContact = findSelectedContact();
+                clsContact selectedContact = await findSelectedContact();
 
                 if (e.Button == MouseButtons.Right)
                 {
@@ -212,7 +212,7 @@ namespace Fileworx_Client.MainForms
 
         private async void cmiRemoveContact_Click(object sender, EventArgs e)
         {
-            clsContact contactToRemove = findSelectedContact();
+            clsContact contactToRemove = await findSelectedContact();
             DialogResult result = MessageBox.Show($"Are you sure you want to delete {contactToRemove.Name}?",
                                        "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -227,9 +227,9 @@ namespace Fileworx_Client.MainForms
             }
         }
 
-        private void cmiEditContact_Click(object sender, EventArgs e)
+        private async void cmiEditContact_Click(object sender, EventArgs e)
         {
-            clsContact contactToEdit = findSelectedContact();
+            clsContact contactToEdit = await findSelectedContact();
 
             var editContactWindow = new frmAddContactWindow(contactToEdit);
 
@@ -293,7 +293,7 @@ namespace Fileworx_Client.MainForms
 
         private async void disableContactToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var selectedContact = findSelectedContact();
+            var selectedContact = await findSelectedContact();
 
             if (cmsUsersList.Items[2].Text == "Enable Contact")
             {

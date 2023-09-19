@@ -21,7 +21,7 @@ namespace FileworxObjectClassLibrary
         public QuerySource Source { get; set; }
         public ContactDirection[] QDirection { get; set; } = {ContactDirection.Transmit, ContactDirection.Receive, (ContactDirection.Transmit | ContactDirection.Receive) };
 
-        public async Task<List<clsContact>> Run()
+        public async Task<List<clsContact>> RunAsync()
         {
             List<clsContact> allContacts = new List<clsContact>();
 

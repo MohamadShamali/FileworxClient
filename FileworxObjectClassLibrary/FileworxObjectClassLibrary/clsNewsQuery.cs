@@ -17,7 +17,7 @@ namespace FileworxObjectClassLibrary
         // Properties
         public QuerySource Source { get; set; }
 
-        public async Task<List<clsNews>> Run()
+        public async Task<List<clsNews>> RunAsync()
         {
             List<clsNews> allNews = new List<clsNews>();
 

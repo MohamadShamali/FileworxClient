@@ -152,6 +152,30 @@ namespace FileworxObjectClassLibrary
             }
         }
 
+        public override void Read()
+        {
+            base.Read();
+            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            {
+                connection.Open();
+
+                string query = $"SELECT ID, C_LOCATION " +
+                               $"FROM {tableName} " +
+                               $"WHERE Id = '{Id}'";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            Location = (reader[1].ToString());
+                        }
+                    }
+                }
+            }
+        }
+
         private void copyImage()
         {
             string photoextention = Path.GetExtension(location);

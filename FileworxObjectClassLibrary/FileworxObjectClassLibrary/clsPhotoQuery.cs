@@ -16,7 +16,7 @@ namespace FileworxObjectClassLibrary
         // Properties
         public QuerySource Source { get; set; }
 
-        public async Task<List<clsPhoto>> Run()
+        public async Task<List<clsPhoto>> RunAsync()
         {
 
             List<clsPhoto> allPhotos = new List<clsPhoto>();

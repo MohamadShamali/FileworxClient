@@ -48,7 +48,7 @@
     private LogInValidationResult validateResult;
     private string? dynamicText;
 
-    private void checkLogInRequest()
+    private async Task checkLogInRequest()
     {
         clsUser tryingToLogIn = new clsUser(){Username = username, Password = password};
 
@@ -56,7 +56,7 @@
 
         if (validateResult == LogInValidationResult.Valid)
         {
-            tryingToLogIn.Read();
+            await tryingToLogIn.ReadAsync();
             usersServices.LoggedInUser = tryingToLogIn;
             navManager.NavigateTo("./news");
         }

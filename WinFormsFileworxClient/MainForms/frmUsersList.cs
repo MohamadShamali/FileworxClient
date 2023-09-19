@@ -39,7 +39,7 @@ namespace Fileworx_Client
         {
             clsUserQuery allUsersQuery = new clsUserQuery();
             allUsersQuery.Source = querySource;
-            allUsers = await allUsersQuery.Run();
+            allUsers = await allUsersQuery.RunAsync();
         }
 
         private async Task refreshUsersList()

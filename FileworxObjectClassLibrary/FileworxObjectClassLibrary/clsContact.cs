@@ -147,6 +147,36 @@ namespace FileworxObjectClassLibrary
             }
         }
 
+        public override void Read()
+        {
+            // DB
+            base.Read();
+            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            {
+                connection.Open();
+                string query = $"SELECT C_TRANSMITLOCATION, C_RECEIVELOCATION, C_CONTACTDIRECTIONID, C_LASTRECEIVEDATE, C_ENABLED " +
+                               $"FROM {tableName} " +
+                               $"WHERE Id = '{Id}'";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+
+                            if (!String.IsNullOrEmpty(reader[0].ToString())) TransmitLocation = (reader[0].ToString());
+                            if (!String.IsNullOrEmpty(reader[1].ToString())) ReceiveLocation = (reader[1].ToString());
+                            int d = (int)reader[2];
+                            Direction = (ContactDirection)d;
+                            LastReceiveDate = DateTime.Parse(reader[3].ToString());
+                            Enabled = (bool)reader[4];
+
+                        }
+                    }
+                }
+            }
+        }
+
         public void TransmitFile(clsFile file)
         {
             Guid TxGuid = Guid.NewGuid();
@@ -158,7 +188,7 @@ namespace FileworxObjectClassLibrary
                 FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
                 using (StreamWriter writer = new StreamWriter(fs))
                 {
-                    writer.Write(txtFileContent(news));
+                    writer.Write(GetTxtFileContent(news));
                 }
                 fs.Close();
             }
@@ -172,7 +202,7 @@ namespace FileworxObjectClassLibrary
                 FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
                 using (StreamWriter writer = new StreamWriter(fs))
                 {
-                    writer.Write(txtFileContent(photo, TxGuid));
+                    writer.Write(GetTxtFileContent(photo, TxGuid));
                 }
 
                 fs.Close();
@@ -197,7 +227,7 @@ namespace FileworxObjectClassLibrary
                 string format = "M/d/yyyy h:mm:ss tt";
 
                 // News
-                if (content[0] == "N")
+                if (content[0] == $"{(int) Type.News}")
                 {
                     clsNews news = new clsNews()
                     {
@@ -250,9 +280,9 @@ namespace FileworxObjectClassLibrary
 
         // _______________________________________________________________________
 
-        private string txtFileContent(clsNews news)
+        public string GetTxtFileContent(clsNews news)
         {
-            return $"N{EditBeforRun.Separator}" +
+            return $"{(int) news.Class}{EditBeforRun.Separator}" +
                    $"{news.Description}{EditBeforRun.Separator}" +
                    $"{news.CreationDate}{EditBeforRun.Separator}" +
                    $"{news.Name}{EditBeforRun.Separator}" + 
@@ -260,9 +290,9 @@ namespace FileworxObjectClassLibrary
                    $"{news.Category}";
         }
 
-        private string txtFileContent(clsPhoto photo , Guid TxGuid)
+        public string GetTxtFileContent(clsPhoto photo , Guid TxGuid)
         {
-            return $"P{EditBeforRun.Separator}" +
+            return $"{(int)photo.Class}{EditBeforRun.Separator}" +
                    $"{photo.Description}{EditBeforRun.Separator}" +
                    $"{photo.CreationDate}{EditBeforRun.Separator}" +
                    $"{photo.Name}{EditBeforRun.Separator}" +

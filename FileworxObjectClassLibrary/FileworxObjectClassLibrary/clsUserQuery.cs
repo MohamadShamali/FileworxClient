@@ -16,7 +16,7 @@ namespace FileworxObjectClassLibrary
         // Properties
         public QuerySource Source { get; set; }
 
-        public async Task<List<clsUser>> Run()
+        public async Task<List<clsUser>> RunAsync()
         {
             List<clsUser> allUsers = new List<clsUser>();
 
