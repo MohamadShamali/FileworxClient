@@ -18,10 +18,11 @@ namespace FileworxObjectClassLibrary
         public static string ElasticContactsIndex = "contacts";
         public static string ElasticBusinessObjectAlias = "businessobjectalias";
 
+        // API
+        public static string ApiUrl = "https://your-api-base-url/api/ReceiveContacts";
+
         // Local Directories
         public static string PhotosLocation = @"C:\Users\M.AL-Shamali\Desktop\Demo Projects\FileworxClient\WebFileworxClient\wwwroot\Images\StoredImages";
-        public static string TransmitFolder = @"C:\Users\M.AL-Shamali\Desktop\Demo Projects\FileworxClient\FileworxObjectClassLibrary\Contacts\Transmit";
-        public static string ReceiveFolder = @"C:\Users\M.AL-Shamali\Desktop\Demo Projects\FileworxClient\FileworxObjectClassLibrary\Contacts\Receive";
 
         // Other
         public static string Separator = "%%$$##";
