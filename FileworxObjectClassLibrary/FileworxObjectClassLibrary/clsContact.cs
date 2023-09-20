@@ -198,7 +198,6 @@ namespace FileworxObjectClassLibrary
                 clsPhoto photo = (clsPhoto) file;
 
                 File.Copy(photo.Location, TransmitLocation + @"\" + TxGuid + Path.GetExtension(photo.Location));
-                photo.Location = TransmitLocation + @"\" + TxGuid + Path.GetExtension(photo.Location);
                 FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
                 using (StreamWriter writer = new StreamWriter(fs))
                 {
@@ -292,7 +291,7 @@ namespace FileworxObjectClassLibrary
 
         public string GetTxtFileContent(clsPhoto photo , Guid TxGuid)
         {
-            return $"{(int)photo.Class}{EditBeforRun.Separator}" +
+            return $"{(int) photo.Class}{EditBeforRun.Separator}" +
                    $"{photo.Description}{EditBeforRun.Separator}" +
                    $"{photo.CreationDate}{EditBeforRun.Separator}" +
                    $"{photo.Name}{EditBeforRun.Separator}" +

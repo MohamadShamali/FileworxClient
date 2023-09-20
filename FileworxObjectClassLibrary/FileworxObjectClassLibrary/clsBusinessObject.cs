@@ -41,7 +41,7 @@ namespace FileworxObjectClassLibrary
             CreationDate = DateTime.Now;
 
             ModificationDate = CreationDate;
-
+            LastModifierId = CreatorId;
             using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
             {
                 await connection.OpenAsync();

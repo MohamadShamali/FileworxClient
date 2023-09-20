@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using FileworxObjectClassLibrary;
 using Type = FileworxObjectClassLibrary.Type;
 using Newtonsoft.Json;
+using FileworxDTOsLibrary;
+using FileworxDTOsLibrary.RabbitMQMessages;
 
 namespace FileworxObjectTester
 {
@@ -15,6 +17,25 @@ namespace FileworxObjectTester
     {
         static async Task Main(string[] args)
         {
+            // Insert Message
+            //clsMessage message = new clsMessage()
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Command = MessagesCommands.TxFile,
+            //};
+
+            //await message.InsertAsync();
+            //____________________________________________________________________________________________________
+            // Query Messages
+            //clsMessageQuery query = new clsMessageQuery();
+            //query.QCommandsFilter = new string[] { MessagesCommands.TxFile };
+
+            //var msgs = await query.RunAsync();
+            //foreach ( var msg in msgs )
+            //{
+            //    Console.WriteLine( msg.Command );
+            //}
+            //____________________________________________________________________________________________________
             // Index Creation
             //await IndexCreation.CreateFilesIndex();
             //await IndexCreation.CreateUsersIndex();

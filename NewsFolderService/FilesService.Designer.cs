@@ -1,6 +1,6 @@
 ﻿namespace NewsFolderService
 {
-    partial class Service1
+    partial class FilesService
     {
         /// <summary> 
         /// Required designer variable.

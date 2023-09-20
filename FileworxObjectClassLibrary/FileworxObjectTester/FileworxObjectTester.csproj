@@ -54,6 +54,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\FileworxDTOsLibrary\FileworxDTOsLibrary.csproj">
+      <Project>{fb8ac608-6aa1-4fa7-beb6-7f819877e46b}</Project>
+      <Name>FileworxDTOsLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FileworxObjectClassLibrary\FileworxObjectClassLibrary.csproj">
       <Project>{4e22821b-592f-447b-abbf-5858a51e2e28}</Project>
       <Name>FileworxObjectClassLibrary</Name>

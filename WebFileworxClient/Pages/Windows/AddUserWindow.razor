@@ -57,7 +57,7 @@
     public EventCallback OnCancel { get; set; }
 
     [Parameter]
-    public clsUser UserToEdit { get { return _userToEdit; } set { value.ReadAsync(); _userToEdit = value; setEditBoxes(); } }
+    public clsUser UserToEdit { get { return _userToEdit; } set { value.Read(); _userToEdit = value; setEditBoxes(); } }
 
     private clsUser _userToEdit;
 

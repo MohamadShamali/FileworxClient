@@ -11,9 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsFileworxClient", "W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebFileworxClient", "WebFileworxClient\WebFileworxClient.csproj", "{F9D8209F-69E1-4863-8E22-8F6434146008}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileworxAPI", "FileworxAPI\FileworxAPI.csproj", "{9F51DCBE-B09C-4D1C-9018-EBCF06669168}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileworxAPI", "FileworxAPI\FileworxAPI.csproj", "{9F51DCBE-B09C-4D1C-9018-EBCF06669168}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsFolderService", "NewsFolderService\NewsFolderService.csproj", "{6879CB4E-6F3A-48B0-9B34-A0411CEA738E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilesFolderService", "NewsFolderService\FilesFolderService.csproj", "{6879CB4E-6F3A-48B0-9B34-A0411CEA738E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileworxDTOsLibrary", "FileworxDTOsLibrary\FileworxDTOsLibrary.csproj", "{FB8AC608-6AA1-4FA7-BEB6-7F819877E46B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{6879CB4E-6F3A-48B0-9B34-A0411CEA738E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6879CB4E-6F3A-48B0-9B34-A0411CEA738E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6879CB4E-6F3A-48B0-9B34-A0411CEA738E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB8AC608-6AA1-4FA7-BEB6-7F819877E46B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB8AC608-6AA1-4FA7-BEB6-7F819877E46B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB8AC608-6AA1-4FA7-BEB6-7F819877E46B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB8AC608-6AA1-4FA7-BEB6-7F819877E46B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
