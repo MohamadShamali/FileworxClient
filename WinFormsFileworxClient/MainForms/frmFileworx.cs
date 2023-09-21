@@ -159,7 +159,7 @@ namespace Fileworx_Client
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += onMessageReceived;
 
-            channel.BasicConsume(queue: EditBeforeRun.TxFileQueue, autoAck: false, consumer: consumer);
+            channel.BasicConsume(queue: EditBeforeRun.RxFileQueue, autoAck: false, consumer: consumer);
         }
 
         private async void onMessageReceived(object model, BasicDeliverEventArgs ea)
@@ -170,7 +170,7 @@ namespace Fileworx_Client
             // Deserialize the JSON response
             clsMessage message = JsonConvert.DeserializeObject<clsMessage>(messageString);
 
-            if (message.Command == MessagesCommands.TxFile)
+            if (message.Command == MessagesCommands.RxFile)
             {
                 await processRxFileMessage(message);
             }

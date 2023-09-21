@@ -260,7 +260,7 @@ namespace Fileworx_Client.MainForms
             editContactWindow.Show();
         }
 
-        private void btnSend_Click(object sender, EventArgs e)
+        private async void btnSend_Click(object sender, EventArgs e)
         {
             try
             {
@@ -272,7 +272,8 @@ namespace Fileworx_Client.MainForms
                         clsMessage txMessage = new clsMessage()
                         {
                             Id = Guid.NewGuid(),
-                            Command = MessagesCommands.TxFile
+                            Command = MessagesCommands.TxFile,
+                            Contact = mapContactToContactDto(contact)
                         };
 
                         if(file is clsNews)
@@ -284,7 +285,7 @@ namespace Fileworx_Client.MainForms
                         {
                             txMessage.PhotoDto = mapPhotoToPhotoDto((clsPhoto)file);
                         }
-
+                        await txMessage.InsertAsync();
                         sendTxFileMessage(txMessage);
                     }
                 }
@@ -325,46 +326,6 @@ namespace Fileworx_Client.MainForms
                                     basicProperties: null,
                                     body: body);
 
-        }
-
-        private clsPhotoDto mapPhotoToPhotoDto(clsPhoto photo)
-        {
-            var photoDto = new clsPhotoDto()
-            {
-                Id = photo.Id,
-                Description = photo.Description,
-                CreationDate = photo.CreationDate,
-                ModificationDate = photo.ModificationDate,
-                CreatorId = photo.CreatorId,
-                CreatorName = photo.CreatorName,
-                LastModifierId = photo.LastModifierId,
-                Name = photo.Name,
-                Class = (FileworxDTOsLibrary.DTOs.Type)(int)photo.Class,
-                Body = photo.Body,
-                Location = photo.Location,
-            };
-
-            return photoDto;
-        }
-
-        private clsNewsDto mapNewsToNewsDto(clsNews news)
-        {
-            var newsDto = new clsNewsDto()
-            {
-                Id = news.Id,
-                Description = news.Description,
-                CreationDate = news.CreationDate,
-                ModificationDate = news.ModificationDate,
-                CreatorId = news.CreatorId,
-                CreatorName = news.CreatorName,
-                LastModifierId = news.LastModifierId,
-                Name = news.Name,
-                Class = (FileworxDTOsLibrary.DTOs.Type)(int)news.Class,
-                Body = news.Body,
-                Category = news.Category,
-            };
-
-            return newsDto;
         }
 
         private void lvwContacts_ItemChecked(object sender, ItemCheckedEventArgs e)
@@ -410,6 +371,71 @@ namespace Fileworx_Client.MainForms
                 await refreshContactsList();
                 addContactsListItemsToListView();
             }
+        }
+
+        //------------------------ Mapping ------------------------//
+
+        private FileworxDTOsLibrary.DTOs.clsContactDto mapContactToContactDto(clsContact contact)
+        {
+            var contactDto = new FileworxDTOsLibrary.DTOs.clsContactDto()
+            {
+                Id = contact.Id,
+                Description = contact.Description,
+                CreationDate = contact.CreationDate,
+                ModificationDate = contact.ModificationDate,
+                CreatorId = contact.CreatorId,
+                CreatorName = contact.CreatorName,
+                LastModifierId = contact.LastModifierId,
+                Name = contact.Name,
+                Class = (FileworxDTOsLibrary.DTOs.Type)(int)contact.Class,
+                TransmitLocation = contact.TransmitLocation,
+                ReceiveLocation = contact.ReceiveLocation,
+                Direction = (FileworxDTOsLibrary.DTOs.Direction)(int)contact.Direction,
+                LastReceiveDate = contact.LastReceiveDate,
+                Enabled = contact.Enabled,
+            };
+
+            return contactDto;
+        }
+
+        private clsPhotoDto mapPhotoToPhotoDto(clsPhoto photo)
+        {
+            var photoDto = new clsPhotoDto()
+            {
+                Id = photo.Id,
+                Description = photo.Description,
+                CreationDate = photo.CreationDate,
+                ModificationDate = photo.ModificationDate,
+                CreatorId = photo.CreatorId,
+                CreatorName = photo.CreatorName,
+                LastModifierId = photo.LastModifierId,
+                Name = photo.Name,
+                Class = (FileworxDTOsLibrary.DTOs.Type)(int)photo.Class,
+                Body = photo.Body,
+                Location = photo.Location,
+            };
+
+            return photoDto;
+        }
+
+        private clsNewsDto mapNewsToNewsDto(clsNews news)
+        {
+            var newsDto = new clsNewsDto()
+            {
+                Id = news.Id,
+                Description = news.Description,
+                CreationDate = news.CreationDate,
+                ModificationDate = news.ModificationDate,
+                CreatorId = news.CreatorId,
+                CreatorName = news.CreatorName,
+                LastModifierId = news.LastModifierId,
+                Name = news.Name,
+                Class = (FileworxDTOsLibrary.DTOs.Type)(int)news.Class,
+                Body = news.Body,
+                Category = news.Category,
+            };
+
+            return newsDto;
         }
     }
 }
