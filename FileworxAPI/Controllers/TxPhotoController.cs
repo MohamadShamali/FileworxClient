@@ -24,7 +24,7 @@ namespace FileworxAPI.Controllers
                     clsContact contact = new clsContact() { Id = contactId };
                     await contact.ReadAsync();
 
-                    return Ok(contact.GetTxtFileContent(photo, photo.Id));
+                    return Ok(/*contact.GetTxtFileContent(photo, photo.Id)*/);
                 }
 
                 else
