@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileworxDTOsLibrary;
 
 namespace FileworxObjectClassLibrary
 {
@@ -13,7 +14,7 @@ namespace FileworxObjectClassLibrary
 
         public static async void CreateIndex()
         {
-            var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
             var client = new ElasticsearchClient(settings);
 
             var response = await client.Indices.CreateAsync("businessobject");
@@ -30,7 +31,7 @@ namespace FileworxObjectClassLibrary
 
         public static async Task CreateUsersIndex()
         {
-            var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
             var client = new ElasticsearchClient(settings);
 
             var response = await client.Indices.CreateAsync("users");
@@ -47,7 +48,7 @@ namespace FileworxObjectClassLibrary
 
         public static async Task CreateFilesIndex()
         {
-            var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
             var client = new ElasticsearchClient(settings);
 
             var response = await client.Indices.CreateAsync("files");
@@ -64,7 +65,7 @@ namespace FileworxObjectClassLibrary
 
         public static async Task CreateContactsIndex()
         {
-            var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
             var client = new ElasticsearchClient(settings);
 
             var response1 = await client.Indices.CreateAsync<clsContactDto>("contacts", c => c.Mappings(map => map.Properties(p => p.Text(t => t.Id)
@@ -104,7 +105,7 @@ namespace FileworxObjectClassLibrary
 
         public static async Task CreateBusinessObjectAlias()
         {
-            var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
             var client = new ElasticsearchClient(settings);
 
             var response1 = await client.Indices.PutAliasAsync("users", "businessobjectalias");
@@ -134,9 +135,9 @@ namespace FileworxObjectClassLibrary
             user.Password = "admin";
             user.IsAdmin = true;
 
-            var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
             var client = new ElasticsearchClient(settings);
-            var response = await client.IndexAsync(user, EditBeforRun.ElasticUsersIndex);
+            var response = await client.IndexAsync(user, EditBeforeRun.ElasticUsersIndex);
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
@@ -145,11 +146,11 @@ namespace FileworxObjectClassLibrary
 
         public async static Task<string> tst()
         {
-            var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
             var client = new ElasticsearchClient(settings);
 
             var response = await client.SearchAsync<clsNews>(s => s
-                                        .Index(EditBeforRun.ElasticFilesIndex)
+                                        .Index(EditBeforeRun.ElasticFilesIndex)
                                         .From(0)
                                         .Size(10000)
                                         .Query(q => q.Term(t => t.Class, Type.News)));

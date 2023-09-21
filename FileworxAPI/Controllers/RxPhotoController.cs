@@ -4,6 +4,7 @@ using FileworxObjectClassLibrary;
 using Type = FileworxObjectClassLibrary.Type;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using FileworxDTOsLibrary;
 
 namespace FileworxAPI.Controllers
 {
@@ -16,7 +17,7 @@ namespace FileworxAPI.Controllers
         {
             try
             {
-                string[] content = txtFileContant.Split(new string[] { EditBeforRun.Separator }, StringSplitOptions.None);
+                string[] content = txtFileContant.Split(new string[] { EditBeforeRun.Separator }, StringSplitOptions.None);
 
                 // News
                 if ((content[0] == $"{(int)Type.Photo}") && (content.Count() >= 6))

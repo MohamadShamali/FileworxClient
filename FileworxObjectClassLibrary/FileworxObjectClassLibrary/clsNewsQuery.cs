@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileworxDTOsLibrary;
 
 namespace FileworxObjectClassLibrary
 {
@@ -23,7 +24,7 @@ namespace FileworxObjectClassLibrary
 
             if(Source == QuerySource.DB)
             {
-                using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+                using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
                 {
                     connection.Open();
 
@@ -102,11 +103,11 @@ namespace FileworxObjectClassLibrary
            
             if(Source == QuerySource.ES)
             {
-                var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+                var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
 
                 var response = await client.SearchAsync<clsNews>(s => s
-                                            .Index(EditBeforRun.ElasticFilesIndex)
+                                            .Index(EditBeforeRun.ElasticFilesIndex)
                                             .From(0)
                                             .Size(10000)
                                             .Query(q => q.Term(t => t.Class, Type.News.ToString().ToLower())));

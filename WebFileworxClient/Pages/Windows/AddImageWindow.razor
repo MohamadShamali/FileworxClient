@@ -106,7 +106,7 @@
         {
             if (Ifile!=null)
             {
-                newImagePath = Path.Combine(FileworxObjectClassLibrary.EditBeforRun.PhotosLocation, guid.ToString() + Path.GetExtension(Ifile.Name));
+                newImagePath = Path.Combine(FileworxObjectClassLibrary.EditBeforeRun.PhotosLocation, guid.ToString() + Path.GetExtension(Ifile.Name));
 
                 await using FileStream fs = new (newImagePath, FileMode.Create);
                 await Ifile.OpenReadStream(maxFileSize).CopyToAsync(fs);

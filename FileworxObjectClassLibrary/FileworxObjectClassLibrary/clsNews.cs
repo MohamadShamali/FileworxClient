@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.IndexManagement;
+using FileworxDTOsLibrary;
 
 namespace FileworxObjectClassLibrary
 {
@@ -21,7 +22,7 @@ namespace FileworxObjectClassLibrary
 
         public clsNews()
         {
-            settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
             client = new ElasticsearchClient(settings);
 
             Class = Type.News;
@@ -30,7 +31,7 @@ namespace FileworxObjectClassLibrary
         public async override Task InsertAsync()
         {
             await base.InsertAsync();
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
                 string query = $"INSERT INTO T_NEWS (ID, C_CATEGORY) " +
@@ -40,31 +41,31 @@ namespace FileworxObjectClassLibrary
                     await command.ExecuteNonQueryAsync();
                 }
             }
-            var response = await client.IndexAsync(this, EditBeforRun.ElasticFilesIndex);
+            var response = await client.IndexAsync(this, EditBeforeRun.ElasticFilesIndex);
 
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
             }
-            client.Indices.Refresh(EditBeforRun.ElasticFilesIndex); // refresh index 
+            client.Indices.Refresh(EditBeforeRun.ElasticFilesIndex); // refresh index 
         }
 
         public async override Task DeleteAsync()
         {
             await base.DeleteAsync();
-            var response = await client.DeleteAsync(EditBeforRun.ElasticFilesIndex, Id);
+            var response = await client.DeleteAsync(EditBeforeRun.ElasticFilesIndex, Id);
 
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
             }
-            client.Indices.Refresh(EditBeforRun.ElasticFilesIndex);
+            client.Indices.Refresh(EditBeforeRun.ElasticFilesIndex);
         }
 
         public async override Task UpdateAsync()
         {
             await base.UpdateAsync();
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
 
@@ -76,19 +77,19 @@ namespace FileworxObjectClassLibrary
                     await command.ExecuteNonQueryAsync();
                 }
             }
-            var response = await client.UpdateAsync<clsNews, clsNews>(EditBeforRun.ElasticFilesIndex, Id, u => u.Doc(this));
+            var response = await client.UpdateAsync<clsNews, clsNews>(EditBeforeRun.ElasticFilesIndex, Id, u => u.Doc(this));
 
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
             }
-            client.Indices.Refresh(EditBeforRun.ElasticFilesIndex);
+            client.Indices.Refresh(EditBeforeRun.ElasticFilesIndex);
         }
 
         public override async Task ReadAsync()
         {
             await base.ReadAsync();
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
                 string query = $"SELECT ID, C_CATEGORY " +
@@ -111,7 +112,7 @@ namespace FileworxObjectClassLibrary
         public override void Read()
         {
             base.Read();
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 connection.Open();
                 string query = $"SELECT ID, C_CATEGORY " +

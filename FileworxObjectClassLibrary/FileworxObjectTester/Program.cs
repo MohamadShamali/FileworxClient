@@ -10,6 +10,8 @@ using Type = FileworxObjectClassLibrary.Type;
 using Newtonsoft.Json;
 using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.RabbitMQMessages;
+using System.Net.Http;
+using FileworxDTOsLibrary.DTOs;
 
 namespace FileworxObjectTester
 {
@@ -17,14 +19,22 @@ namespace FileworxObjectTester
     {
         static async Task Main(string[] args)
         {
-            // Insert Message
-            //clsMessage message = new clsMessage()
-            //{
-            //    Id = Guid.NewGuid(),
-            //    Command = MessagesCommands.TxFile,
-            //};
+            var photo = new clsPhotoDto();
+            photo.Id = new Guid("52a7b071-45f4-48f5-b494-b860da0b5c2f");
+            photo.Description = "photo";
+            photo.Name = "photo";
+            photo.Body = "photo";
+            photo.Location = @"D:\skysports-trent-alexander-arnold_6214990.jpg";
 
-            //await message.InsertAsync();
+            // Insert Message
+            clsMessage message = new clsMessage()
+            {
+                Id = Guid.NewGuid(),
+                Command = MessagesCommands.TxFile,
+                PhotoDto=photo
+            };
+
+            message.Insert();
             //____________________________________________________________________________________________________
             // Query Messages
             //clsMessageQuery query = new clsMessageQuery();

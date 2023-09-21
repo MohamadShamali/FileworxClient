@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileworxDTOsLibrary;
 
 namespace FileworxObjectClassLibrary
 {
@@ -42,7 +43,7 @@ namespace FileworxObjectClassLibrary
 
             ModificationDate = CreationDate;
             LastModifierId = CreatorId;
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
                 string query = $"INSERT INTO {tableName}(ID, C_DESCRIPTION, C_CREATIONDATE, C_CREATORID, C_NAME, C_CLASSID)" +
@@ -56,7 +57,7 @@ namespace FileworxObjectClassLibrary
 
         public virtual async Task DeleteAsync()
         {
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
                 string query = $"DELETE FROM {tableName} WHERE Id = '{Id}'";
@@ -74,7 +75,7 @@ namespace FileworxObjectClassLibrary
             Name = Name.Replace("'", "''");
             ModificationDate = DateTime.Now;
 
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
 
@@ -95,7 +96,7 @@ namespace FileworxObjectClassLibrary
             {
                 throw new Exception("No ID was specified");
             }
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
                                         //0
@@ -168,7 +169,7 @@ namespace FileworxObjectClassLibrary
             {
                 throw new Exception("No ID was specified");
             }
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 connection.Open();
                 //0

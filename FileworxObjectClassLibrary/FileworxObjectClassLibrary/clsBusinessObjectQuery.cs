@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using FileworxDTOsLibrary;
 
 namespace FileworxObjectClassLibrary
 {
@@ -35,7 +36,7 @@ namespace FileworxObjectClassLibrary
 
                 string conditionsString = string.Join(" ", conditions);
 
-                using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+                using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
                 {
                     connection.Open();
 
@@ -118,11 +119,11 @@ namespace FileworxObjectClassLibrary
                     shouldQueries[i] = (bs => bs.Term(p => p.Class, QClasses[capturedIndex].ToString().ToLower()));
                 }
 
-                var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+                var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
 
                 var response = await client.SearchAsync<clsBusinessObject>(s => s
-                            .Index(EditBeforRun.ElasticBusinessObjectAlias)
+                            .Index(EditBeforeRun.ElasticBusinessObjectAlias)
                             .From(0)
                             .Size(10000)
                             .Query(q => q.Bool(b => b

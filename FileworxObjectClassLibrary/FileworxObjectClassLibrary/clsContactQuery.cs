@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Elastic.Clients.Elasticsearch.QueryDsl;
 using Elastic.Clients.Elasticsearch.Fluent;
 using System.Security.Claims;
+using FileworxDTOsLibrary;
 
 namespace FileworxObjectClassLibrary
 {
@@ -35,7 +36,7 @@ namespace FileworxObjectClassLibrary
                 }
 
                 string conditionsString = string.Join(" ", conditions);
-                using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+                using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
                 {
                     connection.Open();
 
@@ -127,11 +128,11 @@ namespace FileworxObjectClassLibrary
                     shouldQueries[i] = (bs => bs.Term(p => p.Direction, (int) QDirection[capturedIndex]));
                 }
 
-                var settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+                var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
 
                 var response = await client.SearchAsync<clsContactDto>(s => s
-                                            .Index(EditBeforRun.ElasticContactsIndex)
+                                            .Index(EditBeforeRun.ElasticContactsIndex)
                                             .From(0)
                                             .Size(10000)
                                             .Query(q => q.Bool( b=> b.

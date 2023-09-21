@@ -9,6 +9,6 @@ namespace FileworxDTOsLibrary.DTOs
     public class clsPhotoDto : clsFileDto
     {
         // Properties
-        private string location;
+        public string Location;
     }
 }

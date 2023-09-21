@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileworxDTOsLibrary;
 
 namespace FileworxObjectClassLibrary
 {
@@ -30,7 +31,7 @@ namespace FileworxObjectClassLibrary
 
         public clsUser()
         {
-            settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
             client = new ElasticsearchClient(settings);
 
             Class = Type.User;
@@ -44,7 +45,7 @@ namespace FileworxObjectClassLibrary
             Password = Password.Replace("'", "''");
             try
             {
-                using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+                using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
                 {
                     await connection.OpenAsync();
                     string query = $"INSERT INTO T_USER(ID, C_USERNAME, C_PASSWORD, ISADMIN) " +
@@ -68,23 +69,23 @@ namespace FileworxObjectClassLibrary
                     throw new InvalidOperationException("An error occurred while processing.", ex);
                 }
             }
-            var response = await client.IndexAsync(this, EditBeforRun.ElasticUsersIndex);
+            var response = await client.IndexAsync(this, EditBeforeRun.ElasticUsersIndex);
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
             }
-            client.Indices.Refresh(EditBeforRun.ElasticUsersIndex);
+            client.Indices.Refresh(EditBeforeRun.ElasticUsersIndex);
         }
 
         public async override Task DeleteAsync()
         {
             await base.DeleteAsync();
-            var response = await client.DeleteAsync(EditBeforRun.ElasticUsersIndex, Id);
+            var response = await client.DeleteAsync(EditBeforeRun.ElasticUsersIndex, Id);
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
             }
-            client.Indices.Refresh(EditBeforRun.ElasticUsersIndex);
+            client.Indices.Refresh(EditBeforeRun.ElasticUsersIndex);
         }
 
         public async override Task UpdateAsync()
@@ -95,7 +96,7 @@ namespace FileworxObjectClassLibrary
             Password = Password.Replace("'", "''");
             try
             {
-                using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+                using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
                 {
                     await connection.OpenAsync();
 
@@ -121,17 +122,17 @@ namespace FileworxObjectClassLibrary
                     throw new InvalidOperationException("An error occurred while processing.", ex);
                 }
             }
-            var response = await client.UpdateAsync<clsUser, clsUser>(EditBeforRun.ElasticUsersIndex, Id, u => u.Doc(this));
+            var response = await client.UpdateAsync<clsUser, clsUser>(EditBeforeRun.ElasticUsersIndex, Id, u => u.Doc(this));
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
             }
-            client.Indices.Refresh(EditBeforRun.ElasticUsersIndex);
+            client.Indices.Refresh(EditBeforeRun.ElasticUsersIndex);
         }
 
         public override async Task ReadAsync()
         {
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
                 string query = $"SELECT ID, C_USERNAME, C_PASSWORD, ISADMIN " +
@@ -156,7 +157,7 @@ namespace FileworxObjectClassLibrary
 
         public override void Read()
         {
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 connection.Open();
                 string query = $"SELECT ID, C_USERNAME, C_PASSWORD, ISADMIN " +
@@ -184,7 +185,7 @@ namespace FileworxObjectClassLibrary
 
             Username = Username.Replace("'", "''");
             
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 connection.Open();
                 string query = $"SELECT C_PASSWORD " +

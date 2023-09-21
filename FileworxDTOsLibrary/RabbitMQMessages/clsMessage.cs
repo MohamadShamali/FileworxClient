@@ -19,6 +19,7 @@ namespace FileworxDTOsLibrary.RabbitMQMessages
         public clsNewsDto NewsDto { get; set; }
         public clsPhotoDto PhotoDto { get; set; }
         public bool Processed { get; set; } = false;
+        public clsContactDto Contact { get; set; }
 
         private IMongoDatabase db;
         private MongoClient client;

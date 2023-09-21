@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileworxDTOsLibrary;
 
 namespace FileworxObjectClassLibrary
 {
@@ -30,7 +31,7 @@ namespace FileworxObjectClassLibrary
 
                 if (File.Exists(value))
                 {
-                    if(directoryPath != EditBeforRun.PhotosLocation)
+                    if(directoryPath != EditBeforeRun.PhotosLocation)
                     {
                         if (File.Exists(location) && (location != value))
                         {
@@ -50,7 +51,7 @@ namespace FileworxObjectClassLibrary
 
         public clsPhoto()
         {
-            settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
             client = new ElasticsearchClient(settings);
 
             Class =Type.Photo;
@@ -62,7 +63,7 @@ namespace FileworxObjectClassLibrary
             await base.InsertAsync();
             copyImage();
             photoUpdated = false;
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
                 string query = $"INSERT INTO T_PHOTO (ID, C_LOCATION) " +
@@ -72,12 +73,12 @@ namespace FileworxObjectClassLibrary
                     await command.ExecuteNonQueryAsync();
                 }
             }
-            var response = await client.IndexAsync(this, EditBeforRun.ElasticFilesIndex);
+            var response = await client.IndexAsync(this, EditBeforeRun.ElasticFilesIndex);
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
             }
-            client.Indices.Refresh(EditBeforRun.ElasticFilesIndex);
+            client.Indices.Refresh(EditBeforeRun.ElasticFilesIndex);
         }
 
         public async override Task DeleteAsync()
@@ -89,12 +90,12 @@ namespace FileworxObjectClassLibrary
                 File.Delete(location);
             }
 
-            var response = await client.DeleteAsync(EditBeforRun.ElasticFilesIndex, Id);
+            var response = await client.DeleteAsync(EditBeforeRun.ElasticFilesIndex, Id);
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
             }
-            client.Indices.Refresh(EditBeforRun.ElasticFilesIndex);
+            client.Indices.Refresh(EditBeforeRun.ElasticFilesIndex);
         }
 
         public async override Task UpdateAsync()
@@ -106,7 +107,7 @@ namespace FileworxObjectClassLibrary
                 photoUpdated = false;
             }
 
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
 
@@ -120,18 +121,18 @@ namespace FileworxObjectClassLibrary
                 }
             }
 
-            var response = await client.UpdateAsync<clsPhoto, clsPhoto>(EditBeforRun.ElasticFilesIndex, Id, u => u.Doc(this));
+            var response = await client.UpdateAsync<clsPhoto, clsPhoto>(EditBeforeRun.ElasticFilesIndex, Id, u => u.Doc(this));
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
             }
-            client.Indices.Refresh(EditBeforRun.ElasticFilesIndex);
+            client.Indices.Refresh(EditBeforeRun.ElasticFilesIndex);
         }
 
         public override async Task ReadAsync()
         {
             await base.ReadAsync();
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
 
@@ -155,7 +156,7 @@ namespace FileworxObjectClassLibrary
         public override void Read()
         {
             base.Read();
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 connection.Open();
 
@@ -179,10 +180,10 @@ namespace FileworxObjectClassLibrary
         private void copyImage()
         {
             string photoextention = Path.GetExtension(location);
-            if(!File.Exists(EditBeforRun.PhotosLocation + @"\" + Id.ToString() + photoextention))
+            if(!File.Exists(EditBeforeRun.PhotosLocation + @"\" + Id.ToString() + photoextention))
             {
-                File.Copy(location, EditBeforRun.PhotosLocation + @"\" + Id.ToString() + photoextention);
-                location = EditBeforRun.PhotosLocation + @"\" + Id.ToString() + photoextention;
+                File.Copy(location, EditBeforeRun.PhotosLocation + @"\" + Id.ToString() + photoextention);
+                location = EditBeforeRun.PhotosLocation + @"\" + Id.ToString() + photoextention;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileworxDTOsLibrary;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace FileworxObjectClassLibrary
             Body.Replace(Environment.NewLine, "\\n");
             Body = Body.Replace("'", "''");
             
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
                 string query = $"INSERT INTO T_FILE (ID, C_BODY) " +
@@ -41,7 +42,7 @@ namespace FileworxObjectClassLibrary
             Body.Replace(Environment.NewLine, "\\n");
             Body = Body.Replace("'", "''");
 
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
 
@@ -59,7 +60,7 @@ namespace FileworxObjectClassLibrary
         {
             await base.ReadAsync();
 
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
                 string query = $"SELECT ID, C_BODY " +
@@ -86,7 +87,7 @@ namespace FileworxObjectClassLibrary
         {
             base.Read();
 
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 connection.Open();
                 string query = $"SELECT ID, C_BODY " +

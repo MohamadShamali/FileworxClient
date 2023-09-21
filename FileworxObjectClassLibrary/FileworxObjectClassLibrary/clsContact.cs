@@ -11,6 +11,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using FileworxDTOsLibrary;
 
 namespace FileworxObjectClassLibrary
 {
@@ -38,7 +39,7 @@ namespace FileworxObjectClassLibrary
         {
             Class = Type.Contact;
 
-            settings = new ElasticsearchClientSettings(new Uri(EditBeforRun.ElasticUri));
+            settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
             client = new ElasticsearchClient(settings);
         }
 
@@ -49,7 +50,7 @@ namespace FileworxObjectClassLibrary
 
             // DB
             await base.InsertAsync();
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
                 string query = $"INSERT INTO T_CONTACT (ID, C_TRANSMITLOCATION, C_RECEIVELOCATION, C_CONTACTDIRECTIONID, C_LASTRECEIVEDATE, C_ENABLED) " +
@@ -62,13 +63,13 @@ namespace FileworxObjectClassLibrary
 
             // Elastic
             var contactDto = new clsContactDto(this);
-            var response = await client.IndexAsync(contactDto, EditBeforRun.ElasticContactsIndex);
+            var response = await client.IndexAsync(contactDto, EditBeforeRun.ElasticContactsIndex);
             contactDto = null;
             if (!response.IsValidResponse)
             {
                 Console.WriteLine(response.DebugInformation);
             }
-            client.Indices.Refresh(EditBeforRun.ElasticContactsIndex); // refresh index 
+            client.Indices.Refresh(EditBeforeRun.ElasticContactsIndex); // refresh index 
         }
 
         public override async Task DeleteAsync()
@@ -78,12 +79,12 @@ namespace FileworxObjectClassLibrary
             await base.DeleteAsync();
 
             // Elastic
-            var response = await client.DeleteAsync(EditBeforRun.ElasticContactsIndex, Id);
+            var response = await client.DeleteAsync(EditBeforeRun.ElasticContactsIndex, Id);
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
             }
-            client.Indices.Refresh(EditBeforRun.ElasticContactsIndex);
+            client.Indices.Refresh(EditBeforeRun.ElasticContactsIndex);
         }
 
         public override async Task UpdateAsync()
@@ -91,7 +92,7 @@ namespace FileworxObjectClassLibrary
 
             // DB
             await base.UpdateAsync();
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
 
@@ -108,20 +109,20 @@ namespace FileworxObjectClassLibrary
 
             // Elastic
             var contactDto = new clsContactDto(this);
-            var response = await client.UpdateAsync<clsContactDto, clsContactDto>(EditBeforRun.ElasticContactsIndex, Id, u => u.Doc(contactDto));
+            var response = await client.UpdateAsync<clsContactDto, clsContactDto>(EditBeforeRun.ElasticContactsIndex, Id, u => u.Doc(contactDto));
             contactDto = null;
             if (!response.IsValidResponse)
             {
                 throw new Exception("Error while working with Elastic");
             }
-            client.Indices.Refresh(EditBeforRun.ElasticContactsIndex);
+            client.Indices.Refresh(EditBeforeRun.ElasticContactsIndex);
         }
 
         public override async Task ReadAsync()
         {
             // DB
             await base.ReadAsync();
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
                 string query = $"SELECT C_TRANSMITLOCATION, C_RECEIVELOCATION, C_CONTACTDIRECTIONID, C_LASTRECEIVEDATE, C_ENABLED " +
@@ -151,7 +152,7 @@ namespace FileworxObjectClassLibrary
         {
             // DB
             base.Read();
-            using (SqlConnection connection = new SqlConnection(EditBeforRun.connectionString))
+            using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 connection.Open();
                 string query = $"SELECT C_TRANSMITLOCATION, C_RECEIVELOCATION, C_CONTACTDIRECTIONID, C_LASTRECEIVEDATE, C_ENABLED " +
@@ -221,7 +222,7 @@ namespace FileworxObjectClassLibrary
                 {
                     record = reader.ReadLine();
                 }
-                string[] content = record.Split(new string[] { EditBeforRun.Separator }, StringSplitOptions.None);
+                string[] content = record.Split(new string[] { EditBeforeRun.Separator }, StringSplitOptions.None);
 
                 string format = "M/d/yyyy h:mm:ss tt";
 
@@ -281,21 +282,21 @@ namespace FileworxObjectClassLibrary
 
         public string GetTxtFileContent(clsNews news)
         {
-            return $"{(int) news.Class}{EditBeforRun.Separator}" +
-                   $"{news.Description}{EditBeforRun.Separator}" +
-                   $"{news.CreationDate}{EditBeforRun.Separator}" +
-                   $"{news.Name}{EditBeforRun.Separator}" + 
-                   $"{news.Body}{EditBeforRun.Separator}" + 
+            return $"{(int) news.Class}{EditBeforeRun.Separator}" +
+                   $"{news.Description}{EditBeforeRun.Separator}" +
+                   $"{news.CreationDate}{EditBeforeRun.Separator}" +
+                   $"{news.Name}{EditBeforeRun.Separator}" + 
+                   $"{news.Body}{EditBeforeRun.Separator}" + 
                    $"{news.Category}";
         }
 
         public string GetTxtFileContent(clsPhoto photo , Guid TxGuid)
         {
-            return $"{(int) photo.Class}{EditBeforRun.Separator}" +
-                   $"{photo.Description}{EditBeforRun.Separator}" +
-                   $"{photo.CreationDate}{EditBeforRun.Separator}" +
-                   $"{photo.Name}{EditBeforRun.Separator}" +
-                   $"{photo.Body}{EditBeforRun.Separator}" +
+            return $"{(int) photo.Class}{EditBeforeRun.Separator}" +
+                   $"{photo.Description}{EditBeforeRun.Separator}" +
+                   $"{photo.CreationDate}{EditBeforeRun.Separator}" +
+                   $"{photo.Name}{EditBeforeRun.Separator}" +
+                   $"{photo.Body}{EditBeforeRun.Separator}" +
                    $"{TransmitLocation + @"\" + TxGuid + Path.GetExtension(photo.Location)}";
         }
 
