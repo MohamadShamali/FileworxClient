@@ -1,12 +1,19 @@
 ﻿using Fileworx_Client.AddWindows;
+using FileworxDTOsLibrary;
+using FileworxDTOsLibrary.DTOs;
+using FileworxDTOsLibrary.RabbitMQMessages;
 using FileworxObjectClassLibrary;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,11 +23,15 @@ namespace Fileworx_Client.MainForms
     {
         private static List<clsContact> allContacts { get; set; }
         private bool enableEventHandlers = true;
+
         List<clsFile> filesToSend = new List<clsFile>();
         List<clsContact> selectedContacts = new List<clsContact>();
         private QuerySource querySource { get; set; } = QuerySource.ES;
         public event Action OnCloseAfterSend;
         public event OnFormCloseHandler AfterAddingContact;
+
+        private IConnection connection;
+        private IModel channel;
 
         public frmContactsList()
         {
@@ -50,6 +61,9 @@ namespace Fileworx_Client.MainForms
 
             contactList.filesToSend = files;
 
+            // Initialize RabbitMQ
+            contactList.rabbitMQInit();
+
             // UI
             contactList.cboDataStoreSource.SelectedIndex = 1;
             contactList.enableEventHandlers = false;
@@ -67,6 +81,13 @@ namespace Fileworx_Client.MainForms
             contactList.addContactsListItemsToListView();
 
             return contactList;
+        }
+
+        private void rabbitMQInit()
+        {
+            var factory = new ConnectionFactory { HostName = EditBeforeRun.HostName };
+            connection = factory.CreateConnection();
+            channel = connection.CreateModel();
         }
 
         private async Task addAllDBContactsToContactsList()
@@ -91,6 +112,7 @@ namespace Fileworx_Client.MainForms
                 // Use Invoke to marshal the operation to the UI thread
                 lvwContacts.Invoke(new Action(() => addContactsListItemsToListView()));
             }
+
             else
             {
                 if (lvwContacts.Items.Count > 0)
@@ -247,7 +269,23 @@ namespace Fileworx_Client.MainForms
                 {
                     foreach (var file in filesToSend)
                     {
-                        contact.TransmitFile(file);
+                        clsMessage txMessage = new clsMessage()
+                        {
+                            Id = Guid.NewGuid(),
+                            Command = MessagesCommands.TxFile
+                        };
+
+                        if(file is clsNews)
+                        {
+                            txMessage.NewsDto = mapNewsToNewsDto((clsNews) file);
+                        }
+
+                        else
+                        {
+                            txMessage.PhotoDto = mapPhotoToPhotoDto((clsPhoto)file);
+                        }
+
+                        sendTxFileMessage(txMessage);
                     }
                 }
 
@@ -265,6 +303,68 @@ namespace Fileworx_Client.MainForms
             {
                 MessageBox.Show("An Error Occurred While Sending Files");
             }
+        }
+
+        private void sendTxFileMessage(clsMessage txMessage)
+        {
+            channel.QueueDeclare(queue: EditBeforeRun.TxFileQueue,
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+
+            // Serialize the rxMessage object to JSON
+            var jsonMessage = JsonConvert.SerializeObject(txMessage);
+
+            // Convert the JSON string to bytes
+            var body = Encoding.UTF8.GetBytes(jsonMessage);
+
+            // Publish the JSON message
+            channel.BasicPublish(exchange: string.Empty,
+                                    routingKey: EditBeforeRun.TxFileQueue,
+                                    basicProperties: null,
+                                    body: body);
+
+        }
+
+        private clsPhotoDto mapPhotoToPhotoDto(clsPhoto photo)
+        {
+            var photoDto = new clsPhotoDto()
+            {
+                Id = photo.Id,
+                Description = photo.Description,
+                CreationDate = photo.CreationDate,
+                ModificationDate = photo.ModificationDate,
+                CreatorId = photo.CreatorId,
+                CreatorName = photo.CreatorName,
+                LastModifierId = photo.LastModifierId,
+                Name = photo.Name,
+                Class = (FileworxDTOsLibrary.DTOs.Type)(int)photo.Class,
+                Body = photo.Body,
+                Location = photo.Location,
+            };
+
+            return photoDto;
+        }
+
+        private clsNewsDto mapNewsToNewsDto(clsNews news)
+        {
+            var newsDto = new clsNewsDto()
+            {
+                Id = news.Id,
+                Description = news.Description,
+                CreationDate = news.CreationDate,
+                ModificationDate = news.ModificationDate,
+                CreatorId = news.CreatorId,
+                CreatorName = news.CreatorName,
+                LastModifierId = news.LastModifierId,
+                Name = news.Name,
+                Class = (FileworxDTOsLibrary.DTOs.Type)(int)news.Class,
+                Body = news.Body,
+                Category = news.Category,
+            };
+
+            return newsDto;
         }
 
         private void lvwContacts_ItemChecked(object sender, ItemCheckedEventArgs e)

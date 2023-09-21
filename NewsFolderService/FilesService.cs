@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.ServiceProcess;
@@ -14,7 +12,6 @@ using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
 using FileworxDTOsLibrary.RabbitMQMessages;
-using System.Runtime.Remoting.Messaging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -180,7 +177,7 @@ namespace NewsFolderService
             if (isNewFile)
             {
                 clsMessage rxMessage = new clsMessage() { Id=Guid.NewGuid(),
-                                                         Command=MessagesCommands.TxFile };
+                                                         Command=MessagesCommands.RxFile };
 
                 addFileAndTransmitterToMessage(filePath, transmitter, rxMessage);
                 await rxMessage.InsertAsync();

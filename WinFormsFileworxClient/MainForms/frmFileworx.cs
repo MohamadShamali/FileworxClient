@@ -1,5 +1,11 @@
 ﻿using Fileworx_Client.MainForms;
+using FileworxDTOsLibrary;
+using FileworxDTOsLibrary.DTOs;
+using FileworxDTOsLibrary.RabbitMQMessages;
 using FileworxObjectClassLibrary;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,6 +13,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,12 +29,19 @@ namespace Fileworx_Client
         private static List<clsFile> allFiles { get; set; }
         private static List<clsNews> allNews { get; set; }
         private static List<clsPhoto> allPhotos { get; set; }
-        private static List<clsContact> allContacts { get; set; }
+        public List<clsMessage> UnprocessedRxFileMessages = new List<clsMessage>();
         private List<FileSystemWatcher> fileWatchers = new List<FileSystemWatcher>();
+
+        private bool formStarted { get; set; } = false;
         private QuerySource querySource { get; set; } = QuerySource.ES;
 
 
         private TabPage hiddenTabPage;
+
+        // RabbitMQ
+        private IConnection connection;
+        private IModel channel;
+
         private enum SortBy { RecentDate, OldestDate, Alphabetically };
 
         public frmFileworx()
@@ -58,30 +72,151 @@ namespace Fileworx_Client
             if (Global.LoggedInUser.IsAdmin) fileworx.msiUsersList.Enabled = true;
             else fileworx.msiUsersList.Enabled = false;
 
-            // Add all contacts
-            await fileworx.addDBContactsToContactsList();
+            // Initialize RabbitMQ
+            fileworx.rabbitMQInit();
 
-            // Receive Files From Contacts and store them in the DB
-            await fileworx.addContactsReceivedFilesToDB(); 
+            // Get unprocessed messages From DB
+            fileworx.UnprocessedRxFileMessages = await fileworx.getUnprocessedRxFileMessages();
+
+            // Processed all unprocessed messages
+            foreach (var msg in fileworx.UnprocessedRxFileMessages)
+            {
+                await fileworx.processRxFileMessage(msg);
+            }
 
             // Add DB files to files list
-            await fileworx.addDBFilesToFilesList(); 
+            await fileworx.addDBFilesToFilesList();
+
+            // Start Listening to Tx File Messages
+            fileworx.startListeningToRxFileMessages();
 
             // Add files to listView
             fileworx.sortFilesList(SortBy.RecentDate);
             fileworx.addFilesListItemsToListView();
 
-            // Add Watcher system
-            fileworx.addWatcherSystem();
+            // Set the form started
+            fileworx.formStarted = true;
 
             return fileworx;
         }
 
-        private async Task addDBContactsToContactsList()
+        private void rabbitMQInit()
         {
-            var contactsQuery = new clsContactQuery();
-            contactsQuery.Source= QuerySource.ES;
-            allContacts = await contactsQuery.RunAsync();
+            var factory = new ConnectionFactory { HostName = EditBeforeRun.HostName };
+            connection = factory.CreateConnection();
+            channel = connection.CreateModel();
+        }
+
+        private async Task<List<clsMessage>> getUnprocessedRxFileMessages()
+        {
+            clsMessageQuery query = new clsMessageQuery();
+            query.QCommandsFilter = new string[] { MessagesCommands.RxFile };
+
+            var m = await query.RunAsync();
+
+            return m;
+        }
+
+        private async Task processRxFileMessage(clsMessage rxFileMessage)
+        {
+            if (rxFileMessage.Command == MessagesCommands.RxFile)
+            {
+                // Write txt file
+                await ReceiveFile(rxFileMessage);
+
+                // Mark it as processes message in the DB
+                rxFileMessage.Processed = true;
+                await rxFileMessage.UpdateAsync();
+
+                if (formStarted)
+                {
+                    await refreshFilesList();
+                    autoSortFilesList();
+                    addFilesListItemsToListView();
+                }
+            }
+        }
+
+        private async Task ReceiveFile(clsMessage rxFileMessage)
+        {
+            Guid TxGuid = Guid.NewGuid();
+
+            if(rxFileMessage.NewsDto != null)
+            {
+                clsNews news = mapNewsDtoToNews(rxFileMessage.NewsDto);
+                await news.InsertAsync();
+            }
+
+            if (rxFileMessage.PhotoDto != null)
+            {
+                clsPhoto photo = mapPhotoDtoToPhoto(rxFileMessage.PhotoDto);
+                await photo.InsertAsync();
+            }
+        }
+
+        private void startListeningToRxFileMessages()
+        {
+            var consumer = new EventingBasicConsumer(channel);
+            consumer.Received += onMessageReceived;
+
+            channel.BasicConsume(queue: EditBeforeRun.TxFileQueue, autoAck: false, consumer: consumer);
+        }
+
+        private async void onMessageReceived(object model, BasicDeliverEventArgs ea)
+        {
+            var body = ea.Body.ToArray();
+            var messageString = Encoding.UTF8.GetString(body);
+
+            // Deserialize the JSON response
+            clsMessage message = JsonConvert.DeserializeObject<clsMessage>(messageString);
+
+            if (message.Command == MessagesCommands.TxFile)
+            {
+                await processRxFileMessage(message);
+            }
+
+            // Acknowledge the message to remove it from the queue
+            channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+        }
+
+        private clsNews mapNewsDtoToNews(clsNewsDto newsDto)
+        {
+            var news = new clsNews()
+            {
+                Id = newsDto.Id,
+                Description = newsDto.Description,
+                CreationDate = newsDto.CreationDate,
+                ModificationDate = newsDto.ModificationDate,
+                CreatorId = newsDto.CreatorId,
+                CreatorName = newsDto.CreatorName,
+                LastModifierId = newsDto.LastModifierId,
+                Name = newsDto.Name,
+                Class =(FileworxObjectClassLibrary.Type) (int) newsDto.Class,
+                Body = newsDto.Body,
+                Category = newsDto.Category,
+            };
+
+            return news;
+        }
+
+        private clsPhoto mapPhotoDtoToPhoto(clsPhotoDto photoDto)
+        {
+            var photo = new clsPhoto()
+            {
+                Id = photoDto.Id,
+                Description = photoDto.Description,
+                CreationDate = photoDto.CreationDate,
+                ModificationDate = photoDto.ModificationDate,
+                CreatorId = photoDto.CreatorId,
+                CreatorName = photoDto.CreatorName,
+                LastModifierId = photoDto.LastModifierId,
+                Name = photoDto.Name,
+                Class = (FileworxObjectClassLibrary.Type)(int)photoDto.Class,
+                Body = photoDto.Body,
+                Location = photoDto.Location,
+            };
+
+            return photo;
         }
 
         private async Task addDBFilesToFilesList()
@@ -100,95 +235,6 @@ namespace Fileworx_Client
             allFiles.AddRange(allNews);
         }
 
-        private async Task addContactsReceivedFilesToDB()
-        {
-            foreach (var contact in allContacts)
-            {
-                if((contact.Direction&ContactDirection.Receive) == ContactDirection.Receive)
-                {
-                    await contact.ReceiveAllFiles();
-                }
-            }
-        }
-
-        private void addWatcherSystem()
-        {
-            foreach (var contact in allContacts)
-            {
-                if((contact.Direction & (ContactDirection.Receive)) == ContactDirection.Receive)
-                {
-                    FileSystemWatcher watcher = new FileSystemWatcher(contact.ReceiveLocation);
-                    watcher.Created += OnFileCreated;
-                    watcher.EnableRaisingEvents = true;
-
-                    fileWatchers.Add(watcher);
-                }
-            }
-        }
-
-        private void refreshWatcherSystem()
-        {
-            foreach (var watcher in fileWatchers)
-            {
-                watcher.EnableRaisingEvents = false;
-                watcher.Created -= OnFileCreated;
-                watcher.Dispose();
-            }
-            // Clear the list of watchers
-            fileWatchers.Clear();
-
-            addWatcherSystem();
-        }
-
-        private async Task afterAddingContact()
-        {
-            await addDBContactsToContactsList();
-            refreshWatcherSystem();
-        }
-
-        private async void OnFileCreated(object sender, FileSystemEventArgs e)
-        {
-            clsContact contact = (from cntct in allContacts
-                                  where (cntct.ReceiveLocation == Path.GetDirectoryName(e.FullPath))
-                                  select cntct).FirstOrDefault();
-
-            if (contact != null)
-            {
-                int maxAttempts = 3; 
-                int delayMilliseconds = 200; // Adjust the delay as needed
-
-                for (int attempt = 1; attempt <= maxAttempts; attempt++)
-                {
-                    try
-                    {
-                        // Try to access the file
-                        using (FileStream fs = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                        {
-                            // File is accessible, proceed with processing
-                            await contact.ReceiveFileIfItsNew(e.FullPath);
-                            await refreshFilesList();
-                            autoSortFilesList();
-                            addFilesListItemsToListView();
-                            break; // Exit the loop on success
-                        }
-                    }
-                    catch (IOException)
-                    {
-                        // File is not accessible yet, wait and then retry
-                        if (attempt < maxAttempts)
-                        {
-                            await Task.Delay(delayMilliseconds);
-                        }
-                        else
-                        {
-                            throw new Exception("Error while Receiving File");
-                        }
-                    }
-                }
-            }
-        }
-
-
         private void addFilesListItemsToListView()
         {
             if (lvwFiles.InvokeRequired)
@@ -196,6 +242,7 @@ namespace Fileworx_Client
                 // Use Invoke to marshal the operation to the UI thread
                 lvwFiles.Invoke(new Action(() => addFilesListItemsToListView()));
             }
+
             else
             {
                 if (lvwFiles.Items.Count > 0)
@@ -212,7 +259,6 @@ namespace Fileworx_Client
                 }
             }
         }
-
 
         private async Task refreshFilesList()
         {
@@ -423,7 +469,10 @@ namespace Fileworx_Client
 
             mnuMenuStrip.Enabled = true;
         }
+        private async Task afterAddingContact()
+        {
 
+        }
         //------------------------ Event Handlers ------------------------//
         private void signOutToolStripMenuItem_Click(object sender, EventArgs e)
         {

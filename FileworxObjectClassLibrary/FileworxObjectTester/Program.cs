@@ -19,22 +19,22 @@ namespace FileworxObjectTester
     {
         static async Task Main(string[] args)
         {
-            var photo = new clsPhotoDto();
-            photo.Id = new Guid("52a7b071-45f4-48f5-b494-b860da0b5c2f");
-            photo.Description = "photo";
-            photo.Name = "photo";
-            photo.Body = "photo";
-            photo.Location = @"D:\skysports-trent-alexander-arnold_6214990.jpg";
-
             // Insert Message
-            clsMessage message = new clsMessage()
-            {
-                Id = Guid.NewGuid(),
-                Command = MessagesCommands.TxFile,
-                PhotoDto=photo
-            };
+            //var photo = new clsPhotoDto();
+            //photo.Id = new Guid("52a7b071-45f4-48f5-b494-b860da0b5c2f");
+            //photo.Description = "photo";
+            //photo.Name = "photo";
+            //photo.Body = "photo";
+            //photo.Location = @"D:\skysports-trent-alexander-arnold_6214990.jpg";
 
-            message.Insert();
+            //clsMessage message = new clsMessage()
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Command = MessagesCommands.TxFile,
+            //    PhotoDto=photo
+            //};
+
+            //await message.InsertAsync();
             //____________________________________________________________________________________________________
             // Query Messages
             //clsMessageQuery query = new clsMessageQuery();
