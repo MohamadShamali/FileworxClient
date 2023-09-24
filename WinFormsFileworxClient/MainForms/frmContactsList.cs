@@ -273,7 +273,8 @@ namespace Fileworx_Client.MainForms
                         {
                             Id = Guid.NewGuid(),
                             Command = MessagesCommands.TxFile,
-                            Contact = mapContactToContactDto(contact)
+                            Contact = mapContactToContactDto(contact),
+                            ActionDate = DateTime.Now,
                         };
 
                         if(file is clsNews)

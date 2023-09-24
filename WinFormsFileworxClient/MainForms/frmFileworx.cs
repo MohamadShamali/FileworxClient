@@ -135,7 +135,7 @@ namespace Fileworx_Client
                 rxFileMessage.Processed = true;
                 await rxFileMessage.UpdateAsync();
 
-                if (formStarted)
+                if (true)
                 {
                     await refreshFilesList();
                     autoSortFilesList();
@@ -159,6 +159,9 @@ namespace Fileworx_Client
                 clsPhoto photo = mapPhotoDtoToPhoto(rxFileMessage.PhotoDto);
                 await photo.InsertAsync();
             }
+
+            rxFileMessage.Contact.LastReceiveDate = rxFileMessage.ActionDate;
+            await mapContactDtoToContact(rxFileMessage.Contact).UpdateAsync();
         }
 
         private async void onMessageReceived(object model, BasicDeliverEventArgs ea)
@@ -216,6 +219,29 @@ namespace Fileworx_Client
             };
 
             return photo;
+        }
+
+        private clsContact mapContactDtoToContact(FileworxDTOsLibrary.DTOs.clsContactDto contactDto)
+        {
+            var contact = new clsContact()
+            {
+                Id = contactDto.Id,
+                Description = contactDto.Description,
+                CreationDate = contactDto.CreationDate,
+                ModificationDate = contactDto.ModificationDate,
+                CreatorId = contactDto.CreatorId,
+                CreatorName = contactDto.CreatorName,
+                LastModifierId = contactDto.LastModifierId,
+                Name = contactDto.Name,
+                Class = (Type)(int)contactDto.Class,
+                TransmitLocation = contactDto.TransmitLocation,
+                ReceiveLocation = contactDto.ReceiveLocation,
+                Direction = (ContactDirection)(int)contactDto.Direction,
+                LastReceiveDate = contactDto.LastReceiveDate,
+                Enabled = contactDto.Enabled,
+            };
+
+            return contact;
         }
 
         private async Task addDBFilesToFilesList()

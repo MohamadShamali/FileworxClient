@@ -15,6 +15,7 @@ using FileworxDTOsLibrary.RabbitMQMessages;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SharpCompress.Common;
+using System.Threading;
 
 namespace NewsFolderService
 {
@@ -45,6 +46,9 @@ namespace NewsFolderService
             // Start Listening to Tx File Messages
             startListeningToTxFileMessages();
 
+            // Delay until update MongoDB
+            Thread.Sleep(500);
+
             // Get unprocessed messages From DB
             UnprocessedTxFileMessages = await getUnprocessedTxFileMessages();
 
@@ -54,11 +58,11 @@ namespace NewsFolderService
                 await processTxFileMessage(msg);
             }
 
-            // process created files when the service is not running
-            await processRxFilesBeforeRunningService();
-
             // Add watcher for all receive contacts
             addWatcherSystem(ReceiveContacts);
+
+            // process created files when the service is not running
+            await processRxFilesBeforeRunningService();
         }
 
         // On Stop
@@ -103,19 +107,26 @@ namespace NewsFolderService
         {
             foreach(var contact in ReceiveContacts)
             {
-                var files = Directory.GetFiles(contact.ReceiveLocation);
+                // Get Files from the oldest last time date to the recent
+                var files = Directory.GetFiles(contact.ReceiveLocation)
+                    .Select(filePath => new FileInfo(filePath))
+                    .OrderBy(fileInfo => fileInfo.LastWriteTime)
+                    .Select(fileInfo => fileInfo.FullName)
+                    .ToList();
 
-                foreach(var file in files)
+                foreach (var file in files)
                 {
                     if (Path.GetExtension(file) == ".txt")
                     {
                         bool isNewFile = checkIfNewFile(file, contact);
+
                         if (isNewFile)
                         {
                             clsMessage rxMessage = new clsMessage()
                             {
                                 Id = Guid.NewGuid(),
-                                Command = MessagesCommands.RxFile
+                                Command = MessagesCommands.RxFile,
+                                ActionDate = File.GetLastWriteTime(file)
                             };
 
                             addFileAndTransmitterToMessage(file, contact, rxMessage);
@@ -214,7 +225,8 @@ namespace NewsFolderService
                     clsMessage rxMessage = new clsMessage()
                     {
                         Id = Guid.NewGuid(),
-                        Command = MessagesCommands.RxFile
+                        Command = MessagesCommands.RxFile,
+                        ActionDate = File.GetLastWriteTime(filePath)
                     };
 
                     addFileAndTransmitterToMessage(filePath, transmitter, rxMessage);
@@ -228,6 +240,10 @@ namespace NewsFolderService
         private bool checkIfNewFile(string filePath, clsContactDto transmitter)
         {
             DateTime fileLastModification = File.GetLastWriteTime(filePath);
+
+            // Remove fractions
+            fileLastModification = fileLastModification.AddTicks(-(fileLastModification.Ticks % TimeSpan.TicksPerSecond));
+            transmitter.LastReceiveDate = transmitter.LastReceiveDate.AddTicks(-(transmitter.LastReceiveDate.Ticks % TimeSpan.TicksPerSecond));
 
             if (fileLastModification > transmitter.LastReceiveDate)
             {

@@ -20,24 +20,27 @@ namespace FileworxDTOsLibrary.RabbitMQMessages
         public clsPhotoDto PhotoDto { get; set; }
         public bool Processed { get; set; } = false;
         public clsContactDto Contact { get; set; }
+        public DateTime ActionDate { get; set; }
+
 
         private IMongoDatabase db;
         private MongoClient client;
+        private IMongoCollection<clsMessage> collection;
+
         public clsMessage()
         {
             client = new MongoClient();
             db = client.GetDatabase(EditBeforeRun.MessagesDBName);
+            collection = db.GetCollection<clsMessage>(EditBeforeRun.MessagesCollectionName);
         }
 
         public async Task InsertAsync()
         {
-            var collection = db.GetCollection<clsMessage>(EditBeforeRun.MessagesCollectionName);
             await collection.InsertOneAsync(this);
         }
 
         public void Read()
         {
-            var collection = db.GetCollection<clsMessage>(EditBeforeRun.MessagesCollectionName);
             var filter = Builders<clsMessage>.Filter.Eq("Id",Id);
 
             var foundMessage = collection.Find(filter).First();
@@ -50,7 +53,6 @@ namespace FileworxDTOsLibrary.RabbitMQMessages
 
         public async Task UpdateAsync()
         {
-            var collection = db.GetCollection<clsMessage>(EditBeforeRun.MessagesCollectionName);
             var filter = Builders<clsMessage>.Filter.Eq("Id", Id);
 
 
@@ -61,7 +63,6 @@ namespace FileworxDTOsLibrary.RabbitMQMessages
 
         public async Task DeleteAsync()
         {
-            var collection = db.GetCollection<clsMessage>(EditBeforeRun.MessagesCollectionName);
             var filter = Builders<clsMessage>.Filter.Eq("Id", Id);
 
             var result = await collection.DeleteOneAsync(filter);
