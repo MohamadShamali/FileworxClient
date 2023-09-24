@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FileworxDTOsLibrary\FileworxDTOsLibrary.csproj" />
     <ProjectReference Include="..\FileworxObjectClassLibrary\FileworxObjectClassLibrary\FileworxObjectClassLibrary.csproj" />
   </ItemGroup>
 

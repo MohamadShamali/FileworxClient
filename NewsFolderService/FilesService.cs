@@ -41,6 +41,9 @@ namespace NewsFolderService
             // Initialize RabbitMQ
             rabbitMQInit();
 
+            // Start Listening to Tx File Messages
+            startListeningToTxFileMessages();
+
             // Get unprocessed messages From DB
             UnprocessedTxFileMessages = await getUnprocessedTxFileMessages();
 
@@ -50,11 +53,8 @@ namespace NewsFolderService
                 await processTxFileMessage(msg);
             }
 
-            //// Start Listening to Tx File Messages
-            startListeningToTxFileMessages();
-
-            // Add watcher for all receive contacts
-            addWatcherSystem(ReceiveContacts);
+            //// Add watcher for all receive contacts
+            //addWatcherSystem(ReceiveContacts);
         }
 
         // On Stop
@@ -287,7 +287,7 @@ namespace NewsFolderService
             Guid TxGuid = Guid.NewGuid();
 
             string txtFileContent = GetTxtFileContent(txFileMessage, TxGuid);
-            string filePath = txFileMessage.Contact.TransmitLocation;
+            string filePath = txFileMessage.Contact.TransmitLocation + @"\" + TxGuid + ".txt";
 
             FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
             using (StreamWriter writer = new StreamWriter(fs))
