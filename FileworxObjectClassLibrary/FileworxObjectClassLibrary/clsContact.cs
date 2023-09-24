@@ -12,6 +12,8 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using FileworxDTOsLibrary;
+using FileworxDTOsLibrary.DTOs;
+using Type = FileworxDTOsLibrary.DTOs.Type;
 
 namespace FileworxObjectClassLibrary
 {

@@ -6,6 +6,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using FileworxDTOsLibrary;
+using FileworxDTOsLibrary.DTOs;
+using Type = FileworxDTOsLibrary.DTOs.Type;
 
 namespace FileworxObjectClassLibrary
 {

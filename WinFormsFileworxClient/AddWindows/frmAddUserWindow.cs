@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FileworxDTOsLibrary.DTOs;
+using Type = FileworxDTOsLibrary.DTOs.Type;
 
 namespace Fileworx_Client
 {
@@ -73,7 +75,7 @@ namespace Fileworx_Client
                             Username = txtUsername.Text,
                             Password = txtPassword.Text,
                             IsAdmin = ((cboIsAdmin.SelectedIndex == 0) ? false : true),
-                            Class = FileworxObjectClassLibrary.Type.User
+                            Class = Type.User
                         };
 
                         await newUser.InsertAsync();

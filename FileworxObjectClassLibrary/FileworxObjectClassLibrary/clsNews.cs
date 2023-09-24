@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.IndexManagement;
 using FileworxDTOsLibrary;
+using FileworxDTOsLibrary.DTOs;
+using Type = FileworxDTOsLibrary.DTOs.Type;
 
 namespace FileworxObjectClassLibrary
 {

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FileworxDTOsLibrary;
+using FileworxDTOsLibrary.DTOs;
+using Type = FileworxDTOsLibrary.DTOs.Type;
 
 namespace FileworxObjectClassLibrary
 {

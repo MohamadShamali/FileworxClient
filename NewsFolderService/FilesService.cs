@@ -54,7 +54,7 @@ namespace NewsFolderService
             }
 
             //// Add watcher for all receive contacts
-            //addWatcherSystem(ReceiveContacts);
+            addWatcherSystem(ReceiveContacts);
         }
 
         // On Stop
@@ -228,7 +228,8 @@ namespace NewsFolderService
                         CreatorName = "admin",
                         Name = content[3],
                         Body = content[4],
-                        Category = content[5]
+                        Category = content[5],
+                        Class = Type.News
                     };
 
                     rxFileMessage.NewsDto = news;
@@ -246,7 +247,8 @@ namespace NewsFolderService
                         CreatorName = "admin",
                         Name = content[3],
                         Body = content[4],
-                        Location = content[5]
+                        Location = content[5],
+                        Class= Type.Photo
                     };
 
                     rxFileMessage.PhotoDto = photo;

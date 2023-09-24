@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Fileworx_Client.frmFileworx;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Type = FileworxDTOsLibrary.DTOs.Type;
 
 namespace Fileworx_Client
 {
@@ -75,6 +76,9 @@ namespace Fileworx_Client
             // Initialize RabbitMQ
             fileworx.rabbitMQInit();
 
+            // Start Listening to Tx File Messages
+            fileworx.startListeningToRxFileMessages();
+
             // Get unprocessed messages From DB
             fileworx.UnprocessedRxFileMessages = await fileworx.getUnprocessedRxFileMessages();
 
@@ -86,9 +90,6 @@ namespace Fileworx_Client
 
             // Add DB files to files list
             await fileworx.addDBFilesToFilesList();
-
-            // Start Listening to Tx File Messages
-            fileworx.startListeningToRxFileMessages();
 
             // Add files to listView
             fileworx.sortFilesList(SortBy.RecentDate);
@@ -183,7 +184,7 @@ namespace Fileworx_Client
         {
             var news = new clsNews()
             {
-                Id = newsDto.Id,
+                Id = Guid.NewGuid(),
                 Description = newsDto.Description,
                 CreationDate = newsDto.CreationDate,
                 ModificationDate = newsDto.ModificationDate,
@@ -191,7 +192,7 @@ namespace Fileworx_Client
                 CreatorName = newsDto.CreatorName,
                 LastModifierId = newsDto.LastModifierId,
                 Name = newsDto.Name,
-                Class =(FileworxObjectClassLibrary.Type) (int) newsDto.Class,
+                Class =(Type) (int) newsDto.Class,
                 Body = newsDto.Body,
                 Category = newsDto.Category,
             };
@@ -211,7 +212,7 @@ namespace Fileworx_Client
                 CreatorName = photoDto.CreatorName,
                 LastModifierId = photoDto.LastModifierId,
                 Name = photoDto.Name,
-                Class = (FileworxObjectClassLibrary.Type)(int)photoDto.Class,
+                Class = (Type)(int)photoDto.Class,
                 Body = photoDto.Body,
                 Location = photoDto.Location,
             };

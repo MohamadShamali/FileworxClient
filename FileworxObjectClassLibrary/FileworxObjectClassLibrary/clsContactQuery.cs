@@ -10,6 +10,8 @@ using Elastic.Clients.Elasticsearch.QueryDsl;
 using Elastic.Clients.Elasticsearch.Fluent;
 using System.Security.Claims;
 using FileworxDTOsLibrary;
+using FileworxDTOsLibrary.DTOs;
+using Type = FileworxDTOsLibrary.DTOs.Type;
 
 namespace FileworxObjectClassLibrary
 {
