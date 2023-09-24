@@ -14,11 +14,13 @@ using Type = FileworxDTOsLibrary.DTOs.Type;
 using FileworxDTOsLibrary.RabbitMQMessages;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using SharpCompress.Common;
 
 namespace NewsFolderService
 {
     public partial class FilesService : ServiceBase
     {
+        // Lists
         public List<clsContactDto> ReceiveContacts = new List<clsContactDto>();
         public List<FileSystemWatcher> FileWatchers = new List<FileSystemWatcher>();
         public List<clsMessage> UnprocessedTxFileMessages = new List<clsMessage>();
@@ -34,7 +36,6 @@ namespace NewsFolderService
         // On Start
         protected override async void OnStart(string[] args)
         {
-
             // Get all Contacts
             ReceiveContacts = await getReceiveContactsFromTheServer();
 
@@ -53,7 +54,10 @@ namespace NewsFolderService
                 await processTxFileMessage(msg);
             }
 
-            //// Add watcher for all receive contacts
+            // process created files when the service is not running
+            await processRxFilesBeforeRunningService();
+
+            // Add watcher for all receive contacts
             addWatcherSystem(ReceiveContacts);
         }
 
@@ -69,6 +73,60 @@ namespace NewsFolderService
         }
 
         // _______________________________________________________________________
+
+        private async Task<List<clsContactDto>> getReceiveContactsFromTheServer()
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                // Send an HTTP GET request to the API endpoint
+                HttpResponseMessage response = await httpClient.GetAsync(EditBeforeRun.GetReceiveContactsApiUrl);
+
+                // Check if the response is successful (HTTP status code 200-299)
+                if (response.IsSuccessStatusCode)
+                {
+                    // Read the response content as a string
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+                    // Deserialize the JSON response
+                    List<clsContactDto> receiveContacts = JsonConvert.DeserializeObject<List<clsContactDto>>(responseBody);
+
+                    return receiveContacts;
+                }
+                else
+                {
+                    throw new Exception($"API request failed with status code: {response.StatusCode}");
+                }
+            }
+        }
+
+        private async Task processRxFilesBeforeRunningService()
+        {
+            foreach(var contact in ReceiveContacts)
+            {
+                var files = Directory.GetFiles(contact.ReceiveLocation);
+
+                foreach(var file in files)
+                {
+                    if (Path.GetExtension(file) == ".txt")
+                    {
+                        bool isNewFile = checkIfNewFile(file, contact);
+                        if (isNewFile)
+                        {
+                            clsMessage rxMessage = new clsMessage()
+                            {
+                                Id = Guid.NewGuid(),
+                                Command = MessagesCommands.RxFile
+                            };
+
+                            addFileAndTransmitterToMessage(file, contact, rxMessage);
+                            await rxMessage.InsertAsync();
+
+                            sendRxFileMessage(rxMessage);
+                        }
+                    }
+                }
+            }
+        }
 
         private void rabbitMQInit()
         {
@@ -100,31 +158,6 @@ namespace NewsFolderService
 
             // Acknowledge the message to remove it from the queue
             channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
-        }
-
-        private async Task<List<clsContactDto>> getReceiveContactsFromTheServer()
-        {
-            using (HttpClient httpClient = new HttpClient())
-            {
-                // Send an HTTP GET request to the API endpoint
-                HttpResponseMessage response = await httpClient.GetAsync(EditBeforeRun.GetReceiveContactsApiUrl);
-
-                // Check if the response is successful (HTTP status code 200-299)
-                if (response.IsSuccessStatusCode)
-                {
-                    // Read the response content as a string
-                    string responseBody = await response.Content.ReadAsStringAsync();
-
-                    // Deserialize the JSON response
-                    List<clsContactDto> receiveContacts = JsonConvert.DeserializeObject<List<clsContactDto>>(responseBody);
-
-                    return receiveContacts;
-                }
-                else
-                {
-                    throw new Exception($"API request failed with status code: {response.StatusCode}");
-                }
-            }
         }
 
         private async Task<List<clsMessage>> getUnprocessedTxFileMessages()
@@ -168,21 +201,27 @@ namespace NewsFolderService
         private async void onFileCreated(object sender, FileSystemEventArgs e)
         {
             string filePath = e.FullPath;
-            clsContactDto transmitter = (from cntct in ReceiveContacts
-                                     where (cntct.ReceiveLocation == Path.GetDirectoryName(filePath))
-                                     select cntct).FirstOrDefault();
-
-            bool isNewFile = checkIfNewFile(filePath, transmitter);
-
-            if (isNewFile)
+            if (Path.GetExtension(filePath) == ".txt")
             {
-                clsMessage rxMessage = new clsMessage() { Id=Guid.NewGuid(),
-                                                         Command=MessagesCommands.RxFile };
+                clsContactDto transmitter = (from cntct in ReceiveContacts
+                                             where (cntct.ReceiveLocation == Path.GetDirectoryName(filePath))
+                                             select cntct).FirstOrDefault();
 
-                addFileAndTransmitterToMessage(filePath, transmitter, rxMessage);
-                await rxMessage.InsertAsync();
+                bool isNewFile = checkIfNewFile(filePath, transmitter);
 
-                sendRxFileMessage(rxMessage);
+                if (isNewFile)
+                {
+                    clsMessage rxMessage = new clsMessage()
+                    {
+                        Id = Guid.NewGuid(),
+                        Command = MessagesCommands.RxFile
+                    };
+
+                    addFileAndTransmitterToMessage(filePath, transmitter, rxMessage);
+                    await rxMessage.InsertAsync();
+
+                    sendRxFileMessage(rxMessage);
+                }
             }
         }
 

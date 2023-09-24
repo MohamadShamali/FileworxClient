@@ -14,6 +14,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,23 +27,20 @@ namespace Fileworx_Client
 {
     public partial class frmFileworx : Form
     {
-        // Properties
-        private static List<clsFile> allFiles { get; set; }
-        private static List<clsNews> allNews { get; set; }
-        private static List<clsPhoto> allPhotos { get; set; }
-        public List<clsMessage> UnprocessedRxFileMessages = new List<clsMessage>();
-        private List<FileSystemWatcher> fileWatchers = new List<FileSystemWatcher>();
-
-        private bool formStarted { get; set; } = false;
-        private QuerySource querySource { get; set; } = QuerySource.ES;
-
-
-        private TabPage hiddenTabPage;
+        // Lists
+        private List<clsFile> allFiles { get; set; } = new List<clsFile>();
+        private List<clsNews> allNews { get; set; } = new List<clsNews>();
+        private List<clsPhoto> allPhotos { get; set; } = new List<clsPhoto>();
+        public List<clsMessage> UnprocessedRxFileMessages { get; set; } = new List<clsMessage>();
 
         // RabbitMQ
         private IConnection connection;
         private IModel channel;
 
+        // Other
+        private bool formStarted { get; set; } = false;
+        private QuerySource querySource { get; set; } = QuerySource.ES;
+        private TabPage hiddenTabPage { get; set; }
         private enum SortBy { RecentDate, OldestDate, Alphabetically };
 
         public frmFileworx()
@@ -108,6 +106,14 @@ namespace Fileworx_Client
             channel = connection.CreateModel();
         }
 
+        private void startListeningToRxFileMessages()
+        {
+            var consumer = new EventingBasicConsumer(channel);
+            consumer.Received += onMessageReceived;
+
+            channel.BasicConsume(queue: EditBeforeRun.RxFileQueue, autoAck: false, consumer: consumer);
+        }
+
         private async Task<List<clsMessage>> getUnprocessedRxFileMessages()
         {
             clsMessageQuery query = new clsMessageQuery();
@@ -153,14 +159,6 @@ namespace Fileworx_Client
                 clsPhoto photo = mapPhotoDtoToPhoto(rxFileMessage.PhotoDto);
                 await photo.InsertAsync();
             }
-        }
-
-        private void startListeningToRxFileMessages()
-        {
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += onMessageReceived;
-
-            channel.BasicConsume(queue: EditBeforeRun.RxFileQueue, autoAck: false, consumer: consumer);
         }
 
         private async void onMessageReceived(object model, BasicDeliverEventArgs ea)
@@ -470,10 +468,12 @@ namespace Fileworx_Client
 
             mnuMenuStrip.Enabled = true;
         }
+
         private async Task afterAddingContact()
         {
 
         }
+
         //------------------------ Event Handlers ------------------------//
         private void signOutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -659,6 +659,53 @@ namespace Fileworx_Client
             else
             {
                 btnSendTo.Enabled = false;
+            }
+        }
+
+        private void btnEnableOrDisableService_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Replace "YourServiceName" with the actual service name
+                serviceController.ServiceName = "NewsFolderService";
+
+                if (serviceController.Status == ServiceControllerStatus.Running)
+                {
+                    // The service is currently running, so ask for confirmation to stop it
+                    DialogResult result = MessageBox.Show("The Service is currently running. Do you want to stop it?",
+                        "Service Control", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        progressBar.Value = 0;
+                        serviceController.Stop();
+                        serviceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+                        progressBar.Value = 100;
+                        MessageBox.Show("Service stopped successfully.", "Service Control", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else if (serviceController.Status == ServiceControllerStatus.Stopped)
+                {
+                    // The service is currently stopped, so ask for confirmation to start it
+                    DialogResult result = MessageBox.Show("The Service is currently stopped. Do you want to start it?",
+                        "Service Control", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        progressBar.Value = 0;
+                        serviceController.Start();
+                        progressBar.Value = 100;
+                        MessageBox.Show("Service started successfully.", "Service Control", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Service is in an unknown state.", "Service Control", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Service Control", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

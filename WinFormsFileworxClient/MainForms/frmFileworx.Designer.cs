@@ -76,6 +76,10 @@
             this.cmsFiles = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmiEditFile = new System.Windows.Forms.ToolStripMenuItem();
             this.cmiRemoveFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.serviceController = new System.ServiceProcess.ServiceController();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.btnEnableOrDisableService = new System.Windows.Forms.Button();
             this.tpgPreview.SuspendLayout();
             this.tclPreview.SuspendLayout();
             this.tpgImage.SuspendLayout();
@@ -91,6 +95,7 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.cmsFiles.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtBody
@@ -245,6 +250,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.panel4);
             this.panel1.Controls.Add(this.panel3);
             this.panel1.Controls.Add(this.pnlDataSourceSelection);
             this.panel1.Controls.Add(this.picLogo);
@@ -351,7 +357,7 @@
             // signOutButton
             // 
             this.signOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.signOutButton.Location = new System.Drawing.Point(18572, 24);
+            this.signOutButton.Location = new System.Drawing.Point(20906, 24);
             this.signOutButton.Name = "signOutButton";
             this.signOutButton.Size = new System.Drawing.Size(75, 23);
             this.signOutButton.TabIndex = 84;
@@ -557,6 +563,34 @@
             this.cmiRemoveFile.Text = "Remove File";
             this.cmiRemoveFile.Click += new System.EventHandler(this.removeFileToolStripMenuItem_Click);
             // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.Color.Transparent;
+            this.panel4.Controls.Add(this.progressBar);
+            this.panel4.Controls.Add(this.btnEnableOrDisableService);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel4.Location = new System.Drawing.Point(578, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(179, 60);
+            this.panel4.TabIndex = 91;
+            // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(12, 32);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(156, 23);
+            this.progressBar.TabIndex = 92;
+            // 
+            // btnEnableOrDisableService
+            // 
+            this.btnEnableOrDisableService.Location = new System.Drawing.Point(12, 5);
+            this.btnEnableOrDisableService.Name = "btnEnableOrDisableService";
+            this.btnEnableOrDisableService.Size = new System.Drawing.Size(156, 23);
+            this.btnEnableOrDisableService.TabIndex = 91;
+            this.btnEnableOrDisableService.Text = "Enable/Disable Service";
+            this.btnEnableOrDisableService.UseVisualStyleBackColor = true;
+            this.btnEnableOrDisableService.Click += new System.EventHandler(this.btnEnableOrDisableService_Click);
+            // 
             // frmFileworx
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -589,6 +623,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.cmsFiles.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -641,5 +676,9 @@
         private System.Windows.Forms.Button btnCancelSending;
         private System.Windows.Forms.Button btnSendTo;
         private System.Windows.Forms.ToolStripMenuItem contactsListToolStripMenuItem;
+        private System.ServiceProcess.ServiceController serviceController;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.Button btnEnableOrDisableService;
     }
 }
