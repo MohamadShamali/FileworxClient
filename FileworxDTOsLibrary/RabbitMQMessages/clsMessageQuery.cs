@@ -9,31 +9,33 @@ namespace FileworxDTOsLibrary.RabbitMQMessages
 {
     public class clsMessageQuery
     {
-        public string[] QCommandsFilter { get; set; }
-        public bool[] QProcessedFilter { get; set; } = { false };
+        // MongoDB Class
 
-        private IMongoDatabase db;
-        private MongoClient client;
-        public clsMessageQuery()
-        {
-            client = new MongoClient();
-            db = client.GetDatabase(EditBeforeRun.MessagesDBName);
-        }
+        //public string[] QCommandsFilter { get; set; }
+        //public bool[] QProcessedFilter { get; set; } = { false };
 
-        public async Task<List<clsMessage>> RunAsync()
-        {
-            var collection = db.GetCollection<clsMessage>(EditBeforeRun.MessagesCollectionName);
+        //private IMongoDatabase db;
+        //private MongoClient client;
+        //public clsMessageQuery()
+        //{
+        //    client = new MongoClient();
+        //    db = client.GetDatabase(EditBeforeRun.MessagesDBName);
+        //}
 
-            var filter = Builders<clsMessage>.Filter.And(
-                Builders<clsMessage>.Filter.In("Command", QCommandsFilter),
-                Builders<clsMessage>.Filter.In("Processed", QProcessedFilter)
-            );
+        //public async Task<List<clsMessage>> RunAsync()
+        //{
+        //    var collection = db.GetCollection<clsMessage>(EditBeforeRun.MessagesCollectionName);
 
-            var cursor = await collection.FindAsync(filter);
+        //    var filter = Builders<clsMessage>.Filter.And(
+        //        Builders<clsMessage>.Filter.In("Command", QCommandsFilter),
+        //        Builders<clsMessage>.Filter.In("Processed", QProcessedFilter)
+        //    );
 
-            var messages = await cursor.ToListAsync();
-            return messages;
-        }
+        //    var cursor = await collection.FindAsync(filter);
+
+        //    var messages = await cursor.ToListAsync();
+        //    return messages;
+        //}
 
     }
 }

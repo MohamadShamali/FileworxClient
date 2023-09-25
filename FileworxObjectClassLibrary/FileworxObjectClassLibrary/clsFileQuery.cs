@@ -12,12 +12,17 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using Newtonsoft;
+using Newtonsoft.Json;
+using FileworxDTOsLibrary.RabbitMQMessages;
 
 namespace FileworxObjectClassLibrary
 {
     public class clsFileQuery
     {
-        //Constats
+        //Constants
         static string tableName = "T_FILE";
 
         // Properties
@@ -152,14 +157,7 @@ namespace FileworxObjectClassLibrary
             return allFiles;
         }
 
-        public static bool checkIfThisIsANewFile(clsFile fileToCheck, List<clsFile> allFiles)
-        {
-            clsFile similarFile = (from file in allFiles
-                                   where (file.CreationDate == fileToCheck.CreationDate)
-                                   select file).FirstOrDefault();
 
-            if (similarFile is null) return true;
-            else return false;
-        }
+
     }
 }

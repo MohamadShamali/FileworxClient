@@ -26,6 +26,7 @@ namespace NewsFolderService
         public List<FileSystemWatcher> FileWatchers = new List<FileSystemWatcher>();
         public List<clsMessage> UnprocessedTxFileMessages = new List<clsMessage>();
 
+        // RabbitMQ
         private IConnection connection;
         private IModel channel;
 
@@ -43,26 +44,14 @@ namespace NewsFolderService
             // Initialize RabbitMQ
             rabbitMQInit();
 
+            // process created files when the service is not running
+            processRxFilesBeforeRunningService();
+
             // Start Listening to Tx File Messages
             startListeningToTxFileMessages();
 
-            // Delay until update MongoDB
-            Thread.Sleep(500);
-
-            // Get unprocessed messages From DB
-            UnprocessedTxFileMessages = await getUnprocessedTxFileMessages();
-
-            // Processed all unprocessed messages
-            foreach (var msg in UnprocessedTxFileMessages)
-            {
-                await processTxFileMessage(msg);
-            }
-
             // Add watcher for all receive contacts
             addWatcherSystem(ReceiveContacts);
-
-            // process created files when the service is not running
-            await processRxFilesBeforeRunningService();
         }
 
         // On Stop
@@ -103,16 +92,14 @@ namespace NewsFolderService
             }
         }
 
-        private async Task processRxFilesBeforeRunningService()
+        private void processRxFilesBeforeRunningService()
         {
             foreach(var contact in ReceiveContacts)
             {
                 // Get Files from the oldest last time date to the recent
-                var files = Directory.GetFiles(contact.ReceiveLocation)
-                    .Select(filePath => new FileInfo(filePath))
-                    .OrderBy(fileInfo => fileInfo.LastWriteTime)
-                    .Select(fileInfo => fileInfo.FullName)
-                    .ToList();
+                var files = Directory.GetFiles(contact.ReceiveLocation).Select(filePath => new FileInfo(filePath))
+                                                                       .OrderBy(fileInfo => fileInfo.LastWriteTime)
+                                                                       .Select(fileInfo => fileInfo.FullName).ToList();
 
                 foreach (var file in files)
                 {
@@ -128,9 +115,7 @@ namespace NewsFolderService
                                 Command = MessagesCommands.RxFile,
                                 ActionDate = File.GetLastWriteTime(file)
                             };
-
                             addFileAndTransmitterToMessage(file, contact, rxMessage);
-                            await rxMessage.InsertAsync();
 
                             sendRxFileMessage(rxMessage);
                         }
@@ -154,7 +139,7 @@ namespace NewsFolderService
             channel.BasicConsume(queue: EditBeforeRun.TxFileQueue, autoAck: false, consumer: consumer);
         }
 
-        private async void onMessageReceived(object model, BasicDeliverEventArgs ea)
+        private void onMessageReceived(object model, BasicDeliverEventArgs ea)
         {
             var body = ea.Body.ToArray();
             var messageString = Encoding.UTF8.GetString(body);
@@ -164,33 +149,19 @@ namespace NewsFolderService
 
             if (message.Command == MessagesCommands.TxFile)
             {
-                await processTxFileMessage(message);
+                processTxFileMessage(message);
             }
 
             // Acknowledge the message to remove it from the queue
             channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
         }
 
-        private async Task<List<clsMessage>> getUnprocessedTxFileMessages()
-        {
-            clsMessageQuery query = new clsMessageQuery();
-            query.QCommandsFilter = new string[] { MessagesCommands.TxFile };
-
-            var m = await query.RunAsync();
-
-            return m;
-        }
-
-        private async Task processTxFileMessage (clsMessage txFileMessage)
+        private void processTxFileMessage (clsMessage txFileMessage)
         {
             if(txFileMessage.Command == MessagesCommands.TxFile)
             {
                 // Write txt file
                 TransmitFile(txFileMessage);
-
-                // Mark it as processes message in the DB
-                txFileMessage.Processed = true;
-                await txFileMessage.UpdateAsync();
             }
         }
 
@@ -209,7 +180,7 @@ namespace NewsFolderService
             }
         }
 
-        private async void onFileCreated(object sender, FileSystemEventArgs e)
+        private void onFileCreated(object sender, FileSystemEventArgs e)
         {
             string filePath = e.FullPath;
             if (Path.GetExtension(filePath) == ".txt")
@@ -228,9 +199,7 @@ namespace NewsFolderService
                         Command = MessagesCommands.RxFile,
                         ActionDate = File.GetLastWriteTime(filePath)
                     };
-
                     addFileAndTransmitterToMessage(filePath, transmitter, rxMessage);
-                    await rxMessage.InsertAsync();
 
                     sendRxFileMessage(rxMessage);
                 }
@@ -259,12 +228,34 @@ namespace NewsFolderService
 
         private void addFileAndTransmitterToMessage(string filePath, clsContactDto transmitter, clsMessage rxFileMessage)
         {
-            FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            string record = "";
 
-            string record;
-            using (StreamReader reader = new StreamReader(fs))
+
+            const int maxRetries = 5;
+            const int retryDelayMs = 200; // 0.2 second delay between retries
+
+            int retryCount = 0;
+            bool fileInUse = true;
+
+            while (fileInUse && retryCount < maxRetries)
             {
-                record = reader.ReadLine();
+                try
+                {
+                    using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        using (StreamReader reader = new StreamReader(fs))
+                        {
+                            record = reader.ReadLine();
+                            fileInUse = false; // If we successfully read the file, it's no longer in use.
+                        }
+                    }
+                }
+                catch (IOException)
+                {
+                    // File is in use, wait and then retry
+                    Thread.Sleep(retryDelayMs);
+                    retryCount++;
+                }
             }
             string[] content = record.Split(new string[] { EditBeforeRun.Separator }, StringSplitOptions.None);
 
@@ -336,7 +327,6 @@ namespace NewsFolderService
                                     routingKey: EditBeforeRun.RxFileQueue,
                                     basicProperties: null,
                                     body: body);
-
         }
 
         public void TransmitFile(clsMessage txFileMessage)

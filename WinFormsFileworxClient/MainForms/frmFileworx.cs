@@ -34,8 +34,7 @@ namespace Fileworx_Client
         public List<clsMessage> UnprocessedRxFileMessages { get; set; } = new List<clsMessage>();
 
         // RabbitMQ
-        private IConnection connection;
-        private IModel channel;
+        private MessagesHandling messagesHandling;
 
         // Other
         private bool formStarted { get; set; } = false;
@@ -71,20 +70,14 @@ namespace Fileworx_Client
             if (Global.LoggedInUser.IsAdmin) fileworx.msiUsersList.Enabled = true;
             else fileworx.msiUsersList.Enabled = false;
 
-            // Initialize RabbitMQ
-            fileworx.rabbitMQInit();
+            // Initialize Messages Handeling
+            fileworx.messagesHandling = new MessagesHandling();
 
-            // Start Listening to Tx File Messages
-            fileworx.startListeningToRxFileMessages();
+            // Configure UI action when a message is received
+            fileworx.messagesHandling.UIAction += fileworx.onMessageReceived;
 
-            // Get unprocessed messages From DB
-            fileworx.UnprocessedRxFileMessages = await fileworx.getUnprocessedRxFileMessages();
-
-            // Processed all unprocessed messages
-            foreach (var msg in fileworx.UnprocessedRxFileMessages)
-            {
-                await fileworx.processRxFileMessage(msg);
-            }
+            // Start listening to RX file Messages
+            fileworx.messagesHandling.StartListeningToRxFileMessages();
 
             // Add DB files to files list
             await fileworx.addDBFilesToFilesList();
@@ -99,149 +92,11 @@ namespace Fileworx_Client
             return fileworx;
         }
 
-        private void rabbitMQInit()
+        private async Task onMessageReceived()
         {
-            var factory = new ConnectionFactory { HostName = EditBeforeRun.HostName };
-            connection = factory.CreateConnection();
-            channel = connection.CreateModel();
-        }
-
-        private void startListeningToRxFileMessages()
-        {
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += onMessageReceived;
-
-            channel.BasicConsume(queue: EditBeforeRun.RxFileQueue, autoAck: false, consumer: consumer);
-        }
-
-        private async Task<List<clsMessage>> getUnprocessedRxFileMessages()
-        {
-            clsMessageQuery query = new clsMessageQuery();
-            query.QCommandsFilter = new string[] { MessagesCommands.RxFile };
-
-            var m = await query.RunAsync();
-
-            return m;
-        }
-
-        private async Task processRxFileMessage(clsMessage rxFileMessage)
-        {
-            if (rxFileMessage.Command == MessagesCommands.RxFile)
-            {
-                // Write txt file
-                await ReceiveFile(rxFileMessage);
-
-                // Mark it as processes message in the DB
-                rxFileMessage.Processed = true;
-                await rxFileMessage.UpdateAsync();
-
-                if (true)
-                {
-                    await refreshFilesList();
-                    autoSortFilesList();
-                    addFilesListItemsToListView();
-                }
-            }
-        }
-
-        private async Task ReceiveFile(clsMessage rxFileMessage)
-        {
-            Guid TxGuid = Guid.NewGuid();
-
-            if(rxFileMessage.NewsDto != null)
-            {
-                clsNews news = mapNewsDtoToNews(rxFileMessage.NewsDto);
-                await news.InsertAsync();
-            }
-
-            if (rxFileMessage.PhotoDto != null)
-            {
-                clsPhoto photo = mapPhotoDtoToPhoto(rxFileMessage.PhotoDto);
-                await photo.InsertAsync();
-            }
-
-            rxFileMessage.Contact.LastReceiveDate = rxFileMessage.ActionDate;
-            await mapContactDtoToContact(rxFileMessage.Contact).UpdateAsync();
-        }
-
-        private async void onMessageReceived(object model, BasicDeliverEventArgs ea)
-        {
-            var body = ea.Body.ToArray();
-            var messageString = Encoding.UTF8.GetString(body);
-
-            // Deserialize the JSON response
-            clsMessage message = JsonConvert.DeserializeObject<clsMessage>(messageString);
-
-            if (message.Command == MessagesCommands.RxFile)
-            {
-                await processRxFileMessage(message);
-            }
-
-            // Acknowledge the message to remove it from the queue
-            channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
-        }
-
-        private clsNews mapNewsDtoToNews(clsNewsDto newsDto)
-        {
-            var news = new clsNews()
-            {
-                Id = Guid.NewGuid(),
-                Description = newsDto.Description,
-                CreationDate = newsDto.CreationDate,
-                ModificationDate = newsDto.ModificationDate,
-                CreatorId = newsDto.CreatorId,
-                CreatorName = newsDto.CreatorName,
-                LastModifierId = newsDto.LastModifierId,
-                Name = newsDto.Name,
-                Class =(Type) (int) newsDto.Class,
-                Body = newsDto.Body,
-                Category = newsDto.Category,
-            };
-
-            return news;
-        }
-
-        private clsPhoto mapPhotoDtoToPhoto(clsPhotoDto photoDto)
-        {
-            var photo = new clsPhoto()
-            {
-                Id = photoDto.Id,
-                Description = photoDto.Description,
-                CreationDate = photoDto.CreationDate,
-                ModificationDate = photoDto.ModificationDate,
-                CreatorId = photoDto.CreatorId,
-                CreatorName = photoDto.CreatorName,
-                LastModifierId = photoDto.LastModifierId,
-                Name = photoDto.Name,
-                Class = (Type)(int)photoDto.Class,
-                Body = photoDto.Body,
-                Location = photoDto.Location,
-            };
-
-            return photo;
-        }
-
-        private clsContact mapContactDtoToContact(FileworxDTOsLibrary.DTOs.clsContactDto contactDto)
-        {
-            var contact = new clsContact()
-            {
-                Id = contactDto.Id,
-                Description = contactDto.Description,
-                CreationDate = contactDto.CreationDate,
-                ModificationDate = contactDto.ModificationDate,
-                CreatorId = contactDto.CreatorId,
-                CreatorName = contactDto.CreatorName,
-                LastModifierId = contactDto.LastModifierId,
-                Name = contactDto.Name,
-                Class = (Type)(int)contactDto.Class,
-                TransmitLocation = contactDto.TransmitLocation,
-                ReceiveLocation = contactDto.ReceiveLocation,
-                Direction = (ContactDirection)(int)contactDto.Direction,
-                LastReceiveDate = contactDto.LastReceiveDate,
-                Enabled = contactDto.Enabled,
-            };
-
-            return contact;
+            await refreshFilesList();
+            autoSortFilesList();
+            addFilesListItemsToListView();
         }
 
         private async Task addDBFilesToFilesList()
@@ -501,6 +356,7 @@ namespace Fileworx_Client
         }
 
         //------------------------ Event Handlers ------------------------//
+
         private void signOutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -734,5 +590,6 @@ namespace Fileworx_Client
                 MessageBox.Show($"Error: {ex.Message}", "Service Control", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
     }
 }

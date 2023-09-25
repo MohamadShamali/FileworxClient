@@ -1,5 +1,4 @@
 ﻿using FileworxDTOsLibrary.DTOs;
-using FileworxObjectClassLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Type = FileworxDTOsLibrary.DTOs.Type;
 
-namespace Fileworx_Client
+namespace FileworxObjectClassLibrary
 {
-    internal class Global
+    public static class Global
     {
-        public static clsUser LoggedInUser { get; set; }
-
-        //------------------------ Mapping ------------------------//
-
         public static clsNews MapNewsDtoToNews(clsNewsDto newsDto)
         {
             var news = new clsNews()

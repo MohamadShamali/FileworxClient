@@ -30,8 +30,8 @@ namespace Fileworx_Client.MainForms
         public event Action OnCloseAfterSend;
         public event OnFormCloseHandler AfterAddingContact;
 
-        private IConnection connection;
-        private IModel channel;
+        // RabbitMQ
+        private MessagesHandling messagesHandling;
 
         public frmContactsList()
         {
@@ -61,8 +61,8 @@ namespace Fileworx_Client.MainForms
 
             contactList.filesToSend = files;
 
-            // Initialize RabbitMQ
-            contactList.rabbitMQInit();
+            // Initialize Messages Handeling
+            contactList.messagesHandling = new MessagesHandling();
 
             // UI
             contactList.cboDataStoreSource.SelectedIndex = 1;
@@ -83,12 +83,6 @@ namespace Fileworx_Client.MainForms
             return contactList;
         }
 
-        private void rabbitMQInit()
-        {
-            var factory = new ConnectionFactory { HostName = EditBeforeRun.HostName };
-            connection = factory.CreateConnection();
-            channel = connection.CreateModel();
-        }
 
         private async Task addAllDBContactsToContactsList()
         {
@@ -260,7 +254,7 @@ namespace Fileworx_Client.MainForms
             editContactWindow.Show();
         }
 
-        private async void btnSend_Click(object sender, EventArgs e)
+        private void btnSend_Click(object sender, EventArgs e)
         {
             try
             {
@@ -273,21 +267,20 @@ namespace Fileworx_Client.MainForms
                         {
                             Id = Guid.NewGuid(),
                             Command = MessagesCommands.TxFile,
-                            Contact = mapContactToContactDto(contact),
+                            Contact = Global.MapContactToContactDto(contact),
                             ActionDate = DateTime.Now,
                         };
 
                         if(file is clsNews)
                         {
-                            txMessage.NewsDto = mapNewsToNewsDto((clsNews) file);
+                            txMessage.NewsDto = Global.MapNewsToNewsDto((clsNews) file);
                         }
 
                         else
                         {
-                            txMessage.PhotoDto = mapPhotoToPhotoDto((clsPhoto)file);
+                            txMessage.PhotoDto = Global.MapPhotoToPhotoDto((clsPhoto)file);
                         }
-                        await txMessage.InsertAsync();
-                        sendTxFileMessage(txMessage);
+                        messagesHandling.SendTxFileMessage(txMessage);
                     }
                 }
 
@@ -305,28 +298,6 @@ namespace Fileworx_Client.MainForms
             {
                 MessageBox.Show("An Error Occurred While Sending Files");
             }
-        }
-
-        private void sendTxFileMessage(clsMessage txMessage)
-        {
-            channel.QueueDeclare(queue: EditBeforeRun.TxFileQueue,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-
-            // Serialize the rxMessage object to JSON
-            var jsonMessage = JsonConvert.SerializeObject(txMessage);
-
-            // Convert the JSON string to bytes
-            var body = Encoding.UTF8.GetBytes(jsonMessage);
-
-            // Publish the JSON message
-            channel.BasicPublish(exchange: string.Empty,
-                                    routingKey: EditBeforeRun.TxFileQueue,
-                                    basicProperties: null,
-                                    body: body);
-
         }
 
         private void lvwContacts_ItemChecked(object sender, ItemCheckedEventArgs e)
@@ -374,69 +345,5 @@ namespace Fileworx_Client.MainForms
             }
         }
 
-        //------------------------ Mapping ------------------------//
-
-        private FileworxDTOsLibrary.DTOs.clsContactDto mapContactToContactDto(clsContact contact)
-        {
-            var contactDto = new FileworxDTOsLibrary.DTOs.clsContactDto()
-            {
-                Id = contact.Id,
-                Description = contact.Description,
-                CreationDate = contact.CreationDate,
-                ModificationDate = contact.ModificationDate,
-                CreatorId = contact.CreatorId,
-                CreatorName = contact.CreatorName,
-                LastModifierId = contact.LastModifierId,
-                Name = contact.Name,
-                Class = (FileworxDTOsLibrary.DTOs.Type)(int)contact.Class,
-                TransmitLocation = contact.TransmitLocation,
-                ReceiveLocation = contact.ReceiveLocation,
-                Direction = (FileworxDTOsLibrary.DTOs.Direction)(int)contact.Direction,
-                LastReceiveDate = contact.LastReceiveDate,
-                Enabled = contact.Enabled,
-            };
-
-            return contactDto;
-        }
-
-        private clsPhotoDto mapPhotoToPhotoDto(clsPhoto photo)
-        {
-            var photoDto = new clsPhotoDto()
-            {
-                Id = photo.Id,
-                Description = photo.Description,
-                CreationDate = photo.CreationDate,
-                ModificationDate = photo.ModificationDate,
-                CreatorId = photo.CreatorId,
-                CreatorName = photo.CreatorName,
-                LastModifierId = photo.LastModifierId,
-                Name = photo.Name,
-                Class = (FileworxDTOsLibrary.DTOs.Type)(int)photo.Class,
-                Body = photo.Body,
-                Location = photo.Location,
-            };
-
-            return photoDto;
-        }
-
-        private clsNewsDto mapNewsToNewsDto(clsNews news)
-        {
-            var newsDto = new clsNewsDto()
-            {
-                Id = news.Id,
-                Description = news.Description,
-                CreationDate = news.CreationDate,
-                ModificationDate = news.ModificationDate,
-                CreatorId = news.CreatorId,
-                CreatorName = news.CreatorName,
-                LastModifierId = news.LastModifierId,
-                Name = news.Name,
-                Class = (FileworxDTOsLibrary.DTOs.Type)(int)news.Class,
-                Body = news.Body,
-                Category = news.Category,
-            };
-
-            return newsDto;
-        }
     }
 }
