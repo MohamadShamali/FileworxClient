@@ -228,26 +228,71 @@ namespace NewsFolderService
 
         private void addFileAndTransmitterToMessage(string filePath, clsContactDto transmitter, clsMessage rxFileMessage)
         {
-            string record = "";
-
-
             const int maxRetries = 5;
             const int retryDelayMs = 200; // 0.2 second delay between retries
 
             int retryCount = 0;
-            bool fileInUse = true;
 
-            while (fileInUse && retryCount < maxRetries)
+            while (retryCount < maxRetries)
             {
                 try
                 {
+                    string record;
                     using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
                         using (StreamReader reader = new StreamReader(fs))
                         {
                             record = reader.ReadLine();
-                            fileInUse = false; // If we successfully read the file, it's no longer in use.
                         }
+                    }
+                    string[] content = record.Split(new string[] { EditBeforeRun.Separator }, StringSplitOptions.None);
+
+                    if (content.Length >= 6)
+                    {
+                        string format = "M/d/yyyy h:mm:ss tt";
+                        // News
+                        if (content[0] == $"{(int)Type.News}")
+                        {
+                            clsNewsDto news = new clsNewsDto()
+                            {
+                                Id = Guid.NewGuid(),
+                                Description = content[1],
+                                CreationDate = DateTime.ParseExact(content[2], format, System.Globalization.CultureInfo.InvariantCulture),
+                                CreatorId = new Guid("ffd7c672-aa84-47b1-a9a3-c7875a503708"),
+                                CreatorName = "admin",
+                                Name = content[3],
+                                Body = content[4],
+                                Category = content[5],
+                                Class = Type.News
+                            };
+
+                            rxFileMessage.NewsDto = news;
+                        }
+
+                        // Photo
+                        else
+                        {
+                            clsPhotoDto photo = new clsPhotoDto()
+                            {
+                                Id = Guid.NewGuid(),
+                                Description = content[1],
+                                CreationDate = DateTime.ParseExact(content[2], format, System.Globalization.CultureInfo.InvariantCulture),
+                                CreatorId = new Guid("ffd7c672-aa84-47b1-a9a3-c7875a503708"),
+                                CreatorName = "admin",
+                                Name = content[3],
+                                Body = content[4],
+                                Location = content[5],
+                                Class = Type.Photo
+                            };
+
+                            rxFileMessage.PhotoDto = photo;
+                        }
+                        rxFileMessage.Contact = transmitter;
+                    }
+
+                    else
+                    {
+                        throw new Exception("Bad File Format");
                     }
                 }
                 catch (IOException)
@@ -256,55 +301,6 @@ namespace NewsFolderService
                     Thread.Sleep(retryDelayMs);
                     retryCount++;
                 }
-            }
-            string[] content = record.Split(new string[] { EditBeforeRun.Separator }, StringSplitOptions.None);
-
-            if(content.Length >= 6)
-            {
-                string format = "M/d/yyyy h:mm:ss tt";
-                // News
-                if (content[0] == $"{(int)Type.News}")
-                {
-                    clsNewsDto news = new clsNewsDto()
-                    {
-                        Id = Guid.NewGuid(),
-                        Description = content[1],
-                        CreationDate = DateTime.ParseExact(content[2], format, System.Globalization.CultureInfo.InvariantCulture),
-                        CreatorId = new Guid("ffd7c672-aa84-47b1-a9a3-c7875a503708"),
-                        CreatorName = "admin",
-                        Name = content[3],
-                        Body = content[4],
-                        Category = content[5],
-                        Class = Type.News
-                    };
-
-                    rxFileMessage.NewsDto = news;
-                }
-
-                // Photo
-                else
-                {
-                    clsPhotoDto photo = new clsPhotoDto()
-                    {
-                        Id = Guid.NewGuid(),
-                        Description = content[1],
-                        CreationDate = DateTime.ParseExact(content[2], format, System.Globalization.CultureInfo.InvariantCulture),
-                        CreatorId = new Guid("ffd7c672-aa84-47b1-a9a3-c7875a503708"),
-                        CreatorName = "admin",
-                        Name = content[3],
-                        Body = content[4],
-                        Location = content[5],
-                        Class= Type.Photo
-                    };
-
-                    rxFileMessage.PhotoDto = photo;
-                }
-                rxFileMessage.Contact = transmitter;
-            }
-
-            else
-            {
-                throw new Exception("Bad File Format");
             }
         }
 

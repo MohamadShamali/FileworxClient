@@ -8,7 +8,10 @@ namespace Web_Fileworx_Client.Models
 {
     public class NewsServices
     {
+        // RabbitMQ
+        public MessagesHandling MessagesHandling { get; set; } = new MessagesHandling();
 
+        // Lists
         public List<clsNews> AllNews = new List<clsNews>();
         public List<clsPhoto> AllPhotos = new List<clsPhoto>();
         public List<clsFile> AllFiles = new List<clsFile>();

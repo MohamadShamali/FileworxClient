@@ -52,9 +52,18 @@
 
 
         <div class="flex justify-between">
-            <div class="flex-grow w-[500px] mr-10 max-h-[700px] overflow-y-auto">
-                <FilesList OnRowClick="OnRowClick"> </FilesList>
-            </div>
+            @if (refreshList)
+            {
+                <div class="flex-grow w-[500px] mr-10 max-h-[700px] overflow-y-auto">
+                    <FilesList OnRowClick="OnRowClick"> </FilesList>
+                </div>
+            }
+            else
+            {
+                <div class="flex-grow w-[500px] mr-10 max-h-[700px] overflow-y-auto">
+                    <FilesList OnRowClick="OnRowClick"> </FilesList>
+                </div>
+            }
 
 
             <div class="flex-grow w-full ">
@@ -111,6 +120,8 @@
     private bool showFileErrorWindow = false;
     private bool showSendToWindow = false;
 
+    private bool refreshList = false;
+
     private bool disableSendToButton = true;
 
     // Details Appearance
@@ -125,8 +136,11 @@
         // Add all contacts to the service
         await contactsServices.AddDBContactsToContactsList();
 
-        // Receive Files From Contacts and store them in the DB
-        await addContactsReceivedFilesToDB();
+        // UI Action
+        newsServices.MessagesHandling.UIAction += refreshFilesList;
+
+        // Start Listening to RX File Messages
+        newsServices.MessagesHandling.StartListeningToRxFileMessages();
 
         // Add DB Files to AllFiles List
         await newsServices.AddDBFilesToFilesList();
@@ -134,13 +148,10 @@
         // Refresh list
         await refreshFilesList();
 
-        // Add watcher system
-        contactsServices.addWatcherSystem(OnFileCreated);
-
         // Pass refresh ListView to the serviece
         newsServices.RefreshFilesListRequested += refreshFilesList;
 
-    // UI
+        // UI
         newsServices.SelectedFile = newsServices.AllFiles[0];
     }
 
@@ -236,7 +247,24 @@
         {
             foreach (var file in newsServices.CheckedFiles)
             {
-                contact.TransmitFile(file);
+                clsMessage txMessage = new clsMessage()
+                {
+                        Id = Guid.NewGuid(),
+                        Command = MessagesCommands.TxFile,
+                        Contact = Global.MapContactToContactDto(contact),
+                        ActionDate = DateTime.Now,
+                };
+
+                if (file is clsNews)
+                {
+                    txMessage.NewsDto = Global.MapNewsToNewsDto((clsNews)file);
+                }
+
+                else
+                {
+                    txMessage.PhotoDto = Global.MapPhotoToPhotoDto((clsPhoto)file);
+                }
+                newsServices.MessagesHandling.SendTxFileMessage(txMessage);
             }
         }
 
@@ -338,64 +366,13 @@
         }
     }
 
-    private async void OnFileCreated(object sender, FileSystemEventArgs e)
-    {
-        clsContact? contact = (from cntct in contactsServices.AllContacts
-                               where (cntct.ReceiveLocation == Path.GetDirectoryName(e.FullPath))
-                               select cntct).FirstOrDefault();
-
-        if (contact != null)
-        {
-            int maxAttempts = 3;
-            int delayMilliseconds = 200; // Adjust the delay as needed
-
-            for (int attempt = 1; attempt <= maxAttempts; attempt++)
-            {
-                try
-                {
-                    // Try to access the file
-                    using (FileStream fs = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                    {
-                        // File is accessible, proceed with processing
-                        await contact.ReceiveFileIfItsNew(e.FullPath);
-                        await newsServices.RefreshFilesList();
-                        await refreshFilesList();
-                        break; // Exit the loop on success
-                    }
-                }
-                catch (IOException)
-                {
-                    // File is not accessible yet, wait and then retry
-                    if (attempt < maxAttempts)
-                    {
-                        await Task.Delay(delayMilliseconds);
-                    }
-                    else
-                    {
-                        throw new Exception("Error while Receiving File");
-                    }
-                }
-            }
-        }
-    }
-
     //------------------------ Other Methods ------------------------//
 
     private async Task refreshFilesList()
     {
+        refreshList = !refreshList;
         // Notify Blazor to re-render the component on the UI thread
         await InvokeAsync(new Action(() => StateHasChanged()));
-    }
-
-    private async Task addContactsReceivedFilesToDB()
-    {
-        foreach (var contact in contactsServices.AllContacts)
-        {
-            if ((contact.Direction & ContactDirection.Receive) == ContactDirection.Receive)
-            {
-                await contact.ReceiveAllFiles();
-            }
-        }
     }
 
     //------------------------ Classes and Disable ------------------------//
@@ -449,4 +426,3 @@
     }
 
 }
-

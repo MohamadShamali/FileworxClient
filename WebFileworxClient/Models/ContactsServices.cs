@@ -28,20 +28,5 @@ namespace Web_Fileworx_Client.Models
             await AddDBContactsToContactsList();
         }
 
-        public void addWatcherSystem(Action<object, FileSystemEventArgs> createdHandler)
-        {
-            foreach (var contact in AllContacts)
-            {
-                if ((contact.Direction & (ContactDirection.Receive)) == ContactDirection.Receive)
-                {
-                    FileSystemWatcher watcher = new FileSystemWatcher(contact.ReceiveLocation);
-                    watcher.Created += new FileSystemEventHandler(createdHandler);
-                    watcher.EnableRaisingEvents = true;
-
-                    fileWatchers.Add(watcher);
-                }
-            }
-        }
-
     }
 }

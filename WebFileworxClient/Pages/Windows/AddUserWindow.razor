@@ -113,7 +113,7 @@
                     Username = username,
                     Password = password,
                     IsAdmin = (isAdmin == "True") ? true : false,
-                    Class = FileworxObjectClassLibrary.Type.User
+                    Class = Type.User
                 };
 
             await OnSave.InvokeAsync(addedUser);

@@ -71,7 +71,7 @@
     private string description;
     private string body;
     private string newImagePath;
-        IBrowserFile Ifile =null;
+    IBrowserFile Ifile =null;
 
     // Display
     private bool showInvalidInfo = false;
@@ -163,7 +163,7 @@
                     Body = body,
                     CreatorId = usersServices.LoggedInUser.Id,
                     CreatorName = usersServices.LoggedInUser.CreatorName,
-                    Class = FileworxObjectClassLibrary.Type.Photo
+                    Class = Type.Photo
                 };
             await addedPhoto.ReadAsync();
             await OnSave.InvokeAsync(addedPhoto);
