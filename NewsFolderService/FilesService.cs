@@ -16,19 +16,20 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SharpCompress.Common;
 using System.Threading;
+using MassTransit;
+using System.Runtime.Remoting.Messaging;
 
 namespace NewsFolderService
 {
-    public partial class FilesService : ServiceBase
+    public partial class FilesService : ServiceBase, IConsumer<clsMessage>
     {
         // Lists
         public List<clsContactDto> ReceiveContacts = new List<clsContactDto>();
         public List<FileSystemWatcher> FileWatchers = new List<FileSystemWatcher>();
         public List<clsMessage> UnprocessedTxFileMessages = new List<clsMessage>();
 
-        // RabbitMQ
-        private IConnection connection;
-        private IModel channel;
+        // MassTransit
+        private IBusControl busControl;
 
         public FilesService()
         {
@@ -41,22 +42,25 @@ namespace NewsFolderService
             // Get all Contacts
             ReceiveContacts = await getReceiveContactsFromTheServer();
 
-            // Initialize RabbitMQ
-            rabbitMQInit();
+            // Configure MassTransit with RabbitMQ settings
+            configRabbitMQ();
 
-            // process created files when the service is not running
+            // Process created files when the service is not running
             processRxFilesBeforeRunningService();
 
             // Start Listening to Tx File Messages
-            startListeningToTxFileMessages();
+            await startListeningToTxFileQueueMessages();
 
             // Add watcher for all receive contacts
             addWatcherSystem(ReceiveContacts);
         }
 
         // On Stop
-        protected override void OnStop()
+        protected async override void OnStop()
         {
+            // Stop control bus
+            await busControl.StopAsync();
+
             // Dispose All Watchers
             foreach (var watcher in FileWatchers)
             {
@@ -124,44 +128,59 @@ namespace NewsFolderService
             }
         }
 
-        private void rabbitMQInit()
+        private void configRabbitMQ()
         {
-            var factory = new ConnectionFactory { HostName = EditBeforeRun.HostName };
-            connection = factory.CreateConnection();
-            channel = connection.CreateModel();
-        }
-
-        private void startListeningToTxFileMessages()
-        {
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += onMessageReceived;
-
-            channel.BasicConsume(queue: EditBeforeRun.TxFileQueue, autoAck: false, consumer: consumer);
-        }
-
-        private void onMessageReceived(object model, BasicDeliverEventArgs ea)
-        {
-            var body = ea.Body.ToArray();
-            var messageString = Encoding.UTF8.GetString(body);
-
-            // Deserialize the JSON response
-            clsMessage message = JsonConvert.DeserializeObject<clsMessage>(messageString);
-
-            if (message.Command == MessagesCommands.TxFile)
+            busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
-                processTxFileMessage(message);
-            }
+                cfg.Host(new Uri(EditBeforeRun.HostAddress), h =>
+                {
+                    h.Username("guest");
+                    h.Password("guest");
+                });
+            });
+        }
 
-            // Acknowledge the message to remove it from the queue
-            channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+        private async Task startListeningToTxFileQueueMessages()
+        {
+            busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
+            {
+                cfg.Host(new Uri(EditBeforeRun.HostAddress), h =>
+                {
+                    h.Username("guest");
+                    h.Password("guest");
+                });
+
+                cfg.ReceiveEndpoint(EditBeforeRun.TxFileQueue, endpoint =>
+                {
+                    endpoint.Consumer<FilesService>();
+                });
+            });
+
+            await busControl.StartAsync();
         }
 
         private void processTxFileMessage (clsMessage txFileMessage)
         {
+            // write txt file
             if(txFileMessage.Command == MessagesCommands.TxFile)
             {
-                // Write txt file
-                TransmitFile(txFileMessage);
+                Guid TxGuid = Guid.NewGuid();
+
+                string txtFileContent = GetTxtFileContent(txFileMessage, TxGuid);
+                string filePath = txFileMessage.Contact.TransmitLocation + @"\" + TxGuid + ".txt";
+
+                FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
+                using (StreamWriter writer = new StreamWriter(fs))
+                {
+                    writer.Write(txtFileContent);
+                }
+                fs.Close();
+
+                // Copy Image
+                if (txFileMessage.PhotoDto != null)
+                {
+                    File.Copy(txFileMessage.PhotoDto.Location, txFileMessage.Contact.TransmitLocation + @"\" + TxGuid + Path.GetExtension(txFileMessage.PhotoDto.Location));
+                }
             }
         }
 
@@ -230,10 +249,10 @@ namespace NewsFolderService
         {
             const int maxRetries = 5;
             const int retryDelayMs = 200; // 0.2 second delay between retries
-
+            bool rety = true;
             int retryCount = 0;
 
-            while (retryCount < maxRetries)
+            while (rety && (retryCount < maxRetries))
             {
                 try
                 {
@@ -294,9 +313,11 @@ namespace NewsFolderService
                     {
                         throw new Exception("Bad File Format");
                     }
+                    rety = false;
                 }
                 catch (IOException)
                 {
+                    rety=true;
                     // File is in use, wait and then retry
                     Thread.Sleep(retryDelayMs);
                     retryCount++;
@@ -304,46 +325,11 @@ namespace NewsFolderService
             }
         }
 
-        private void sendRxFileMessage(clsMessage rxMessage)
+        private async void sendRxFileMessage(clsMessage rxMessage)
         {
-            channel.QueueDeclare(queue: EditBeforeRun.RxFileQueue,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-
-            // Serialize the rxMessage object to JSON
-            var jsonMessage = JsonConvert.SerializeObject(rxMessage);
-
-            // Convert the JSON string to bytes
-            var body = Encoding.UTF8.GetBytes(jsonMessage);
-
-            // Publish the JSON message
-            channel.BasicPublish(exchange: string.Empty,
-                                    routingKey: EditBeforeRun.RxFileQueue,
-                                    basicProperties: null,
-                                    body: body);
-        }
-
-        public void TransmitFile(clsMessage txFileMessage)
-        {
-            Guid TxGuid = Guid.NewGuid();
-
-            string txtFileContent = GetTxtFileContent(txFileMessage, TxGuid);
-            string filePath = txFileMessage.Contact.TransmitLocation + @"\" + TxGuid + ".txt";
-
-            FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
-            using (StreamWriter writer = new StreamWriter(fs))
-            {
-                writer.Write(txtFileContent);
-            }
-            fs.Close();
-
-            // Copy Image
-            if(txFileMessage.PhotoDto != null)
-            {
-                File.Copy(txFileMessage.PhotoDto.Location, txFileMessage.Contact.TransmitLocation + @"\" + TxGuid + Path.GetExtension(txFileMessage.PhotoDto.Location));
-            }
+            // Publishing a message to RxFile Queue 
+            var sendEndpoint = await busControl.GetSendEndpoint(new Uri($"{EditBeforeRun.HostAddress}/{EditBeforeRun.RxFileQueue}"));
+            await sendEndpoint.Send(rxMessage);
         }
 
         // _______________________________________________________________________
@@ -371,5 +357,21 @@ namespace NewsFolderService
             }
         }
 
+        public Task Consume(ConsumeContext<clsMessage> context)
+        {    
+            var message = context.Message;
+
+            // Handle the received message here
+            if (message.Command == MessagesCommands.TxFile)
+            {
+                processTxFileMessage(message);
+                return Task.CompletedTask;
+            }
+
+            else
+            {
+                throw new Exception($"Unsupported command: {message.Command}");
+            }
+        }
     }
 }

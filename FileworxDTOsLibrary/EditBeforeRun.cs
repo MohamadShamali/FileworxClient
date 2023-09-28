@@ -21,6 +21,7 @@
 
         // RabbitMQ
         public static string HostName = "localhost";
+        public static string HostAddress = "rabbitmq://localhost";
         public static string RxFileQueue = "RxFile";
         public static string TxFileQueue = "TxFile";
 

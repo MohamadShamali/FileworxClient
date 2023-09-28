@@ -137,7 +137,7 @@
         await contactsServices.AddDBContactsToContactsList();
 
         // UI Action
-        newsServices.MessagesHandling.UIAction += refreshFilesList;
+        Global.UIAction += refreshFilesList;
 
         // Start Listening to RX File Messages
         newsServices.MessagesHandling.StartListeningToRxFileMessages();

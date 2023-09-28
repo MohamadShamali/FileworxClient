@@ -72,9 +72,10 @@ namespace Fileworx_Client
 
             // Initialize Messages Handeling
             fileworx.messagesHandling = new MessagesHandling();
+            fileworx.messagesHandling.name = "Moh";
 
             // Configure UI action when a message is received
-            fileworx.messagesHandling.UIAction += fileworx.onMessageReceived;
+            FileworxObjectClassLibrary.Global.UIAction += fileworx.onMessageReceived;
 
             // Start listening to RX file Messages
             fileworx.messagesHandling.StartListeningToRxFileMessages();

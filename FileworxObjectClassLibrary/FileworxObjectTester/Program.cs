@@ -6,7 +6,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using FileworxObjectClassLibrary;
-using Type = FileworxObjectClassLibrary.Type;
 using Newtonsoft.Json;
 using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.RabbitMQMessages;

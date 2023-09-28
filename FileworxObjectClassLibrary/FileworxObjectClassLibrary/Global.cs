@@ -8,8 +8,10 @@ using Type = FileworxDTOsLibrary.DTOs.Type;
 
 namespace FileworxObjectClassLibrary
 {
+    public delegate Task AsyncHandler();
     public static class Global
     {
+        public static AsyncHandler UIAction;
         public static clsNews MapNewsDtoToNews(clsNewsDto newsDto)
         {
             var news = new clsNews()

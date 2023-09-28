@@ -254,7 +254,7 @@ namespace Fileworx_Client.MainForms
             editContactWindow.Show();
         }
 
-        private void btnSend_Click(object sender, EventArgs e)
+        private async void btnSend_Click(object sender, EventArgs e)
         {
             try
             {
@@ -280,7 +280,7 @@ namespace Fileworx_Client.MainForms
                         {
                             txMessage.PhotoDto = Global.MapPhotoToPhotoDto((clsPhoto)file);
                         }
-                        messagesHandling.SendTxFileMessage(txMessage);
+                        await messagesHandling.SendTxFileMessage(txMessage);
                     }
                 }
 

@@ -12,58 +12,50 @@ using FileworxDTOsLibrary.RabbitMQMessages;
 using Elastic.Clients.Elasticsearch.Graph;
 using System.Threading.Channels;
 using System;
+using MassTransit;
 
 namespace FileworxObjectClassLibrary
 {
-    public delegate Task AsyncHandler();
-    public class MessagesHandling
+    public class MessagesHandling: IConsumer<clsMessage>
     {
-        // RabbitMQ
-        private static IConnection connection;
-        private static IModel channel;
-
-        public event AsyncHandler UIAction;
+        // MassTransit
+        private IBusControl busControl;
+        public string name = "default";
 
         public MessagesHandling()
         {
-            rabbitMQInit();
+            configRabbitMQ();
         }
 
-        private static void rabbitMQInit()
+        private void configRabbitMQ()
         {
-            var factory = new ConnectionFactory { HostName = EditBeforeRun.HostName };
-            connection = factory.CreateConnection();
-            channel = connection.CreateModel();
-        }
-
-        public void StartListeningToRxFileMessages()
-        {
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += onMessageReceived;
-
-            channel.BasicConsume(queue: EditBeforeRun.RxFileQueue, autoAck: false, consumer: consumer);
-        }
-
-        private async void onMessageReceived(object model, BasicDeliverEventArgs ea)
-        {
-            var body = ea.Body.ToArray();
-            var messageString = Encoding.UTF8.GetString(body);
-
-            // Deserialize the JSON response
-            clsMessage message = JsonConvert.DeserializeObject<clsMessage>(messageString);
-
-            if (message.Command == MessagesCommands.RxFile)
+            busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
-                await processRxFileMessage(message);
-            }
+                cfg.Host(new Uri(EditBeforeRun.HostAddress), h =>
+                {
+                    h.Username("guest");
+                    h.Password("guest");
+                });
+            });
+        }
 
-            if(UIAction != null)
+        public async void StartListeningToRxFileMessages()
+        {
+            busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
-                await UIAction();
-            }
+                cfg.Host(new Uri(EditBeforeRun.HostAddress), h =>
+                {
+                    h.Username("guest");
+                    h.Password("guest");
+                });
 
-            // Acknowledge the message to remove it from the queue
-            channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                cfg.ReceiveEndpoint(EditBeforeRun.RxFileQueue, endpoint =>
+                {
+                    endpoint.Consumer<MessagesHandling>();
+                });
+            });
+
+            await busControl.StartAsync();
         }
 
         private async Task processRxFileMessage(clsMessage rxFileMessage)
@@ -72,6 +64,11 @@ namespace FileworxObjectClassLibrary
             {
                 // Write txt file
                 await ReceiveFile(rxFileMessage);
+            }
+
+            if(Global.UIAction != null)
+            {
+                await Global.UIAction();
             }
         }
 
@@ -95,26 +92,28 @@ namespace FileworxObjectClassLibrary
             await Global.MapContactDtoToContact(rxFileMessage.Contact).UpdateAsync();
         }
 
-        public void SendTxFileMessage(clsMessage txMessage)
+        public async Task SendTxFileMessage(clsMessage txMessage)
         {
-            channel.QueueDeclare(queue: EditBeforeRun.TxFileQueue,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-
-            // Serialize the rxMessage object to JSON
-            var jsonMessage = JsonConvert.SerializeObject(txMessage);
-
-            // Convert the JSON string to bytes
-            var body = Encoding.UTF8.GetBytes(jsonMessage);
-
-            // Publish the JSON message
-            channel.BasicPublish(exchange: string.Empty,
-                                    routingKey: EditBeforeRun.TxFileQueue,
-                                    basicProperties: null,
-                                    body: body);
+            // Publishing a message to RxFile Queue 
+            var sendEndpoint = await busControl.GetSendEndpoint(new Uri($"{EditBeforeRun.HostAddress}/{EditBeforeRun.TxFileQueue}"));
+            await sendEndpoint.Send(txMessage);
 
         }
+
+        public async Task Consume(ConsumeContext<clsMessage> context)
+        {
+            var message = context.Message;
+
+            // Handle the received message here
+            if (message.Command == MessagesCommands.RxFile)
+            {
+                await processRxFileMessage(message);
+            }
+
+            else
+            {
+                throw new Exception($"Unsupported command: {message.Command}");
+            }
+        }     
     }
 }

@@ -4,8 +4,4 @@
 	  <TargetFrameworks>net4.8;net7.0</TargetFrameworks>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MongoDB.Driver" Version="2.21.0" />
-  </ItemGroup>
-
 </Project>
