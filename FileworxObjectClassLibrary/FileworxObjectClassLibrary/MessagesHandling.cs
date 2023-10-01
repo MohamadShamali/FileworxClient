@@ -9,10 +9,9 @@ using Newtonsoft;
 using Newtonsoft.Json;
 using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.RabbitMQMessages;
-using Elastic.Clients.Elasticsearch.Graph;
-using System.Threading.Channels;
 using System;
 using MassTransit;
+using FileworxObjectClassLibrary.Models;
 
 namespace FileworxObjectClassLibrary
 {
@@ -20,18 +19,17 @@ namespace FileworxObjectClassLibrary
     {
         // MassTransit
         private IBusControl busControl;
-        public string name = "default";
 
         public MessagesHandling()
         {
-            configRabbitMQ();
+            configMassTransitBus();
         }
 
-        private void configRabbitMQ()
+        private void configMassTransitBus()
         {
             busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
-                cfg.Host(new Uri(EditBeforeRun.HostAddress), h =>
+                cfg.Host(new Uri(EditBeforeRun.RabbitMQHostAddress), h =>
                 {
                     h.Username("guest");
                     h.Password("guest");
@@ -43,11 +41,6 @@ namespace FileworxObjectClassLibrary
         {
             busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
-                cfg.Host(new Uri(EditBeforeRun.HostAddress), h =>
-                {
-                    h.Username("guest");
-                    h.Password("guest");
-                });
 
                 cfg.ReceiveEndpoint(EditBeforeRun.RxFileQueue, endpoint =>
                 {
@@ -95,7 +88,7 @@ namespace FileworxObjectClassLibrary
         public async Task SendTxFileMessage(clsMessage txMessage)
         {
             // Publishing a message to RxFile Queue 
-            var sendEndpoint = await busControl.GetSendEndpoint(new Uri($"{EditBeforeRun.HostAddress}/{EditBeforeRun.TxFileQueue}"));
+            var sendEndpoint = await busControl.GetSendEndpoint(new Uri($"{EditBeforeRun.RabbitMQHostAddress}/{EditBeforeRun.TxFileQueue}"));
             await sendEndpoint.Send(txMessage);
 
         }

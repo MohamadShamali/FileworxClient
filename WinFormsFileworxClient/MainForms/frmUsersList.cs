@@ -1,4 +1,5 @@
-﻿using FileworxObjectClassLibrary;
+﻿using FileworxObjectClassLibrary.Models;
+using FileworxObjectClassLibrary.Queries;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,7 +27,7 @@ namespace Fileworx_Client
             var usersList = new frmUsersList();
 
             // UI
-            usersList.lblName.Text = Global.LoggedInUser.Name;
+            usersList.lblName.Text = WinFormsGlobal.LoggedInUser.Name;
             usersList.cboDataStoreSource.SelectedIndex = 1;
 
             await usersList.addDBUsersToUsersList();
@@ -130,7 +131,7 @@ namespace Fileworx_Client
         {
             clsUser selectedUser = findSelectedUser();
 
-            if ((selectedUser.Username == "admin") && (Global.LoggedInUser.Username != "admin"))
+            if ((selectedUser.Username == "admin") && (WinFormsGlobal.LoggedInUser.Username != "admin"))
             {
                 MessageBox.Show("You don't have the access to edit the admin", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

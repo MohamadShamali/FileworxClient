@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
+using FileworxObjectClassLibrary.Models;
 
-namespace FileworxObjectClassLibrary
+namespace FileworxObjectClassLibrary.Others
 {
     public class IndexCreation
     {
@@ -70,7 +71,7 @@ namespace FileworxObjectClassLibrary
             var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
             var client = new ElasticsearchClient(settings);
 
-            var response1 = await client.Indices.CreateAsync<clsContactDto>("contacts", c => c.Mappings(map => map.Properties(p => p.Text(t => t.Id)
+            var response1 = await client.Indices.CreateAsync<clsContactElasticDto>("contacts", c => c.Mappings(map => map.Properties(p => p.Text(t => t.Id)
                                                                                                                                   .Text(t => t.Description)
                                                                                                                                   .Date(d => d.CreationDate)
                                                                                                                                   .Date(d => d.ModificationDate)
@@ -79,7 +80,7 @@ namespace FileworxObjectClassLibrary
                                                                                                                                   .Text(t => t.LastModifierId)
                                                                                                                                   .Text(t => t.LastModifierName)
                                                                                                                                   .Text(t => t.Name)
-                                                                                                                                  .Text (t => t.Class)
+                                                                                                                                  .Text(t => t.Class)
                                                                                                                                   .Text(t => t.TransmitLocation)
                                                                                                                                   .Text(t => t.ReceiveLocation)
                                                                                                                                   .IntegerNumber(t => t.Direction) // Here
@@ -157,14 +158,14 @@ namespace FileworxObjectClassLibrary
                                         .Size(10000)
                                         .Query(q => q.Term(t => t.Class, Type.News)));
 
-                var News = response.Documents;
-                foreach (var news in News)
-                {
-                    return news.Name;
-                }
+            var News = response.Documents;
+            foreach (var news in News)
+            {
+                return news.Name;
+            }
 
             return "s";
-            
+
         }
     }
 }

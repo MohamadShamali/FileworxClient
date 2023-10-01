@@ -1,5 +1,4 @@
-﻿using FileworxObjectClassLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
+using FileworxObjectClassLibrary.Models;
 
 namespace Fileworx_Client
 {
@@ -70,8 +70,8 @@ namespace Fileworx_Client
                     {
                         Id = Guid.NewGuid(),
                         Description = txtDescription.Text,
-                        CreatorId = Global.LoggedInUser.Id,
-                        CreatorName = Global.LoggedInUser.Name,
+                        CreatorId = WinFormsGlobal.LoggedInUser.Id,
+                        CreatorName = WinFormsGlobal.LoggedInUser.Name,
                         Name = txtTitle.Text,
                         Body = txtBody.Text,
                         Location = imagePathTextBox.Text,
@@ -94,8 +94,8 @@ namespace Fileworx_Client
                 {
 
                     photoToEdit.Description = txtDescription.Text;
-                    photoToEdit.LastModifierId = Global.LoggedInUser.Id;
-                    photoToEdit.LastModifierName = Global.LoggedInUser.Name;
+                    photoToEdit.LastModifierId = WinFormsGlobal.LoggedInUser.Id;
+                    photoToEdit.LastModifierName = WinFormsGlobal.LoggedInUser.Name;
                     photoToEdit.Name = txtTitle.Text;
                     photoToEdit.Body = txtBody.Text;
                     photoToEdit.Location = imagePathTextBox.Text;

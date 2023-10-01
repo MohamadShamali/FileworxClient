@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
+using FileworxObjectClassLibrary.Models;
 
-namespace FileworxObjectClassLibrary
+namespace FileworxObjectClassLibrary.Queries
 {
     public class clsUserQuery
     {
@@ -43,37 +44,37 @@ namespace FileworxObjectClassLibrary
 
                                 user.Id = new Guid(reader[0].ToString());
 
-                                if (!String.IsNullOrEmpty(reader[1].ToString()))
+                                if (!string.IsNullOrEmpty(reader[1].ToString()))
                                 {
-                                    user.Description = (reader[1].ToString());
+                                    user.Description = reader[1].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[2].ToString()))
+                                if (!string.IsNullOrEmpty(reader[2].ToString()))
                                 {
                                     user.CreationDate = DateTime.Parse(reader[2].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[3].ToString()))
+                                if (!string.IsNullOrEmpty(reader[3].ToString()))
                                 {
                                     user.ModificationDate = DateTime.Parse(reader[3].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[4].ToString()))
+                                if (!string.IsNullOrEmpty(reader[4].ToString()))
                                 {
                                     user.CreatorId = new Guid(reader[4].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[5].ToString()))
+                                if (!string.IsNullOrEmpty(reader[5].ToString()))
                                 {
                                     user.LastModifierId = new Guid(reader[5].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[6].ToString()))
+                                if (!string.IsNullOrEmpty(reader[6].ToString()))
                                 {
                                     user.Name = reader[6].ToString();
                                 }
 
-                                int c = (int)(reader[7]);
+                                int c = (int)reader[7];
                                 user.Class = (Type)c;
 
                                 user.Username = reader[8].ToString();
@@ -88,8 +89,8 @@ namespace FileworxObjectClassLibrary
                     }
                 }
             }
-            
-            if(Source == QuerySource.ES)
+
+            if (Source == QuerySource.ES)
             {
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
@@ -110,7 +111,7 @@ namespace FileworxObjectClassLibrary
                 }
             }
 
-            
+
             return allUsers;
         }
     }

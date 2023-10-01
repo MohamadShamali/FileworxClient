@@ -10,7 +10,7 @@ using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
 
-namespace FileworxObjectClassLibrary
+namespace FileworxObjectClassLibrary.Models
 {
     public class clsBusinessObject
     {
@@ -23,9 +23,9 @@ namespace FileworxObjectClassLibrary
         public DateTime CreationDate { get; set; }
         public DateTime ModificationDate { get; set; }
         public Guid CreatorId { get; set; }
-        public string CreatorName { get; set; } = String.Empty;
+        public string CreatorName { get; set; } = string.Empty;
         public Guid? LastModifierId { get; set; } = null;
-        public string LastModifierName { get; set; } = String.Empty;
+        public string LastModifierName { get; set; } = string.Empty;
         public string Name { get; set; }
         public Type Class { get; set; }
         public clsBusinessObject()
@@ -36,11 +36,11 @@ namespace FileworxObjectClassLibrary
 
         public virtual async Task InsertAsync()
         {
-            if (Description != null) 
-            Description = Description.Replace("'", "''");
+            if (Description != null)
+                Description = Description.Replace("'", "''");
             Name = Name.Replace("'", "''");
-            if(CreationDate == DateTime.MinValue)
-            CreationDate = DateTime.Now;
+            if (CreationDate == DateTime.MinValue)
+                CreationDate = DateTime.Now;
 
             ModificationDate = CreationDate;
             LastModifierId = CreatorId;
@@ -48,7 +48,7 @@ namespace FileworxObjectClassLibrary
             {
                 await connection.OpenAsync();
                 string query = $"INSERT INTO {tableName}(ID, C_DESCRIPTION, C_CREATIONDATE, C_CREATORID, C_NAME, C_CLASSID)" +
-                               $"VALUES('{Id}', '{Description}', '{CreationDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{CreatorId}', '{Name}', {(int) Class});";
+                               $"VALUES('{Id}', '{Description}', '{CreationDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{CreatorId}', '{Name}', {(int)Class});";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     await command.ExecuteNonQueryAsync();
@@ -72,7 +72,7 @@ namespace FileworxObjectClassLibrary
         public virtual async Task UpdateAsync()
         {
             if (Description != null)
-            Description = Description.Replace("'", "''");
+                Description = Description.Replace("'", "''");
             Name = Name.Replace("'", "''");
             ModificationDate = DateTime.Now;
 
@@ -93,19 +93,19 @@ namespace FileworxObjectClassLibrary
 
         public virtual async Task ReadAsync()
         {
-            if(Id == null)
+            if (Id == null)
             {
                 throw new Exception("No ID was specified");
             }
             using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
-                                        //0
+                //0
                 string query = $"SELECT b1.C_DESCRIPTION, b1.C_CREATIONDATE, b1.C_MODIFICATIONDATE, b1.C_CREATORID, b2.C_NAME AS CREATORNAME , " +
                                $"b1.C_LASTMODIFIERID, b3.C_NAME AS LASTMODIFIERNAME, b1.C_NAME , b1.C_CLASSID " +
                                $"FROM {tableName} b1 " +
                                $"Left JOIN {tableName} b2 ON b1.C_CREATORID = b2.ID " +
-                               $"Left JOIN {tableName} b3 ON b1.C_LASTMODIFIERID = b3.ID "+
+                               $"Left JOIN {tableName} b3 ON b1.C_LASTMODIFIERID = b3.ID " +
                                $"WHERE b1.ID= '{Id}';";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -115,48 +115,48 @@ namespace FileworxObjectClassLibrary
                         if (reader.Read())
                         {
 
-                            if (!String.IsNullOrEmpty(reader[0].ToString()))
+                            if (!string.IsNullOrEmpty(reader[0].ToString()))
                             {
-                                Description = (reader[0].ToString());
+                                Description = reader[0].ToString();
                             }
 
-                            if (!String.IsNullOrEmpty(reader[1].ToString()))
+                            if (!string.IsNullOrEmpty(reader[1].ToString()))
                             {
                                 CreationDate = DateTime.Parse(reader[1].ToString());
                             }
 
-                            if (!String.IsNullOrEmpty(reader[2].ToString()))
+                            if (!string.IsNullOrEmpty(reader[2].ToString()))
                             {
                                 ModificationDate = DateTime.Parse(reader[2].ToString());
                             }
 
-                            if (!String.IsNullOrEmpty(reader[3].ToString()))
+                            if (!string.IsNullOrEmpty(reader[3].ToString()))
                             {
                                 CreatorId = new Guid(reader[3].ToString());
                             }
 
-                            if (!String.IsNullOrEmpty(reader[4].ToString()))
+                            if (!string.IsNullOrEmpty(reader[4].ToString()))
                             {
                                 CreatorName = reader[4].ToString();
                             }
 
-                            if (!String.IsNullOrEmpty(reader[5].ToString()))
+                            if (!string.IsNullOrEmpty(reader[5].ToString()))
                             {
                                 LastModifierId = new Guid(reader[5].ToString());
                             }
 
 
-                            if (!String.IsNullOrEmpty(reader[6].ToString()))
+                            if (!string.IsNullOrEmpty(reader[6].ToString()))
                             {
                                 LastModifierName = reader[6].ToString();
                             }
 
-                            if (!String.IsNullOrEmpty(reader[7].ToString()))
+                            if (!string.IsNullOrEmpty(reader[7].ToString()))
                             {
                                 Name = reader[7].ToString();
                             }
 
-                            int c = (int)(reader[8]);
+                            int c = (int)reader[8];
                             Class = (Type)c;
                         }
                     }
@@ -188,48 +188,48 @@ namespace FileworxObjectClassLibrary
                         if (reader.Read())
                         {
 
-                            if (!String.IsNullOrEmpty(reader[0].ToString()))
+                            if (!string.IsNullOrEmpty(reader[0].ToString()))
                             {
-                                Description = (reader[0].ToString());
+                                Description = reader[0].ToString();
                             }
 
-                            if (!String.IsNullOrEmpty(reader[1].ToString()))
+                            if (!string.IsNullOrEmpty(reader[1].ToString()))
                             {
                                 CreationDate = DateTime.Parse(reader[1].ToString());
                             }
 
-                            if (!String.IsNullOrEmpty(reader[2].ToString()))
+                            if (!string.IsNullOrEmpty(reader[2].ToString()))
                             {
                                 ModificationDate = DateTime.Parse(reader[2].ToString());
                             }
 
-                            if (!String.IsNullOrEmpty(reader[3].ToString()))
+                            if (!string.IsNullOrEmpty(reader[3].ToString()))
                             {
                                 CreatorId = new Guid(reader[3].ToString());
                             }
 
-                            if (!String.IsNullOrEmpty(reader[4].ToString()))
+                            if (!string.IsNullOrEmpty(reader[4].ToString()))
                             {
                                 CreatorName = reader[4].ToString();
                             }
 
-                            if (!String.IsNullOrEmpty(reader[5].ToString()))
+                            if (!string.IsNullOrEmpty(reader[5].ToString()))
                             {
                                 LastModifierId = new Guid(reader[5].ToString());
                             }
 
 
-                            if (!String.IsNullOrEmpty(reader[6].ToString()))
+                            if (!string.IsNullOrEmpty(reader[6].ToString()))
                             {
                                 LastModifierName = reader[6].ToString();
                             }
 
-                            if (!String.IsNullOrEmpty(reader[7].ToString()))
+                            if (!string.IsNullOrEmpty(reader[7].ToString()))
                             {
                                 Name = reader[7].ToString();
                             }
 
-                            int c = (int)(reader[8]);
+                            int c = (int)reader[8];
                             Class = (Type)c;
                         }
                     }

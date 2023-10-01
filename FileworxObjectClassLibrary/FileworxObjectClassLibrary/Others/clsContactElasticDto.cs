@@ -3,27 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileworxObjectClassLibrary.Models;
 
-namespace FileworxObjectClassLibrary
+namespace FileworxObjectClassLibrary.Others
 {
-    public class clsContactDto : clsBusinessObject 
+    public class clsContactElasticDto : clsBusinessObject
     {
         // Properties
-        public string TransmitLocation { get; set; } = String.Empty;
-        public string ReceiveLocation { get; set; } = String.Empty;
+        public string TransmitLocation { get; set; } = string.Empty;
+        public string ReceiveLocation { get; set; } = string.Empty;
         public int Direction { get; set; }
         public DateTime LastReceiveDate { get; set; }
         public bool Enabled { get; set; } = true;
 
 
         // For Reading from Elastic
-        public clsContactDto()
+        public clsContactElasticDto()
         {
-             
+
         }
 
         // For writing to Elastic
-        public clsContactDto(clsContact contact)
+        public clsContactElasticDto(clsContact contact)
         {
             Id = contact.Id;
             Description = contact.Description;
@@ -35,9 +36,9 @@ namespace FileworxObjectClassLibrary
             LastModifierName = contact.LastModifierName;
             Name = contact.Name;
             Class = contact.Class;
-            TransmitLocation= contact.TransmitLocation;
-            ReceiveLocation= contact.ReceiveLocation;
-            Direction = (int) contact.Direction;
+            TransmitLocation = contact.TransmitLocation;
+            ReceiveLocation = contact.ReceiveLocation;
+            Direction = (int)contact.Direction;
             LastReceiveDate = contact.LastReceiveDate;
             Enabled = contact.Enabled;
         }

@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
+using FileworxObjectClassLibrary.Models;
 
-namespace FileworxObjectClassLibrary
+namespace FileworxObjectClassLibrary.Queries
 {
     public class clsNewsQuery
     {
@@ -24,7 +25,7 @@ namespace FileworxObjectClassLibrary
         {
             List<clsNews> allNews = new List<clsNews>();
 
-            if(Source == QuerySource.DB)
+            if (Source == QuerySource.DB)
             {
                 using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
                 {
@@ -48,48 +49,48 @@ namespace FileworxObjectClassLibrary
 
                                 news.Id = new Guid(reader[0].ToString());
 
-                                if (!String.IsNullOrEmpty(reader[1].ToString()))
+                                if (!string.IsNullOrEmpty(reader[1].ToString()))
                                 {
-                                    news.Description = (reader[1].ToString());
+                                    news.Description = reader[1].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[2].ToString()))
+                                if (!string.IsNullOrEmpty(reader[2].ToString()))
                                 {
                                     news.CreationDate = DateTime.Parse(reader[2].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[3].ToString()))
+                                if (!string.IsNullOrEmpty(reader[3].ToString()))
                                 {
                                     news.ModificationDate = DateTime.Parse(reader[3].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[4].ToString()))
+                                if (!string.IsNullOrEmpty(reader[4].ToString()))
                                 {
                                     news.CreatorId = new Guid(reader[4].ToString());
                                 }
 
 
-                                if (!String.IsNullOrEmpty(reader[5].ToString()))
+                                if (!string.IsNullOrEmpty(reader[5].ToString()))
                                 {
                                     news.CreatorName = reader[5].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[6].ToString()))
+                                if (!string.IsNullOrEmpty(reader[6].ToString()))
                                 {
                                     news.LastModifierId = new Guid(reader[6].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[7].ToString()))
+                                if (!string.IsNullOrEmpty(reader[7].ToString()))
                                 {
                                     news.LastModifierName = reader[7].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[8].ToString()))
+                                if (!string.IsNullOrEmpty(reader[8].ToString()))
                                 {
                                     news.Name = reader[8].ToString();
                                 }
 
-                                int c = (int)(reader[9]);
+                                int c = (int)reader[9];
                                 news.Class = (Type)c;
 
                                 news.Body = reader[10].ToString();
@@ -101,9 +102,9 @@ namespace FileworxObjectClassLibrary
                         }
                     }
                 }
-            }   
-           
-            if(Source == QuerySource.ES)
+            }
+
+            if (Source == QuerySource.ES)
             {
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);

@@ -10,7 +10,7 @@ using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
 
-namespace FileworxObjectClassLibrary
+namespace FileworxObjectClassLibrary.Models
 {
     public enum LogInValidationResult
     {
@@ -63,7 +63,7 @@ namespace FileworxObjectClassLibrary
             {
                 if (ex.Number == 2627) // Error number for unique constraint violation
                 {
-                    throw new InvalidOperationException ("Duplicated username", ex);
+                    throw new InvalidOperationException("Duplicated username", ex);
                 }
 
                 else
@@ -147,8 +147,8 @@ namespace FileworxObjectClassLibrary
                         if (reader.Read())
                         {
                             Id = new Guid(reader[0].ToString());
-                            Username = (reader[1].ToString());
-                            Password = (reader[2].ToString());
+                            Username = reader[1].ToString();
+                            Password = reader[2].ToString();
                             IsAdmin = (bool)reader[3];
                         }
                     }
@@ -172,8 +172,8 @@ namespace FileworxObjectClassLibrary
                         if (reader.Read())
                         {
                             Id = new Guid(reader[0].ToString());
-                            Username = (reader[1].ToString());
-                            Password = (reader[2].ToString());
+                            Username = reader[1].ToString();
+                            Password = reader[2].ToString();
                             IsAdmin = (bool)reader[3];
                         }
                     }
@@ -186,7 +186,7 @@ namespace FileworxObjectClassLibrary
         {
 
             Username = Username.Replace("'", "''");
-            
+
             using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 connection.Open();
@@ -200,7 +200,7 @@ namespace FileworxObjectClassLibrary
                     {
                         if (reader.Read())
                         {
-                            string storedPassword = (reader[0].ToString());
+                            string storedPassword = reader[0].ToString();
 
                             if (storedPassword == Password)
                             {

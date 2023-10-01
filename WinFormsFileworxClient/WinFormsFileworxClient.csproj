@@ -108,7 +108,7 @@
     <Compile Include="MainForms\frmFileworx.Designer.cs">
       <DependentUpon>frmFileworx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Global.cs" />
+    <Compile Include="WinFormsGlobal.cs" />
     <Compile Include="MainForms\frmLogIn.cs">
       <SubType>Form</SubType>
     </Compile>

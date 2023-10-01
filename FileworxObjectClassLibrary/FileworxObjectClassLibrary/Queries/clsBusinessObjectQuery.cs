@@ -9,9 +9,12 @@ using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
 
-namespace FileworxObjectClassLibrary
+
+using FileworxObjectClassLibrary.Models;
+
+namespace FileworxObjectClassLibrary.Queries
 {
-    public enum QuerySource {DB, ES}
+    public enum QuerySource { DB, ES }
     public class clsBusinessObjectQuery
     {
         // Constants
@@ -27,13 +30,13 @@ namespace FileworxObjectClassLibrary
 
 
             // DB
-            if(Source == QuerySource.DB)
+            if (Source == QuerySource.DB)
             {
                 string[] conditions = new string[QClasses.Length];
-                for(int i = 0; i< QClasses.Length; i++)
+                for (int i = 0; i < QClasses.Length; i++)
                 {
-                    conditions[i]= $"b1.C_CLASSID = {(int)QClasses[i]} OR ";
-                    if (i == (QClasses.Length - 1)) conditions[i]= conditions[i].Replace("OR", "");
+                    conditions[i] = $"b1.C_CLASSID = {(int)QClasses[i]} OR ";
+                    if (i == QClasses.Length - 1) conditions[i] = conditions[i].Replace("OR", "");
                 }
 
                 string conditionsString = string.Join(" ", conditions);
@@ -59,47 +62,47 @@ namespace FileworxObjectClassLibrary
 
                                 businessObject.Id = new Guid(reader[0].ToString());
 
-                                if (!String.IsNullOrEmpty(reader[1].ToString()))
+                                if (!string.IsNullOrEmpty(reader[1].ToString()))
                                 {
-                                    businessObject.Description = (reader[1].ToString());
+                                    businessObject.Description = reader[1].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[2].ToString()))
+                                if (!string.IsNullOrEmpty(reader[2].ToString()))
                                 {
                                     businessObject.CreationDate = DateTime.Parse(reader[2].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[3].ToString()))
+                                if (!string.IsNullOrEmpty(reader[3].ToString()))
                                 {
                                     businessObject.ModificationDate = DateTime.Parse(reader[3].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[4].ToString()))
+                                if (!string.IsNullOrEmpty(reader[4].ToString()))
                                 {
                                     businessObject.CreatorId = new Guid(reader[4].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[5].ToString()))
+                                if (!string.IsNullOrEmpty(reader[5].ToString()))
                                 {
                                     businessObject.CreatorName = reader[5].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[6].ToString()))
+                                if (!string.IsNullOrEmpty(reader[6].ToString()))
                                 {
                                     businessObject.LastModifierId = new Guid(reader[6].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[7].ToString()))
+                                if (!string.IsNullOrEmpty(reader[7].ToString()))
                                 {
                                     businessObject.LastModifierName = reader[7].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[8].ToString()))
+                                if (!string.IsNullOrEmpty(reader[8].ToString()))
                                 {
                                     businessObject.Name = reader[8].ToString();
                                 }
 
-                                int c = (int)(reader[9]);
+                                int c = (int)reader[9];
                                 businessObject.Class = (Type)c;
 
                                 allBusinessObjects.Add(businessObject);
@@ -118,7 +121,7 @@ namespace FileworxObjectClassLibrary
                 for (int i = 0; i < shouldQueries.Length; i++)
                 {
                     int capturedIndex = i; // Capture the current value of i
-                    shouldQueries[i] = (bs => bs.Term(p => p.Class, QClasses[capturedIndex].ToString().ToLower()));
+                    shouldQueries[i] = bs => bs.Term(p => p.Class, QClasses[capturedIndex].ToString().ToLower());
                 }
 
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));

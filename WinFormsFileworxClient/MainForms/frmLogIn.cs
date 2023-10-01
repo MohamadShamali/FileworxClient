@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using FileworxObjectClassLibrary;
+using FileworxObjectClassLibrary.Models;
 
 namespace Fileworx_Client
 {
@@ -34,7 +34,7 @@ namespace Fileworx_Client
             {
                 await tryingToLogIn.ReadAsync();
 
-                Global.LoggedInUser = tryingToLogIn;
+                WinFormsGlobal.LoggedInUser = tryingToLogIn;
 
                 // Open Fileworx form in a new thread
                 frmFileworx fileworx = await frmFileworx.Create();

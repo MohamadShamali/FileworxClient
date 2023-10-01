@@ -3,6 +3,8 @@ using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using FileworxDTOsLibrary.RabbitMQMessages;
 using FileworxObjectClassLibrary;
+using FileworxObjectClassLibrary.Models;
+using FileworxObjectClassLibrary.Queries;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -57,7 +59,7 @@ namespace Fileworx_Client
             {
                 fileworx.splitContainer1.SplitterDistance = desiredHeight;
             }
-            fileworx.lblName.Text = Global.LoggedInUser.Name;
+            fileworx.lblName.Text = WinFormsGlobal.LoggedInUser.Name;
             fileworx.WindowState = FormWindowState.Maximized;
             fileworx.cboDataStoreSource.SelectedIndex = 1;
             fileworx.btnSendTo.Enabled = false;
@@ -67,7 +69,7 @@ namespace Fileworx_Client
             fileworx.tclPreview.TabPages.RemoveAt(1);
 
             //Admin access
-            if (Global.LoggedInUser.IsAdmin) fileworx.msiUsersList.Enabled = true;
+            if (WinFormsGlobal.LoggedInUser.IsAdmin) fileworx.msiUsersList.Enabled = true;
             else fileworx.msiUsersList.Enabled = false;
 
             // Initialize Messages Handeling

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileworxObjectClassLibrary
+namespace FileworxObjectClassLibrary.Models
 {
-    public class clsFile: clsBusinessObject
+    public class clsFile : clsBusinessObject
     {
         // Constants
         static string tableName = "T_FILE";
@@ -22,7 +22,7 @@ namespace FileworxObjectClassLibrary
 
             Body.Replace(Environment.NewLine, "\\n");
             Body = Body.Replace("'", "''");
-            
+
             using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
             {
                 await connection.OpenAsync();
@@ -73,9 +73,9 @@ namespace FileworxObjectClassLibrary
                         if (reader.Read())
                         {
 
-                            if (!String.IsNullOrEmpty(reader[1].ToString()))
+                            if (!string.IsNullOrEmpty(reader[1].ToString()))
                             {
-                                Body = (reader[1].ToString());
+                                Body = reader[1].ToString();
                             }
                         }
                     }
@@ -100,9 +100,9 @@ namespace FileworxObjectClassLibrary
                         if (reader.Read())
                         {
 
-                            if (!String.IsNullOrEmpty(reader[1].ToString()))
+                            if (!string.IsNullOrEmpty(reader[1].ToString()))
                             {
-                                Body = (reader[1].ToString());
+                                Body = reader[1].ToString();
                             }
                         }
                     }

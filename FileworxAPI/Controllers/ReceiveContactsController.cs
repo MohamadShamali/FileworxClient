@@ -1,4 +1,5 @@
-﻿using FileworxObjectClassLibrary;
+﻿using FileworxObjectClassLibrary.Models;
+using FileworxObjectClassLibrary.Queries;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

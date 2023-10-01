@@ -12,12 +12,9 @@ using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
 using FileworxDTOsLibrary.RabbitMQMessages;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using SharpCompress.Common;
 using System.Threading;
 using MassTransit;
-using System.Runtime.Remoting.Messaging;
+
 
 namespace NewsFolderService
 {
@@ -43,7 +40,7 @@ namespace NewsFolderService
             ReceiveContacts = await getReceiveContactsFromTheServer();
 
             // Configure MassTransit with RabbitMQ settings
-            configRabbitMQ();
+            configMassTransitBus();
 
             // Process created files when the service is not running
             processRxFilesBeforeRunningService();
@@ -128,11 +125,11 @@ namespace NewsFolderService
             }
         }
 
-        private void configRabbitMQ()
+        private void configMassTransitBus()
         {
             busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
-                cfg.Host(new Uri(EditBeforeRun.HostAddress), h =>
+                cfg.Host(new Uri(EditBeforeRun.RabbitMQHostAddress), h =>
                 {
                     h.Username("guest");
                     h.Password("guest");
@@ -144,12 +141,6 @@ namespace NewsFolderService
         {
             busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
-                cfg.Host(new Uri(EditBeforeRun.HostAddress), h =>
-                {
-                    h.Username("guest");
-                    h.Password("guest");
-                });
-
                 cfg.ReceiveEndpoint(EditBeforeRun.TxFileQueue, endpoint =>
                 {
                     endpoint.Consumer<FilesService>();
@@ -328,8 +319,25 @@ namespace NewsFolderService
         private async void sendRxFileMessage(clsMessage rxMessage)
         {
             // Publishing a message to RxFile Queue 
-            var sendEndpoint = await busControl.GetSendEndpoint(new Uri($"{EditBeforeRun.HostAddress}/{EditBeforeRun.RxFileQueue}"));
+            var sendEndpoint = await busControl.GetSendEndpoint(new Uri($"{EditBeforeRun.RabbitMQHostAddress}/{EditBeforeRun.RxFileQueue}"));
             await sendEndpoint.Send(rxMessage);
+        }
+
+        public Task Consume(ConsumeContext<clsMessage> context)
+        {
+            var message = context.Message;
+
+            // Handle the received message here
+            if (message.Command == MessagesCommands.TxFile)
+            {
+                processTxFileMessage(message);
+                return Task.CompletedTask;
+            }
+
+            else
+            {
+                throw new Exception($"Unsupported command: {message.Command}");
+            }
         }
 
         // _______________________________________________________________________
@@ -354,23 +362,6 @@ namespace NewsFolderService
                        $"{txFileMessage.NewsDto.Name}{EditBeforeRun.Separator}" +
                        $"{txFileMessage.NewsDto.Body}{EditBeforeRun.Separator}" +
                        $"{txFileMessage.NewsDto.Category}";
-            }
-        }
-
-        public Task Consume(ConsumeContext<clsMessage> context)
-        {    
-            var message = context.Message;
-
-            // Handle the received message here
-            if (message.Command == MessagesCommands.TxFile)
-            {
-                processTxFileMessage(message);
-                return Task.CompletedTask;
-            }
-
-            else
-            {
-                throw new Exception($"Unsupported command: {message.Command}");
             }
         }
     }

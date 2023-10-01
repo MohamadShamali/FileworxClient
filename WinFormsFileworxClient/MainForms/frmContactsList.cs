@@ -3,6 +3,8 @@ using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using FileworxDTOsLibrary.RabbitMQMessages;
 using FileworxObjectClassLibrary;
+using FileworxObjectClassLibrary.Models;
+using FileworxObjectClassLibrary.Queries;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
@@ -267,18 +269,18 @@ namespace Fileworx_Client.MainForms
                         {
                             Id = Guid.NewGuid(),
                             Command = MessagesCommands.TxFile,
-                            Contact = Global.MapContactToContactDto(contact),
+                            Contact = WinFormsGlobal.MapContactToContactDto(contact),
                             ActionDate = DateTime.Now,
                         };
 
                         if(file is clsNews)
                         {
-                            txMessage.NewsDto = Global.MapNewsToNewsDto((clsNews) file);
+                            txMessage.NewsDto = WinFormsGlobal.MapNewsToNewsDto((clsNews) file);
                         }
 
                         else
                         {
-                            txMessage.PhotoDto = Global.MapPhotoToPhotoDto((clsPhoto)file);
+                            txMessage.PhotoDto = WinFormsGlobal.MapPhotoToPhotoDto((clsPhoto)file);
                         }
                         await messagesHandling.SendTxFileMessage(txMessage);
                     }

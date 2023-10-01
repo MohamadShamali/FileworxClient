@@ -17,8 +17,9 @@ using RabbitMQ.Client.Events;
 using Newtonsoft;
 using Newtonsoft.Json;
 using FileworxDTOsLibrary.RabbitMQMessages;
+using FileworxObjectClassLibrary.Models;
 
-namespace FileworxObjectClassLibrary
+namespace FileworxObjectClassLibrary.Queries
 {
     public class clsFileQuery
     {
@@ -39,7 +40,7 @@ namespace FileworxObjectClassLibrary
                 for (int i = 0; i < QClasses.Length; i++)
                 {
                     conditions[i] = $"b1.C_CLASSID = {(int)QClasses[i]} OR ";
-                    if (i == (QClasses.Length - 1)) conditions[i] = conditions[i].Replace("OR", "");
+                    if (i == QClasses.Length - 1) conditions[i] = conditions[i].Replace("OR", "");
                 }
 
                 string conditionsString = string.Join(" ", conditions);
@@ -66,48 +67,48 @@ namespace FileworxObjectClassLibrary
 
                                 file.Id = new Guid(reader[0].ToString());
 
-                                if (!String.IsNullOrEmpty(reader[1].ToString()))
+                                if (!string.IsNullOrEmpty(reader[1].ToString()))
                                 {
-                                    file.Description = (reader[1].ToString());
+                                    file.Description = reader[1].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[2].ToString()))
+                                if (!string.IsNullOrEmpty(reader[2].ToString()))
                                 {
                                     file.CreationDate = DateTime.Parse(reader[2].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[3].ToString()))
+                                if (!string.IsNullOrEmpty(reader[3].ToString()))
                                 {
                                     file.ModificationDate = DateTime.Parse(reader[3].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[4].ToString()))
+                                if (!string.IsNullOrEmpty(reader[4].ToString()))
                                 {
                                     file.CreatorId = new Guid(reader[4].ToString());
                                 }
 
 
-                                if (!String.IsNullOrEmpty(reader[5].ToString()))
+                                if (!string.IsNullOrEmpty(reader[5].ToString()))
                                 {
                                     file.CreatorName = reader[5].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[6].ToString()))
+                                if (!string.IsNullOrEmpty(reader[6].ToString()))
                                 {
                                     file.LastModifierId = new Guid(reader[6].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[7].ToString()))
+                                if (!string.IsNullOrEmpty(reader[7].ToString()))
                                 {
                                     file.LastModifierName = reader[7].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[8].ToString()))
+                                if (!string.IsNullOrEmpty(reader[8].ToString()))
                                 {
                                     file.Name = reader[8].ToString();
                                 }
 
-                                int c = (int)(reader[9]);
+                                int c = (int)reader[9];
                                 file.Class = (Type)c;
 
                                 file.Body = reader[10].ToString();
@@ -126,7 +127,7 @@ namespace FileworxObjectClassLibrary
                 for (int i = 0; i < shouldQueries.Length; i++)
                 {
                     int capturedIndex = i; // Capture the current value of i
-                    shouldQueries[i] = (bs => bs.Term(p => p.Class, QClasses[capturedIndex].ToString().ToLower()));
+                    shouldQueries[i] = bs => bs.Term(p => p.Class, QClasses[capturedIndex].ToString().ToLower());
                 }
 
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));

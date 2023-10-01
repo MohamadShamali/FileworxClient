@@ -1,5 +1,4 @@
-﻿using FileworxObjectClassLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
+using FileworxObjectClassLibrary.Models;
 
 namespace Fileworx_Client
 {
@@ -69,8 +69,8 @@ namespace Fileworx_Client
                         clsUser newUser = new clsUser()
                         {
                             Id = Guid.NewGuid(),
-                            CreatorId = Global.LoggedInUser.Id,
-                            CreatorName = Global.LoggedInUser.Name,
+                            CreatorId = WinFormsGlobal.LoggedInUser.Id,
+                            CreatorName = WinFormsGlobal.LoggedInUser.Name,
                             Name = txtName.Text,
                             Username = txtUsername.Text,
                             Password = txtPassword.Text,
@@ -113,8 +113,8 @@ namespace Fileworx_Client
                 {
                     try
                     {
-                        userToEdit.LastModifierId = Global.LoggedInUser.Id;
-                        userToEdit.LastModifierName = Global.LoggedInUser.Name;
+                        userToEdit.LastModifierId = WinFormsGlobal.LoggedInUser.Id;
+                        userToEdit.LastModifierName = WinFormsGlobal.LoggedInUser.Name;
                         userToEdit.Name = txtName.Text;
                         userToEdit.Username = txtUsername.Text;
                         userToEdit.Password = txtPassword.Text;

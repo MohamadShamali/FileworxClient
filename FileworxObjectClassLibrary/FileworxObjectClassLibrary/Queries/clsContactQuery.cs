@@ -12,8 +12,10 @@ using System.Security.Claims;
 using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
+using FileworxObjectClassLibrary.Models;
+using FileworxObjectClassLibrary.Others;
 
-namespace FileworxObjectClassLibrary
+namespace FileworxObjectClassLibrary.Queries
 {
     public class clsContactQuery
     {
@@ -22,7 +24,7 @@ namespace FileworxObjectClassLibrary
 
         // Properties
         public QuerySource Source { get; set; }
-        public ContactDirection[] QDirection { get; set; } = {ContactDirection.Transmit, ContactDirection.Receive, (ContactDirection.Transmit | ContactDirection.Receive) };
+        public ContactDirection[] QDirection { get; set; } = { ContactDirection.Transmit, ContactDirection.Receive, ContactDirection.Transmit | ContactDirection.Receive };
 
         public async Task<List<clsContact>> RunAsync()
         {
@@ -33,8 +35,8 @@ namespace FileworxObjectClassLibrary
                 string[] conditions = new string[QDirection.Length];
                 for (int i = 0; i < QDirection.Length; i++)
                 {
-                    conditions[i] = $"T_CONTACT.C_CONTACTDIRECTIONID = {(int) QDirection[i]} OR ";
-                    if (i == (QDirection.Length - 1)) conditions[i]=conditions[i].Replace("OR", "");
+                    conditions[i] = $"T_CONTACT.C_CONTACTDIRECTIONID = {(int)QDirection[i]} OR ";
+                    if (i == QDirection.Length - 1) conditions[i] = conditions[i].Replace("OR", "");
                 }
 
                 string conditionsString = string.Join(" ", conditions);
@@ -60,58 +62,58 @@ namespace FileworxObjectClassLibrary
 
                                 contact.Id = new Guid(reader[0].ToString());
 
-                                if (!String.IsNullOrEmpty(reader[1].ToString()))
+                                if (!string.IsNullOrEmpty(reader[1].ToString()))
                                 {
-                                    contact.Description = (reader[1].ToString());
+                                    contact.Description = reader[1].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[2].ToString()))
+                                if (!string.IsNullOrEmpty(reader[2].ToString()))
                                 {
                                     contact.CreationDate = DateTime.Parse(reader[2].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[3].ToString()))
+                                if (!string.IsNullOrEmpty(reader[3].ToString()))
                                 {
                                     contact.ModificationDate = DateTime.Parse(reader[3].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[4].ToString()))
+                                if (!string.IsNullOrEmpty(reader[4].ToString()))
                                 {
                                     contact.CreatorId = new Guid(reader[4].ToString());
                                 }
 
 
-                                if (!String.IsNullOrEmpty(reader[5].ToString()))
+                                if (!string.IsNullOrEmpty(reader[5].ToString()))
                                 {
                                     contact.CreatorName = reader[5].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[6].ToString()))
+                                if (!string.IsNullOrEmpty(reader[6].ToString()))
                                 {
                                     contact.LastModifierId = new Guid(reader[6].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[7].ToString()))
+                                if (!string.IsNullOrEmpty(reader[7].ToString()))
                                 {
                                     contact.LastModifierName = reader[7].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[8].ToString()))
+                                if (!string.IsNullOrEmpty(reader[8].ToString()))
                                 {
                                     contact.Name = reader[8].ToString();
                                 }
 
-                                int c = (int)(reader[9]);
+                                int c = (int)reader[9];
                                 contact.Class = (Type)c;
 
                                 contact.TransmitLocation = reader[10].ToString();
                                 contact.ReceiveLocation = reader[11].ToString();
-                                int d = (int)(reader[12]);
+                                int d = (int)reader[12];
                                 contact.Direction = (ContactDirection)d;
 
                                 contact.LastReceiveDate = DateTime.Parse(reader[13].ToString());
 
-                                contact.Enabled = (bool) reader[14];
+                                contact.Enabled = (bool)reader[14];
 
                                 allContacts.Add(contact);
                             }
@@ -122,22 +124,22 @@ namespace FileworxObjectClassLibrary
 
             if (Source == QuerySource.ES)
             {
-                var shouldQueries = new Action<QueryDescriptor<clsContactDto>>[QDirection.Length];
+                var shouldQueries = new Action<QueryDescriptor<clsContactElasticDto>>[QDirection.Length];
 
                 for (int i = 0; i < shouldQueries.Length; i++)
                 {
                     int capturedIndex = i; // Capture the current value of i
-                    shouldQueries[i] = (bs => bs.Term(p => p.Direction, (int) QDirection[capturedIndex]));
+                    shouldQueries[i] = bs => bs.Term(p => p.Direction, (int)QDirection[capturedIndex]);
                 }
 
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);
 
-                var response = await client.SearchAsync<clsContactDto>(s => s
+                var response = await client.SearchAsync<clsContactElasticDto>(s => s
                                             .Index(EditBeforeRun.ElasticContactsIndex)
                                             .From(0)
                                             .Size(10000)
-                                            .Query(q => q.Bool( b=> b.
+                                            .Query(q => q.Bool(b => b.
                                              Should(shouldQueries))));
 
                 if (response.IsValidResponse)
@@ -157,7 +159,7 @@ namespace FileworxObjectClassLibrary
             return allContacts;
         }
 
-        private clsContact dtoMap (clsContactDto dto)
+        private clsContact dtoMap(clsContactElasticDto dto)
         {
             var contact = new clsContact()
             {
@@ -173,7 +175,7 @@ namespace FileworxObjectClassLibrary
                 Class = dto.Class,
                 TransmitLocation = dto.TransmitLocation,
                 ReceiveLocation = dto.ReceiveLocation,
-                Direction = (ContactDirection) dto.Direction,
+                Direction = (ContactDirection)dto.Direction,
                 LastReceiveDate = dto.LastReceiveDate,
                 Enabled = dto.Enabled,
             };

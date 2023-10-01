@@ -1,4 +1,6 @@
 ﻿using FileworxObjectClassLibrary;
+using FileworxObjectClassLibrary.Models;
+using FileworxObjectClassLibrary.Queries;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

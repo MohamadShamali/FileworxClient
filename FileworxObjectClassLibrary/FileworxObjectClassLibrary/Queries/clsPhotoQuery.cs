@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
+using FileworxObjectClassLibrary.Models;
 
-namespace FileworxObjectClassLibrary
+namespace FileworxObjectClassLibrary.Queries
 {
     public class clsPhotoQuery
     {
@@ -24,7 +25,7 @@ namespace FileworxObjectClassLibrary
 
             List<clsPhoto> allPhotos = new List<clsPhoto>();
 
-            if(Source == QuerySource.DB)
+            if (Source == QuerySource.DB)
             {
                 using (SqlConnection connection = new SqlConnection(EditBeforeRun.connectionString))
                 {
@@ -49,48 +50,48 @@ namespace FileworxObjectClassLibrary
 
                                 photo.Id = new Guid(reader[0].ToString());
 
-                                if (!String.IsNullOrEmpty(reader[1].ToString()))
+                                if (!string.IsNullOrEmpty(reader[1].ToString()))
                                 {
-                                    photo.Description = (reader[1].ToString());
+                                    photo.Description = reader[1].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[2].ToString()))
+                                if (!string.IsNullOrEmpty(reader[2].ToString()))
                                 {
                                     photo.CreationDate = DateTime.Parse(reader[2].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[3].ToString()))
+                                if (!string.IsNullOrEmpty(reader[3].ToString()))
                                 {
                                     photo.ModificationDate = DateTime.Parse(reader[3].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[4].ToString()))
+                                if (!string.IsNullOrEmpty(reader[4].ToString()))
                                 {
                                     photo.CreatorId = new Guid(reader[4].ToString());
                                 }
 
 
-                                if (!String.IsNullOrEmpty(reader[5].ToString()))
+                                if (!string.IsNullOrEmpty(reader[5].ToString()))
                                 {
                                     photo.CreatorName = reader[5].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[6].ToString()))
+                                if (!string.IsNullOrEmpty(reader[6].ToString()))
                                 {
                                     photo.LastModifierId = new Guid(reader[6].ToString());
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[7].ToString()))
+                                if (!string.IsNullOrEmpty(reader[7].ToString()))
                                 {
                                     photo.LastModifierName = reader[7].ToString();
                                 }
 
-                                if (!String.IsNullOrEmpty(reader[8].ToString()))
+                                if (!string.IsNullOrEmpty(reader[8].ToString()))
                                 {
                                     photo.Name = reader[8].ToString();
                                 }
 
-                                int c = (int)(reader[9]);
+                                int c = (int)reader[9];
                                 photo.Class = (Type)c;
 
                                 photo.Body = reader[10].ToString();
@@ -103,8 +104,8 @@ namespace FileworxObjectClassLibrary
                     }
                 }
             }
-            
-            if(Source == QuerySource.ES)
+
+            if (Source == QuerySource.ES)
             {
                 var settings = new ElasticsearchClientSettings(new Uri(EditBeforeRun.ElasticUri));
                 var client = new ElasticsearchClient(settings);

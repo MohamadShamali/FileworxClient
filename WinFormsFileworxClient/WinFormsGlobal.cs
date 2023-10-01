@@ -1,5 +1,5 @@
 ﻿using FileworxDTOsLibrary.DTOs;
-using FileworxObjectClassLibrary;
+using FileworxObjectClassLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using Type = FileworxDTOsLibrary.DTOs.Type;
 
 namespace Fileworx_Client
 {
-    internal class Global
+    internal class WinFormsGlobal
     {
         public static clsUser LoggedInUser { get; set; }
 

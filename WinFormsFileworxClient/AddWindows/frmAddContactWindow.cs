@@ -1,4 +1,4 @@
-﻿using FileworxObjectClassLibrary;
+﻿using FileworxObjectClassLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -119,8 +119,8 @@ namespace Fileworx_Client.AddWindows
                         Id = Guid.NewGuid(),
                         Name = txtName.Text,
                         Description = String.Empty,
-                        CreatorId = Global.LoggedInUser.Id,
-                        CreatorName = Global.LoggedInUser.Name,
+                        CreatorId = WinFormsGlobal.LoggedInUser.Id,
+                        CreatorName = WinFormsGlobal.LoggedInUser.Name,
                         Direction = (cboDirection.SelectedIndex == 0) ? (ContactDirection.Transmit | ContactDirection.Receive) :
                                     (cboDirection.SelectedIndex == 1) ? ContactDirection.Transmit :
                                                                         ContactDirection.Receive,
@@ -138,8 +138,8 @@ namespace Fileworx_Client.AddWindows
                     await contactToEdit.ReadAsync();
 
                     contactToEdit.Name = txtName.Text;
-                    contactToEdit.LastModifierId = Global.LoggedInUser.Id;
-                    contactToEdit.LastModifierName = Global.LoggedInUser.Name;
+                    contactToEdit.LastModifierId = WinFormsGlobal.LoggedInUser.Id;
+                    contactToEdit.LastModifierName = WinFormsGlobal.LoggedInUser.Name;
                     contactToEdit.Direction = (cboDirection.SelectedIndex == 0) ? (ContactDirection.Transmit | ContactDirection.Receive) :
                                               (cboDirection.SelectedIndex == 1) ? ContactDirection.Transmit :
                                               ContactDirection.Receive;

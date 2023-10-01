@@ -1,5 +1,4 @@
-﻿using FileworxObjectClassLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
+using FileworxObjectClassLibrary.Models;
 
 namespace Fileworx_Client
 {
@@ -67,8 +67,8 @@ namespace Fileworx_Client
                     {
                         Id = Guid.NewGuid(),
                         Description = txtDescription.Text,
-                        CreatorId = Global.LoggedInUser.Id,
-                        CreatorName = Global.LoggedInUser.Name,
+                        CreatorId = WinFormsGlobal.LoggedInUser.Id,
+                        CreatorName = WinFormsGlobal.LoggedInUser.Name,
                         Name = txtTiltle.Text,
                         Body = txtBody.Text,
                         Category = cboCategory.SelectedItem.ToString(),
@@ -90,8 +90,8 @@ namespace Fileworx_Client
                 if (validateData())
                 {
                     newsToEdit.Description = txtDescription.Text;
-                    newsToEdit.LastModifierId = Global.LoggedInUser.Id;
-                    newsToEdit.LastModifierName = Global.LoggedInUser.Name;
+                    newsToEdit.LastModifierId = WinFormsGlobal.LoggedInUser.Id;
+                    newsToEdit.LastModifierName = WinFormsGlobal.LoggedInUser.Name;
                     newsToEdit.Name = txtTiltle.Text;
                     newsToEdit.Body = txtBody.Text;
                     newsToEdit.Category = cboCategory.SelectedItem.ToString();

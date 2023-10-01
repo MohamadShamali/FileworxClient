@@ -1,7 +1,4 @@
 ﻿using FileworxDTOsLibrary.DTOs;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +10,6 @@ namespace FileworxDTOsLibrary.RabbitMQMessages
     public class clsMessage
     {
         // Properties
-        [BsonId]
         public Guid Id { get; set; }
         public string Command { get; set; }
         public clsNewsDto NewsDto { get; set; }
@@ -22,51 +18,5 @@ namespace FileworxDTOsLibrary.RabbitMQMessages
         public clsContactDto Contact { get; set; }
         public DateTime ActionDate { get; set; }
 
-        // MongoDB CRUD Operations
-
-        //private IMongoDatabase db;
-        //private MongoClient client;
-        //private IMongoCollection<clsMessage> collection;
-
-        //public clsMessage()
-        //{
-        //    client = new MongoClient();
-        //    db = client.GetDatabase(EditBeforeRun.MessagesDBName);
-        //    collection = db.GetCollection<clsMessage>(EditBeforeRun.MessagesCollectionName);
-        //}
-
-        //public async Task InsertAsync()
-        //{
-        //    await collection.InsertOneAsync(this);
-        //}
-
-        //public void Read()
-        //{
-        //    var filter = Builders<clsMessage>.Filter.Eq("Id",Id);
-
-        //    var foundMessage = collection.Find(filter).First();
-
-        //    this.Command = foundMessage.Command;
-        //    this.NewsDto = foundMessage.NewsDto;
-        //    this.PhotoDto = foundMessage.PhotoDto;
-        //    this.Processed = foundMessage.Processed;
-        //}
-
-        //public async Task UpdateAsync()
-        //{
-        //    var filter = Builders<clsMessage>.Filter.Eq("Id", Id);
-
-
-        //    var result = await collection.ReplaceOneAsync(new BsonDocument ("_id",Id),
-        //                                                    this,
-        //                                                    new ReplaceOptions { IsUpsert = false });
-        //}
-
-        //public async Task DeleteAsync()
-        //{
-        //    var filter = Builders<clsMessage>.Filter.Eq("Id", Id);
-
-        //    var result = await collection.DeleteOneAsync(filter);
-        //}
     }
 }

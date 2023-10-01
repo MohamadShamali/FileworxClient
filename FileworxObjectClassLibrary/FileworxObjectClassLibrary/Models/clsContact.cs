@@ -14,10 +14,11 @@ using System.Threading.Tasks;
 using FileworxDTOsLibrary;
 using FileworxDTOsLibrary.DTOs;
 using Type = FileworxDTOsLibrary.DTOs.Type;
+using FileworxObjectClassLibrary.Others;
 
-namespace FileworxObjectClassLibrary
+namespace FileworxObjectClassLibrary.Models
 {
-    public enum ContactDirection 
+    public enum ContactDirection
     {
         Transmit = 1,
         Receive = 2
@@ -31,9 +32,9 @@ namespace FileworxObjectClassLibrary
         private ElasticsearchClient client;
 
         // Properties
-        public string TransmitLocation { get; set; } = String.Empty;
-        public string ReceiveLocation { get; set; } = String.Empty;
-        public ContactDirection Direction {get; set;} = (ContactDirection.Transmit | ContactDirection.Receive);
+        public string TransmitLocation { get; set; } = string.Empty;
+        public string ReceiveLocation { get; set; } = string.Empty;
+        public ContactDirection Direction { get; set; } = ContactDirection.Transmit | ContactDirection.Receive;
         public DateTime LastReceiveDate { get; set; }
         public bool Enabled { get; set; } = true;
 
@@ -56,7 +57,7 @@ namespace FileworxObjectClassLibrary
             {
                 await connection.OpenAsync();
                 string query = $"INSERT INTO T_CONTACT (ID, C_TRANSMITLOCATION, C_RECEIVELOCATION, C_CONTACTDIRECTIONID, C_LASTRECEIVEDATE, C_ENABLED) " +
-                               $"VALUES('{Id}', '{TransmitLocation}', '{ReceiveLocation}',{(int) Direction}, '{LastReceiveDate.ToString("yyyy-MM-dd HH:mm:ss.fffffff")}', '{Enabled}');";
+                               $"VALUES('{Id}', '{TransmitLocation}', '{ReceiveLocation}',{(int)Direction}, '{LastReceiveDate.ToString("yyyy-MM-dd HH:mm:ss.fffffff")}', '{Enabled}');";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     await command.ExecuteNonQueryAsync();
@@ -64,7 +65,7 @@ namespace FileworxObjectClassLibrary
             }
 
             // Elastic
-            var contactDto = new clsContactDto(this);
+            var contactDto = new clsContactElasticDto(this);
             var response = await client.IndexAsync(contactDto, EditBeforeRun.ElasticContactsIndex);
             contactDto = null;
             if (!response.IsValidResponse)
@@ -110,8 +111,8 @@ namespace FileworxObjectClassLibrary
             }
 
             // Elastic
-            var contactDto = new clsContactDto(this);
-            var response = await client.UpdateAsync<clsContactDto, clsContactDto>(EditBeforeRun.ElasticContactsIndex, Id, u => u.Doc(contactDto));
+            var contactDto = new clsContactElasticDto(this);
+            var response = await client.UpdateAsync<clsContactElasticDto, clsContactElasticDto>(EditBeforeRun.ElasticContactsIndex, Id, u => u.Doc(contactDto));
             contactDto = null;
             if (!response.IsValidResponse)
             {
@@ -137,13 +138,13 @@ namespace FileworxObjectClassLibrary
                         if (reader.Read())
                         {
 
-                            if (!String.IsNullOrEmpty(reader[0].ToString())) TransmitLocation = (reader[0].ToString());
-                            if (!String.IsNullOrEmpty(reader[1].ToString())) ReceiveLocation = (reader[1].ToString());
-                                int d = (int) reader[2];
-                                Direction = (ContactDirection) d;
-                                LastReceiveDate= DateTime.Parse(reader[3].ToString());
-                                Enabled = (bool) reader[4];
-                            
+                            if (!string.IsNullOrEmpty(reader[0].ToString())) TransmitLocation = reader[0].ToString();
+                            if (!string.IsNullOrEmpty(reader[1].ToString())) ReceiveLocation = reader[1].ToString();
+                            int d = (int)reader[2];
+                            Direction = (ContactDirection)d;
+                            LastReceiveDate = DateTime.Parse(reader[3].ToString());
+                            Enabled = (bool)reader[4];
+
                         }
                     }
                 }
@@ -167,8 +168,8 @@ namespace FileworxObjectClassLibrary
                         if (reader.Read())
                         {
 
-                            if (!String.IsNullOrEmpty(reader[0].ToString())) TransmitLocation = (reader[0].ToString());
-                            if (!String.IsNullOrEmpty(reader[1].ToString())) ReceiveLocation = (reader[1].ToString());
+                            if (!string.IsNullOrEmpty(reader[0].ToString())) TransmitLocation = reader[0].ToString();
+                            if (!string.IsNullOrEmpty(reader[1].ToString())) ReceiveLocation = reader[1].ToString();
                             int d = (int)reader[2];
                             Direction = (ContactDirection)d;
                             LastReceiveDate = DateTime.Parse(reader[3].ToString());

@@ -1,4 +1,5 @@
 ﻿using FileworxDTOsLibrary.DTOs;
+using FileworxObjectClassLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +53,7 @@ namespace FileworxObjectClassLibrary
             return photo;
         }
 
-        public static clsContact MapContactDtoToContact(FileworxDTOsLibrary.DTOs.clsContactDto contactDto)
+        public static clsContact MapContactDtoToContact(clsContactDto contactDto)
         {
             var contact = new clsContact()
             {
@@ -75,7 +76,7 @@ namespace FileworxObjectClassLibrary
             return contact;
         }
 
-        public static FileworxDTOsLibrary.DTOs.clsContactDto MapContactToContactDto(clsContact contact)
+        public static clsContactDto MapContactToContactDto(clsContact contact)
         {
             var contactDto = new FileworxDTOsLibrary.DTOs.clsContactDto()
             {

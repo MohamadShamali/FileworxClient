@@ -1,4 +1,5 @@
-﻿using FileworxObjectClassLibrary;
+﻿using FileworxObjectClassLibrary.Models;
+using FileworxObjectClassLibrary.Queries;
 
 namespace Web_Fileworx_Client.Models
 {
