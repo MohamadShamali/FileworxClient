@@ -17,6 +17,7 @@ namespace FileworxAPI.Controllers
             {
                 clsContactQuery query = new clsContactQuery();
                 query.QDirection = new ContactDirection[] { ContactDirection.Receive, (ContactDirection.Transmit | ContactDirection.Receive) };
+                query.Source = QuerySource.ES;
                 var receiveContacts = await query.RunAsync();
 
                 return Ok(receiveContacts);

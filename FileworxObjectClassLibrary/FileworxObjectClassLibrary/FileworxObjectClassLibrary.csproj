@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net4.8;net7.0</TargetFrameworks>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,0 +1,3 @@
+@Imports VBFileworxAPI.Areas.HelpPage.ModelDescriptions
+@ModelType SimpleTypeModelDescription
+@Model.Documentation

@@ -7,7 +7,7 @@
         public static string MessagesCollectionName = "Messages";
 
         // API
-        public static string GetReceiveContactsApiUrl = "http://localhost:5000/api/ReceiveContacts";
+        public static string GetReceiveContactsApiUrl = "http://10.0.0.202:50/FileworxAPIx64/api/ReceiveContacts";
 
         // SQL Server DB
         public static string connectionString = @"Server=M-ALShamali;Database=FileworxClientDB;Trusted_Connection=True;";
